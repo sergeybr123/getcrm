@@ -14,7 +14,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap pr-0">Поиск</label>
+                                    <label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap px-0">Поиск</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" name="type">
                                             <option value="1">по email</option>
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2 pr-0">
                         <button class="btn btn-outline-info btn-block" type="submit">{{ __('Поиск') }}</button>
                     </div>
                 </div>
