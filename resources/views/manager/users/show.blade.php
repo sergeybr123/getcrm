@@ -117,32 +117,37 @@
                 <li class="nav-item"><a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
             </ul>
             <div class="tab-content" id="myTab1Content">
-                <div class="tab-pane p-0 fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <ul class="list-group">
-                        @forelse($bots as $key => $bot)
-                            <li class="list-group-item">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">{{ $bot->name ?? $bot->slug }}</h5>
-                                    <small class="text-muted" title="Дата создания">
-                                        {{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') }}
-                                    </small>
-                                </div>
-                                <div class="d-flex w-100 justify-content-between">
-                                    <p class="mb-1">
-                                        <span id="slug_{{ $key }}">https://getchat.me/{{ $bot->slug }}</span>
-                                        <button class="btn btn-sm btn-outline-blue ml-2" type="button"
-                                                title="Копировать ссылку"
-                                                onclick="copyToClipboard({{ $key }})" style="border-radius:50%;">
-                                            <i class="fa fa-copy"></i>
-                                        </button>
-                                    </p>
+                <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <table class="table table-bordered table-striped dataTable">
+                        <thead>
+                        <tr>
+                            <th width="120">Наименование</th>
+                            <th>Ссылка</th>
+                            <th width="100">Дата создания</th>
+                            <th width="90"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($bots as $bot)
+                            <tr>
+                                <td>{{ $bot->slug }}</td>
+                                <td>
+                                    <span id="page_slug_{{ $bot->id }}">https://getchat.me/{{ $bot->slug }}</span>
+                                    <button class="btn btn-sm btn-outline-blue ml-2" type="button"
+                                            title="Копировать ссылку"
+                                            onclick="copyPageToClipboard({{ $bot->id }})" style="border-radius:50%;">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') ?? '' }}</td>
+                                <td>
                                     <div class="form-inline">
                                         <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
-                                        {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
-                                        {{--<i class="fa fa-chart-line"></i>--}}
-                                        {{--</a>--}}
+                                        <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">
+                                            <i class="fa fa-chart-line"></i>
+                                        </a>
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue ml-1" type="button"
                                                     id="dropdownMenuButton"
@@ -152,21 +157,69 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}"
-                                                   target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
-                                                <a class="dropdown-item" href="#" onclick="copyToClipboard({{ $key }})"><i
-                                                            class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
-                                                <a class="dropdown-item text-danger" href="#"><i
-                                                            class="fa fa-trash"></i> {{ __('buttons.remove') }}</a>
+                                                <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
+                                                    <i class="far fa-eye"></i> {{ __('buttons.view') }}
+                                                </a>
+                                                <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $bot->id }})">
+                                                    <i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-                        @empty
-                            <li class="list-group-item">Авточаты отсутствуют</li>
-                        @endforelse
-                    </ul>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {{--<ul class="list-group">--}}
+                        {{--@forelse($bots as $key => $bot)--}}
+                            {{--<li class="list-group-item">--}}
+                                {{--<div class="d-flex w-100 justify-content-between">--}}
+                                    {{--<h5 class="mb-1">{{ $bot->name ?? $bot->slug }}</h5>--}}
+                                    {{--<small class="text-muted" title="Дата создания">--}}
+                                        {{--{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') }}--}}
+                                    {{--</small>--}}
+                                {{--</div>--}}
+                                {{--<div class="d-flex w-100 justify-content-between">--}}
+                                    {{--<p class="mb-1">--}}
+                                        {{--<span id="slug_{{ $key }}">https://getchat.me/{{ $bot->slug }}</span>--}}
+                                        {{--<button class="btn btn-sm btn-outline-blue ml-2" type="button"--}}
+                                                {{--title="Копировать ссылку"--}}
+                                                {{--onclick="copyToClipboard({{ $key }})" style="border-radius:50%;">--}}
+                                            {{--<i class="fa fa-copy"></i>--}}
+                                        {{--</button>--}}
+                                    {{--</p>--}}
+                                    {{--<div class="form-inline">--}}
+                                        {{--<a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">--}}
+                                            {{--<i class="fa fa-pencil-alt"></i>--}}
+                                        {{--</a>--}}
+                                        {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
+                                        {{--<i class="fa fa-chart-line"></i>--}}
+                                        {{--</a>--}}
+                                        {{--<div class="dropdown">--}}
+                                            {{--<button class="btn btn-sm btn-outline-blue ml-1" type="button"--}}
+                                                    {{--id="dropdownMenuButton"--}}
+                                                    {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"--}}
+                                                    {{--style="border-radius:50%;width:30px;height:30px;">--}}
+                                                {{--<i class="fa fa-ellipsis-v"></i>--}}
+                                            {{--</button>--}}
+                                            {{--<div class="dropdown-menu dropdown-menu-right"--}}
+                                                 {{--aria-labelledby="dropdownMenuButton">--}}
+                                                {{--<a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}"--}}
+                                                   {{--target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>--}}
+                                                {{--<a class="dropdown-item" href="#" onclick="copyToClipboard({{ $key }})"><i--}}
+                                                            {{--class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>--}}
+                                                {{--<a class="dropdown-item text-danger" href="#"><i--}}
+                                                            {{--class="fa fa-trash"></i> {{ __('buttons.remove') }}</a>--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                            {{--</li>--}}
+                        {{--@empty--}}
+                            {{--<li class="list-group-item">Авточаты отсутствуют</li>--}}
+                        {{--@endforelse--}}
+                    {{--</ul>--}}
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <table class="table table-bordered table-striped dataTable">

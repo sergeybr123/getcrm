@@ -21,6 +21,9 @@ Route::middleware('auth')->group(function() {
         Route::get( 'bots/old', 'Manager\BotsController@bot_old');
         Route::get( 'bots/new', 'Manager\BotsController@bot_new');
         Route::resource( 'invoices', 'Manager\InvoicesController');
+
+        // Оплатить и активировать
+        Route::post('/pay-activate', 'Manager\UsersController@payActivate')->name('pay.activate');
     });
     // Partner
 });
@@ -30,3 +33,7 @@ Auth::routes();
 //Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('select', 'Manager\UsersController@selectNotSubscribed');
+
+Route::get('/inv', function () {
+    return view('manager.invoices.show');
+});
