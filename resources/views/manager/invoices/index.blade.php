@@ -35,6 +35,9 @@
                         {{ $invoice[1]->id }}
                     </td>
                     <td>
+                        <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
+                        <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
+                                onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i></button>
                         @if($invoice[0] != null)
                             <a href="{{ route('manager.users.show', ['id' => $invoice[0]['id']]) }}">
                                 {{ $invoice[0]['email'] }}
@@ -158,6 +161,15 @@
         });
         function closeDatapicker(id) {
             $('#dropdownCalendar_' + id).hide();
+        }
+
+        function copyPageToClipboard(key) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($('#link_' + key).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            toastr.info('Ссылка скопирована');
         }
     </script>
 @endsection

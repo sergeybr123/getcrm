@@ -61,24 +61,10 @@
                        title="Добавить авточат">
                         <i class="fa fa-comments"></i>
                     </a>
-                    {{--<div class="dropdown">--}}
-                        {{--<button class="btn btn-sm btn-outline-blue ml-1" type="button" id="dropdownMenuButton"--}}
-                                {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"--}}
-                                {{--style="border-radius:50%;width:30px;height:30px;">--}}
-                            {{--<i class="fa fa-ellipsis-v"></i>--}}
-                        {{--</button>--}}
-                        {{--<div class="dropdown-menu dropdown-menu-right mt-1" aria-labelledby="dropdownMenuButton">--}}
-                            {{--<a class="dropdown-item" href="#" target="_blank">{{ __('Создать авточат') }}</a>--}}
-                            {{--<button class="dropdown-item" data-toggle="modal"--}}
-                                    {{--data-target="#invoiceModal">{{ __('Выставить счет') }}</button>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
                 </div>
             </div>
         </div>
     </div>
-
-
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
@@ -171,55 +157,6 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {{--<ul class="list-group">--}}
-                        {{--@forelse($bots as $key => $bot)--}}
-                            {{--<li class="list-group-item">--}}
-                                {{--<div class="d-flex w-100 justify-content-between">--}}
-                                    {{--<h5 class="mb-1">{{ $bot->name ?? $bot->slug }}</h5>--}}
-                                    {{--<small class="text-muted" title="Дата создания">--}}
-                                        {{--{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') }}--}}
-                                    {{--</small>--}}
-                                {{--</div>--}}
-                                {{--<div class="d-flex w-100 justify-content-between">--}}
-                                    {{--<p class="mb-1">--}}
-                                        {{--<span id="slug_{{ $key }}">https://getchat.me/{{ $bot->slug }}</span>--}}
-                                        {{--<button class="btn btn-sm btn-outline-blue ml-2" type="button"--}}
-                                                {{--title="Копировать ссылку"--}}
-                                                {{--onclick="copyToClipboard({{ $key }})" style="border-radius:50%;">--}}
-                                            {{--<i class="fa fa-copy"></i>--}}
-                                        {{--</button>--}}
-                                    {{--</p>--}}
-                                    {{--<div class="form-inline">--}}
-                                        {{--<a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">--}}
-                                            {{--<i class="fa fa-pencil-alt"></i>--}}
-                                        {{--</a>--}}
-                                        {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
-                                        {{--<i class="fa fa-chart-line"></i>--}}
-                                        {{--</a>--}}
-                                        {{--<div class="dropdown">--}}
-                                            {{--<button class="btn btn-sm btn-outline-blue ml-1" type="button"--}}
-                                                    {{--id="dropdownMenuButton"--}}
-                                                    {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"--}}
-                                                    {{--style="border-radius:50%;width:30px;height:30px;">--}}
-                                                {{--<i class="fa fa-ellipsis-v"></i>--}}
-                                            {{--</button>--}}
-                                            {{--<div class="dropdown-menu dropdown-menu-right"--}}
-                                                 {{--aria-labelledby="dropdownMenuButton">--}}
-                                                {{--<a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}"--}}
-                                                   {{--target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>--}}
-                                                {{--<a class="dropdown-item" href="#" onclick="copyToClipboard({{ $key }})"><i--}}
-                                                            {{--class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>--}}
-                                                {{--<a class="dropdown-item text-danger" href="#"><i--}}
-                                                            {{--class="fa fa-trash"></i> {{ __('buttons.remove') }}</a>--}}
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                            {{--</li>--}}
-                        {{--@empty--}}
-                            {{--<li class="list-group-item">Авточаты отсутствуют</li>--}}
-                        {{--@endforelse--}}
-                    {{--</ul>--}}
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <table class="table table-bordered table-striped dataTable">
@@ -352,10 +289,6 @@
         </div>
     </div>
 
-
-
-
-
     <div class="modal fade" id="payActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -389,16 +322,12 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 @endsection
 @section('scripts')
     <script src="{{ asset('vendors/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendors/js/dataTables.bootstrap4.min.js') }}"></script>
     <script>
+        /*-------------------Копирование ссылок---------------------*/
         function copyToClipboard(key) {
             var $temp = $("<input>");
             $("body").append($temp);
@@ -407,7 +336,6 @@
             $temp.remove();
             toastr.info('Ссылка скопирована');
         }
-
         function copyPageToClipboard(key) {
             var $temp = $("<input>");
             $("body").append($temp);
@@ -416,8 +344,7 @@
             $temp.remove();
             toastr.info('Ссылка скопирована');
         }
-
-
+        /*-------------------Копирование ссылок---------------------*/
         /*-----------------------Выставление счета------------------------------*/
         var billing_token = '{{ config('app.billing_token') }}';
         var billing_url = '{{ config('app.billing_url') }}';
@@ -454,8 +381,6 @@
                     });
                     $('#plan_place').append(str);
                     str = '';
-
-
                 }
             });
         }
@@ -481,18 +406,9 @@
                         "Authorization": "Basic " + billing_token
                     },
                     success: function (request) {
-                        // strService += '<div class="mt-2" id="servicePlace">';
-                        // strService += '<strong>Услуги:</strong>';
-                        // $.each(request, function (key, value) {
-                        //     strService += '<div class="form-check">';
-                        //     strService += '    <input class="form-check-input" type="radio" name="service_id" onclick="ChoiseService('+value.id+', '+value.price+')" id="serviceRadios'+key+'" value="'+value.id+'">';
-                        //     strService += '    <label class="form-check-label" for="serviceRadios'+key+'">'+value.name+'</label>';
-                        //     strService += '</div>';
-                        // });
-                        // strService += '</div>';
-                        // $('#plan_place').append(strService);
-                        // strService = '';
-                        console.log(request.data/*.plan.name + ', ' +request.data.plan.price*/)
+                        // console.log(request.data/*.plan.name + ', ' +request.data.plan.price*/);
+                        planId = request.data.plan.id;
+                        console.log(planId);
                         subscribeAmount = parseInt(parseFloat(request.data.plan.price).toFixed(0)) || 0;
                     }
                 });
