@@ -3,11 +3,12 @@
 @section('title', __('users.users'))
 
 @section('content')
+<a class="float-right btn btn-outline-info mt-2" href="{{ route('manager.users.create') }}">{{ __('Добавить пользователя') }}</a>
 <h1>{{ __('users.users') }}</h1>
 <div class="card card-accent-primary mt-3">
     <div class="card-body">
         <div class="px-3 mb-3">
-            <form method="post" action="{{ route('manager.user.search') }}">
+            <form method="post" action="{{ route('manager.users.search') }}">
                 @csrf
                 <div class="row">
                     <div class="col-md-10">
@@ -39,7 +40,13 @@
             @forelse($users as $item)
                 <li class="list-group-item">
                     <div class="d-flex w-100 justify-content-between">
-                        <a href="{{ route('manager.users.show', ['id' => $item->id]) }}">{{ $item->email }}</a>
+                        <a href="{{ route('manager.users.show', ['id' => $item->id]) }}">
+                            @if($item->email)
+                                {{ $item->email }}
+                            @else
+                                {{ $item->name }}
+                            @endif
+                        </a>
                         <small class="text-muted" title="{{ __('users.register_at') }}">
                             {{ \Carbon\Carbon::parse($item->created_at)->format('d.m.Y') }}
                         </small>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', __(''))
+@section('title', __('Редактирование пользователя'))
 @section('content')
     <div>
         <a href="{{ route('manager.users.show', $user->id) }}" class="btn btn-outline-blue"><i
@@ -12,12 +12,8 @@
                     <p class="h3 text-center">{{ $user->email }}</p>
                 </div>
                 <div class="card-body justify-content-center w-100">
-                    <form action="{{ route('manager.users.update', $user) }}" method="post">
+                    <form action="{{ route('manager.users.update', $user->id) }}" method="post">
                         @csrf
-                        {{ method_field('PUT') }}
-                        <input type="hidden" name="id" value="{{ $user->id }}">
-
-
                         @if (session('success'))
                             <p class="text-success">
                                 {{ session('success') }}
@@ -77,9 +73,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="location" class="col-sm-2 col-form-label">Городо, стр</label>
+                            <label for="location" class="col-sm-2 col-form-label">Город, стр</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="location" name="location" placeholder="Городо, стр" value="{{ $user->profile != null ? $user->profile->location : '' }}">
+                                <input type="text" class="form-control" id="location" name="location" placeholder="Город, стр" value="{{ $user->profile != null ? $user->profile->location : '' }}">
                             </div>
                         </div>
                         <div>

@@ -14,8 +14,14 @@ Route::middleware('auth')->group(function() {
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
-        Route::resource( 'users', 'Manager\UsersController');
-        Route::post('users', 'Manager\UsersController@index')->name('user.search');
+//        Route::resource( 'users', 'Manager\UsersController');
+        Route::get('users', 'Manager\UsersController@index')->name('users.index');
+        Route::post('users', 'Manager\UsersController@index')->name('users.search');
+        Route::get('users/create', 'Manager\UsersController@create')->name('users.create');
+        Route::post('users/store', 'Manager\UsersController@store')->name('users.store');
+        Route::get('users/{id}', 'Manager\UsersController@show')->name('users.show');
+        Route::get('users/{id}/edit', 'Manager\UsersController@edit')->name('users.edit');
+        Route::post('users/{id}/update', 'Manager\UsersController@update')->name('users.update');
         Route::resource( 'pages', 'Manager\PagesController');
 //        Route::resource( 'bots', 'Manager\BotsController');
         Route::get( 'bots/old', 'Manager\BotsController@bot_old');

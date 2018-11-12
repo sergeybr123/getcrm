@@ -56,7 +56,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        return view('manager.users.create');
     }
 
     /**
@@ -67,7 +67,20 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+//        $this->validate($request, [
+//            'email' => ['email',],
+//            'phone' => ['string',]
+//        ]);
+        $password = $this->generatePassword();
+//        dd($request);
+        User::create([
+            'name' => $request->name,
+            'username' => $request->phone,
+            'email' => $request->email,
+            'password' => bcrypt($password),
+        ]);
+        return redirect()->route('manager.users.index');
+
     }
 
     /**
@@ -117,7 +130,7 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'id' => 'required|numeric',
@@ -134,7 +147,7 @@ class UsersController extends Controller
             ]
         ]);
 
-        $user = User::findOrFail($request->id);
+        $user = User::findOrFail($id);
 
         $user->email = $request->email;
 
@@ -183,6 +196,19 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function generatePassword($length = 8)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $count = mb_strlen($chars);
+
+        for ($i = 0, $result = ''; $i < $length; $i++) {
+            $index = rand(0, $count - 1);
+            $result .= mb_substr($chars, $index, 1);
+        }
+
+        return $result;
     }
 
     /*Подписка на бесплатный пакет пользователей не имеющих авточат*/
