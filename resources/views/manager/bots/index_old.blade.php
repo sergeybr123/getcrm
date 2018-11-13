@@ -25,7 +25,7 @@
                                 <a href="{{ route('manager.users.show', ['id' => $boto->owner->id]) }}">{{ $boto->owner->email }}</a>
                             </p>
                             <div class="form-inline">
-                                <a href="#" class="btn btn-circle btn-sm btn-outline-blue">
+                                <a href="https://getchat.me/constructor/{{ $boto->id }}" class="btn btn-circle btn-sm btn-outline-blue" target="_blank">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
                                 <div class="dropdown">
@@ -38,7 +38,6 @@
                                         <a class="dropdown-item" href="https://getchat.me/{{ $boto->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
-                                        <a class="dropdown-item text-danger" href="#"><i class="fa fa-trash"></i> {{ __('buttons.remove') }}</a>
                                     </div>
                                 </div>
                             </div>

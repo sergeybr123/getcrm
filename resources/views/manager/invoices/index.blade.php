@@ -12,6 +12,23 @@
     <h1>{{ __('Счета и платежи') }}</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
+            <form>
+                <div class="mb-3 row">
+                    <div class="col-md-2">
+                        <select class="form-control" name="searchFilter">
+                            <option value="1">{{ __('По номеру счета') }}</option>
+                            <option value="2">{{ __('По email пользователя') }}</option>
+                            <option value="3">{{ __('По телефону пользователя') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" name="searchText" type="text">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-blue btn-block" type="submit"><i class="fa fa-search"></i> {{ __('Поиск') }}</button>
+                    </div>
+                </div>
+            </form>
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -36,8 +53,11 @@
                     </td>
                     <td>
                         <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
-                        <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
-                                onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i></button>
+                        @if($invoice[1]->paid == 0)
+                            <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
+                                    onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
+                            </button>
+                        @endif
                         @if($invoice[0] != null)
                             <a href="{{ route('manager.users.show', ['id' => $invoice[0]['id']]) }}">
                                 {{ $invoice[0]['email'] }}
@@ -50,7 +70,7 @@
                         @endif
                     </td>
                     <td class="text-center">
-                        {{ $invoice[1]->types->name }}
+                        {{ $invoice[1]->type->name }}
                     </td>
                     <td class="text-right">
                         {{ number_format($invoice[1]->amount, 0, '.', '') }} тг.
@@ -92,14 +112,16 @@
                 @endforelse
                 </tbody>
             </table>
-            <ul class="pagination justify-content-end">
-                <li class="page-item {{ ($all->current_page - 1 <= 0) ? 'disabled' : '' }}">
-                    <a class="page-link" href="?page={{ $all->current_page - 1 }}" tabindex="-1">Предыдущая</a>
-                </li>
-                <li class="page-item {{ ($all->current_page == $all->last_page) ? 'disabled' : '' }}">
-                    <a class="page-link" href="?page={{ $all->current_page + 1 }}">Следующая</a>
-                </li>
-            </ul>
+            @isset($all->meta)
+                <ul class="pagination justify-content-end">
+                    <li class="page-item {{ ($all->meta->current_page - 1 <= 0) ? 'disabled' : '' }}">
+                        <a class="page-link" href="?page={{ $all->meta->current_page - 1 }}" tabindex="-1">Предыдущая</a>
+                    </li>
+                    <li class="page-item {{ ($all->meta->current_page == $all->meta->last_page) ? 'disabled' : '' }}">
+                        <a class="page-link" href="?page={{ $all->meta->current_page + 1 }}">Следующая</a>
+                    </li>
+                </ul>
+            @endisset
         </div>
     </div>
 

@@ -41,11 +41,6 @@
                             <label for="country_code" class="col-sm-2 col-form-label">Код</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="country_code" name="country_code" placeholder="country_code" value="{{ $user->phone->country_code }}">
-                                {{--<select class="form-control">--}}
-                                    {{--@foreach($cou as $country)--}}
-                                    {{--<option>{{ $country->cca2 }}</option>--}}
-                                    {{--@endforeach--}}
-                                {{--</select>--}}
                             </div>
                         </div>
                         <div class="form-group row">

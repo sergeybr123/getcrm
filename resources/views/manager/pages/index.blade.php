@@ -40,7 +40,6 @@
                                         <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
-                                        <a class="dropdown-item text-danger" href="#"><i class="fa fa-trash"></i> {{ __('buttons.remove') }}</a>
                                     </div>
                                 </div>
                             </div>

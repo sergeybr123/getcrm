@@ -128,7 +128,7 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
+                                        <a href="https://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">
@@ -227,10 +227,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($invoices as $key => $invoice)
+                        @foreach($invoices->data as $invoice)
                             <tr>
                                 <td>{{ $invoice->id }}</td>
-                                <td>{{ $invoice->types->name }}</td>
+                                <td>{{ $invoice->type->name }}</td>
                                 <td>
                                     @if($invoice->plan != null)
                                         {{ $invoice->plan->name }}
@@ -302,7 +302,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @forelse($invoices as $item)
+                        @forelse($invoices->data as $item)
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">
                                 <label class="form-check-label" for="inv{{ $invoice->id }}">

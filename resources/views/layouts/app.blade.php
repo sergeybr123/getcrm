@@ -40,8 +40,8 @@
                 <div class="dropdown-header text-center">
                     <strong>Управление</strong>
                 </div>
-                <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Профиль</a>
-                <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Настройки</a>
+                {{--<a class="dropdown-item" href="#"><i class="fa fa-user"></i> Профиль</a>--}}
+                {{--<a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Настройки</a>--}}
                 <a class="dropdown-item" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Выйти</a>
             </div>
         </li>

@@ -32,7 +32,7 @@
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label">{{ __('Имя') }}</label>
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="name" name="name" placeholder="Имя пользователя" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Имя пользователя" value="{{ __('Неизвестный') }}" required>
                             </div>
                         </div>
                         <div class="form-group row">

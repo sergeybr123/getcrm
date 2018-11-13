@@ -11,8 +11,10 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if($user->hasRole(['admin', 'manager', 'analyst', 'accountant'])) {
-            return view('dashboard.index');
+        if($user->hasRole(['admin'])) {
+            return view('dashboard.admin');
+        } elseif($user->hasRole(['manager', 'analyst', 'accountant'])) {
+            return view('dashboard.manager');
         } else {
             Auth::logout();
             return Redirect::route('home');
