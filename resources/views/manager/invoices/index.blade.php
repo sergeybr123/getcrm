@@ -16,13 +16,13 @@
                 <div class="mb-3 row">
                     <div class="col-md-2">
                         <select class="form-control" name="searchFilter">
-                            <option value="1">{{ __('По номеру счета') }}</option>
-                            <option value="2">{{ __('По email пользователя') }}</option>
-                            <option value="3">{{ __('По телефону пользователя') }}</option>
+                            <option value="1" {{ $filter == 1 ? 'selected' : '' }}>{{ __('По номеру счета') }}</option>
+                            <option value="2" {{ $filter == 2 ? 'selected' : '' }}>{{ __('По email пользователя') }}</option>
+                            <option value="3" {{ $filter == 3 ? 'selected' : '' }}>{{ __('По телефону пользователя') }}</option>
                         </select>
                     </div>
                     <div class="col-md-8">
-                        <input class="form-control" name="searchText" type="text">
+                        <input class="form-control" name="searchText" value="{{ $search }}" type="text">
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-outline-blue btn-block" type="submit"><i class="fa fa-search"></i> {{ __('Поиск') }}</button>

@@ -17,22 +17,24 @@ Route::middleware('auth')->group(function() {
         // Работа с пользователями
         Route::name('users.')->group(function() {
             Route::get('users', 'Manager\UsersController@index')->name('index');
-            Route::post('users', 'Manager\UsersController@index')->name('search');
+//            Route::post('users', 'Manager\UsersController@index')->name('search');
             Route::get('users/create', 'Manager\UsersController@create')->name('create');
             Route::post('users/store', 'Manager\UsersController@store')->name('store');
             Route::get('users/{id}', 'Manager\UsersController@show')->name('show');
             Route::get('users/{id}/edit', 'Manager\UsersController@edit')->name('edit');
             Route::post('users/{id}/update', 'Manager\UsersController@update')->name('update');
         });
+        Route::prefix('pages')->name('pages.')->group(function(){
+            Route::get( '', 'Manager\PagesController@index')->name('index');
+        });
 
-        Route::resource( 'pages', 'Manager\PagesController');
 //        Route::resource( 'bots', 'Manager\BotsController');
         Route::get( 'bots/old', 'Manager\BotsController@bot_old');
         Route::get( 'bots/new', 'Manager\BotsController@bot_new');
         // Работа со счетами
         Route::name('invoices.')->group(function() {
             Route::get( 'invoices', 'Manager\InvoicesController@index')->name('index');
-            Route::post('invoices', 'Manager\InvoicesController@index')->name('search');
+//            Route::post('invoices', 'Manager\InvoicesController@index')->name('search');
         });
 
 

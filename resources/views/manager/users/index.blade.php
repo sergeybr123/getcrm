@@ -8,8 +8,7 @@
 <div class="card card-accent-primary mt-3">
     <div class="card-body">
         <div class="px-3 mb-3">
-            <form method="post" action="{{ route('manager.users.search') }}">
-                @csrf
+            <form>
                 <div class="row">
                     <div class="col-md-10">
                         <div class="row">
@@ -18,15 +17,15 @@
                                     <label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap px-0">Поиск</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" name="type">
-                                            <option value="1">по email</option>
-                                            <option value="2">по номеру телефона</option>
+                                            <option value="1" {{ $type == 1 ? 'selected' : '' }}>по email</option>
+                                            <option value="2" {{ $type == 2 ? 'selected' : '' }}>по номеру телефона</option>
                                             {{--<option value="3">по дате регистрации</option>--}}
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-9">
-                                <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}">
+                                <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}" value="{{ $text }}">
                             </div>
                         </div>
                     </div>
@@ -84,7 +83,7 @@
                     </div>
                 </li>
             @empty
-                <li class="list-group-item">Страницы отсутствуют</li>
+                <li class="list-group-item">Записи отсутствуют</li>
             @endforelse
         </ul>
         <div class="px-3">

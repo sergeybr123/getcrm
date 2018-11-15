@@ -131,9 +131,9 @@
                                         <a href="https://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">
-                                            <i class="fa fa-chart-line"></i>
-                                        </a>
+                                        {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
+                                            {{--<i class="fa fa-chart-line"></i>--}}
+                                        {{--</a>--}}
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue ml-1" type="button"
                                                     id="dropdownMenuButton"

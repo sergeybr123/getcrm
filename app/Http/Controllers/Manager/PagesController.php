@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Manager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
-use App\Models\Account;
+use App\User;
 
 class PagesController extends Controller
 {
@@ -14,10 +14,24 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pages = Company::doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);  //whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
-        return view('manager.pages.index', ['pages' => $pages]);
+        $type = $request->type;
+        $text = $request->text;
+
+        if($type == 1 && $text != null) {
+            $pages = Company::where('slug', $text)->doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        } elseif($type == 2 && $text != null) {
+            $user = User::where('email', 'LIKE', '%' . $text . '%')->first();
+            if($user != null) {
+                $pages = Company::where('user_id', $user->id)->doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+            } else {
+                $pages = [];
+            }
+        } else {
+            $pages = Company::doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        }
+        return view('manager.pages.index', ['pages' => $pages, 'type' => $type, 'text' => $text]);
     }
 
     /**

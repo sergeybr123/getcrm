@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Models\Company;
 use App\Models\Bot;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -21,11 +22,26 @@ class BotsController extends Controller
         return view('manager.bots.index_old', ['bots_old' => $bots_old/*, 'bots_new' => $bots_new*/]);
     }
 
-    public function bot_old()
+    public function bot_old(Request $request)
     {
-        $bots_old = Company::whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
-        return view('manager.bots.index_old', ['bots_old' => $bots_old]);
-//        dd($bots_old);
+        $type = $request->type;
+        $text = $request->text;
+
+        if($type == 1 && $text != null) {
+            $bots_old = Company::where('slug', $text)->whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        } elseif($type == 2 && $text != null) {
+            $user = User::where('email', 'LIKE', '%' . $text . '%')->first();
+            if($user != null) {
+                $bots_old = Company::where('user_id', $user->id)->whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+            } else {
+                $bots_old = [];
+            }
+        } else {
+            $bots_old = Company::whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        }
+//        return view('manager.pages.index', ['pages' => $pages, 'type' => $type, 'text' => $text]);
+//        $bots_old = Company::whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        return view('manager.bots.index_old', ['bots_old' => $bots_old, 'type' => $type, 'text' => $text]);
     }
     public function bot_new()
     {

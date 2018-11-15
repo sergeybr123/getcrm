@@ -20,9 +20,12 @@ class InvoicesController extends Controller
      */
     public function index(Request $request)
     {
+        $filter = $request->searchFilter;
+        $search = $request->searchText;
+
         $users = [];
 
-        if($request->searchFilter == null && $request->searchText == null) {
+        if($request->searchText == null) {
             if(isset($request->page)) {
                 $page = $request->page;
             } else {
@@ -38,56 +41,62 @@ class InvoicesController extends Controller
                     $user = User::where('id', $invoice->user_id)->with('phone')->first();
                     array_push($users, [$user, $invoice]);
                 }
-                return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
             } else {
                 dd($invoices);
             }
         } else {
             // Если поиск по номеру счета
-            if($request->searchFilter == 1) {
+            if($filter == 1 && $search != '') {
                 $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-                $URI = config('app.billing_url') . '/invoice/' . $request->searchText;
+                $URI = config('app.billing_url') . '/invoice/' . $search;
                 $response = $client->get($URI);
                 $invoices = json_decode($response->getBody());
+//                dd($invoices);
                 if($invoices != null) {
                     foreach ($invoices as $invoice) {
                         $user = User::where('id', $invoice->user_id)->with('phone')->first();
                         array_push($users, [$user, $invoice]);
                     }
-                    return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
+//                    return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
                 } else {
                     dd($invoices);
                 }
 
             } else {
                 // Если поиск по email пользователя
-                if($request->searchFilter == 2) {
-                    $user_id = User::where('email', 'LIKE', '%' . $request->searchText . '%')->pluck('id');
+                if($filter == 2 && $search != '') {
+                    $user = User::where('email', 'LIKE', '%' . $search . '%')->first();
                 }
                 // Если поиск по номеру телефона пользователя
-                if($request->searchFilter == 3) {
-                    $phone = substr($request->searchText, -10, 10);
-                    $user_id = Phone::where('phone', $phone)->pluck('user_id');
+                if($filter == 3 && $search != '') {
+                    $phone = substr($search, -10, 10);
+                    $user = Phone::where('phone', $phone)->first();
                 }
 
-                $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-                $URI = config('app.billing_url') . '/user-invoice/' . $user_id[0];
-                $response = $client->get($URI);
+                if($user != '') {
+//                    dd($user);
+                    $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+                    $URI = config('app.billing_url') . '/user-invoice/' . $user->id;
+                    $response = $client->get($URI);
 //                dd($URI);
-                $invoices = json_decode($response->getBody());
-                if($invoices != null) {
-                    foreach ($invoices->data as $invoice) {
-                        $user = User::where('id', $invoice->user_id)->with('phone')->first();
-                        array_push($users, [$user, $invoice]);
+                    $invoices = json_decode($response->getBody());
+                    if($invoices != null) {
+                        foreach ($invoices->data as $invoice) {
+                            $user = User::where('id', $invoice->user_id)->with('phone')->first();
+                            array_push($users, [$user, $invoice]);
+                        }
+                        // return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
+                    } else {
+
                     }
-                    return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
                 } else {
-                    dd($invoices);
+                    $invoices = [];
+                    $users = [];
                 }
             }
         }
 
-
+        return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices, 'filter' => $filter, 'search' => $search]);
 
     }
 

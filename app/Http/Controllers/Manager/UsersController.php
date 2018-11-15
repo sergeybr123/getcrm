@@ -46,7 +46,7 @@ class UsersController extends Controller
             $users = User::with('phone')->orderBy('id', 'desc')->paginate(30);
         }
 
-        return view('manager.users.index', ['users' => $users]);
+        return view('manager.users.index', ['users' => $users, 'type' => $type, 'text' => $text]);
     }
 
     /**

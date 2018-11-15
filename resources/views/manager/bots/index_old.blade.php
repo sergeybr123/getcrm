@@ -6,8 +6,28 @@
     <h1>{{ __('Авточаты старые') }} ({{ $bots_old->total() }})</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
-            <div class="px-3">
-                Фильтр
+            <div class="px-3 mb-3">
+                <form>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="row">
+                                <div class="col-md-3 pl-0">
+                                    <select class="form-control" name="type">
+                                        <option value="1" {{ $type == 1 ? 'selected' : '' }}>по ссылке</option>
+                                        <option value="2" {{ $type == 2 ? 'selected' : '' }}>по email пользователя</option>
+                                        {{--<option value="3">по дате регистрации</option>--}}
+                                    </select>
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}" value="{{ $text }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 pr-0">
+                            <button class="btn btn-outline-info btn-block" type="submit">{{ __('Поиск') }}</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <ul class="list-group mb-3">
                 @forelse($bots_old as $key => $boto)
