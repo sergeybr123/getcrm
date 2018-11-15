@@ -8,6 +8,8 @@ class BillingPlan extends Model
 {
     protected $connection = 'billing';
 
+    protected $table = 'plans';
+
     protected $fillable = [
         'code',
         'name',

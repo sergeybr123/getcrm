@@ -9,8 +9,13 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function() {
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     // Admin
-    Route::prefix('admin')->name('admin.')->group(function() {
-        Route::resource( 'plans', 'Admin\PlansController');
+    Route::prefix('admin')->name('admin::')->group(function() {
+        Route::prefix('plans')->name('plans::')->group(function() {
+            Route::get( '', 'Admin\PlansController@index')->name('index');
+        });
+        Route::prefix('subscribes')->name('subscribes::')->group(function(){
+            Route::get('', 'Admin\SubscribeController@index')->name('index');
+        });
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
