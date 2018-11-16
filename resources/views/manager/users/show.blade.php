@@ -8,19 +8,17 @@
         #DataTables_Table_0_wrapper {
             padding: 8px 0 0 0;
         }
+        .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
+            border-radius: 0;
+        }
+        .list-group-item {
+            border: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        }
+        .list-group-item:last-child {
+            border: 0;
+        }
     </style>
-<style>
-    .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
-        border-radius: 0;
-    }
-    .list-group-item {
-        border: 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-    }
-    .list-group-item:last-child {
-        border: 0;
-    }
-</style>
 @endsection
 
 @section('content')
@@ -276,6 +274,10 @@
                 </div>
                 <div class="modal-body">
                     <div id="plan_place"></div>
+                    <div id="periodDiv" class="mt-2" style="display: none">
+                        <strong>Период</strong>
+                        <input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">
+                    </div>
                     <div class="mt-3" id="amount_place">
                         <strong>Итого: </strong><span id="amount">0</span>
                     </div>
@@ -346,8 +348,8 @@
         }
         /*-------------------Копирование ссылок---------------------*/
         /*-----------------------Выставление счета------------------------------*/
-        var billing_token = '{{ config('app.billing_token') }}';
-        var billing_url = '{{ config('app.billing_url') }}';
+        let billing_token = '{{ config('app.billing_token') }}';
+        let billing_url = '{{ config('app.billing_url') }}';
         let typeId = null;
         let planId = null;
         let serviceId = null;
@@ -358,6 +360,17 @@
         let url = '';
         let strPlan = '';
         let strService = '';
+        let period = $('#periodMonth').val();
+
+        // $('#periodMonth').on('change', function() {
+        //     period = this.value;
+        //     Itogo();
+        // });
+
+        $('#periodMonth').bind('keyup mouseup', function() {
+            period = this.value;
+            Itogo();
+        });
 
         function Load()
         {
@@ -396,7 +409,7 @@
             serviceAmount = 0;
             subscribeAmount = 0;
 
-            if(id == 1) {
+            if(id === 1) {
                 $.ajax({
                     type: "GET",
                     url: billing_url + "/subscribe/" + '{{ $user->id }}',
@@ -408,13 +421,18 @@
                     success: function (request) {
                         // console.log(request.data/*.plan.name + ', ' +request.data.plan.price*/);
                         planId = request.data.plan.id;
-                        console.log(planId);
+                        if(planId === 2) {
+                            $('#periodDiv').css('display', 'block');
+                        }
+                        // console.log(planId);
                         subscribeAmount = parseInt(parseFloat(request.data.plan.price).toFixed(0)) || 0;
                     }
                 });
             }
-
-            if(id == 2) {
+            if(id === 2) {
+                $('#periodMonth').val(1);
+                period = 1;
+                $('#periodDiv').css('display', 'none');
                 $.ajax({
                     type: "GET",
                     url: billing_url + "/plans",
@@ -424,13 +442,16 @@
                         "Authorization": "Basic " + billing_token
                     },
                     success: function (request) {
+                        // console.log(request);
                         strPlan += '<div class="mt-2" id="planPlace">';
                         strPlan += '<strong>Тарифный план:</strong>';
                         $.each(request.data, function (key, value) {
-                            strPlan += '<div class="form-check">';
-                            strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+')" id="plansRadios' + key + '" value="' + value.id + '">';
-                            strPlan += '    <label class="form-check-label" for="plansRadios' + key + '">' + value.name + '</label>';
-                            strPlan += '</div>';
+                            if(value.price !== null){
+                                strPlan += '<div class="form-check">';
+                                strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+')" id="plansRadios' + key + '" value="' + value.id + '">';
+                                strPlan += '    <label class="form-check-label" for="plansRadios' + key + '">' + value.name + '</label>';
+                                strPlan += '</div>';
+                            }
                         });
                         strPlan += '<div class="form-check mt-3">' +
                                   '    <input class="form-check-input" type="checkbox" id="developChat" onclick="ChoiseDevelop()">' +
@@ -443,7 +464,10 @@
                 });
                 $('#plan_place').append(strService);
             }
-            if(id == 3) {
+            if(id === 3) {
+                $('#periodMonth').val(1);
+                period = 1;
+                $('#periodDiv').css('display', 'none');
                 $.ajax({
                     type: "GET",
                     url: billing_url + "/services",
@@ -467,7 +491,6 @@
                     }
                 });
             }
-
             Itogo();
         }
 
@@ -476,6 +499,13 @@
             planAmount = 0;
             serviceAmount = 0;
             planId = id;
+            if(planId === 2) {
+                $('#periodDiv').css('display', 'block');
+            } else {
+                $('#periodMonth').val(1);
+                period = 1;
+                $('#periodDiv').css('display', 'none');
+            }
             planAmount +=  price;
             Itogo();
             LoadServices()
@@ -536,13 +566,14 @@
 
         function Itogo()
         {
-            amount = subscribeAmount + planAmount + serviceAmount;
+            amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
             $('#amount').text(amount);
         }
 
         // Отправка данных на сервер
         function PostForm()
         {
+            period = $('#period').val();
             let data = {
                 manager_id: '{{ Auth::user()->id }}',
                 user_id: '{{ $user->id }}',
@@ -550,6 +581,7 @@
                 type_id: typeId,
                 plan_id: planId,
                 service_id: serviceId,
+                // period: period,
                 description: $('#description').val()
             };
             $.ajax({
@@ -577,13 +609,17 @@
             amount = 0;
             planAmount = 0;
             serviceAmount = 0;
+            period = 1;
+            $('#periodMonth').val(1);
+            $('#periodDiv').css('display', 'none');
             url = '';
             strPlan = '';
             strService = '';
             $('#planPlace').remove();
             $('#servicePlace').remove();
             Itogo();
-            $('#invoiceModal').modal('hide')
+            $('#amount').text(amount);
+            $('#invoiceModal').modal('hide');
         }
         /*-----------------------Выставление счета------------------------------*/
 

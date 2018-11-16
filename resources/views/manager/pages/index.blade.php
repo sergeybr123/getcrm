@@ -11,19 +11,19 @@
                     <div class="row">
                         <div class="col-md-10">
                             <div class="row">
-                                <div class="col-md-3 pl-0">
+                                <div class="col-md-3 pl-md-0 mt-sm-1">
                                     <select class="form-control" name="type">
                                         <option value="1" {{ $type == 1 ? 'selected' : '' }}>по ссылке</option>
                                         <option value="2" {{ $type == 2 ? 'selected' : '' }}>по email пользователя</option>
                                         {{--<option value="3">по дате регистрации</option>--}}
                                     </select>
                                 </div>
-                                <div class="col-md-9">
+                                <div class="col-md-9 mt-sm-1">
                                     <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}" value="{{ $text }}">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2 pr-0">
+                        <div class="col-md-2 pr-md-0 mt-sm-1">
                             <button class="btn btn-outline-info btn-block" type="submit">{{ __('Поиск') }}</button>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                                 <a href="{{ route('manager.users.show', ['id' => $page->owner->id]) }}">{{ $page->owner->email }}</a>
                             </p>
                             <div class="form-inline">
-                                <a href="#" class="btn btn-circle btn-sm btn-outline-blue">
+                                <a href="#" class="btn btn-circle btn-sm btn-outline-blue" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
                                 {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
@@ -98,16 +98,67 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form" action="#">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Редактирование ссылки') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" id="id" name="id">
+                        <input class="form-control" type="text" name="slug" id="slug">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="CloseForm()" data-dismiss="modal">{{ __('Отмена') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
         function copyPageToClipboard(key) {
-            var $temp = $("<input>");
+            let $temp = $("<input>");
             $("body").append($temp);
             $temp.val($('#page_slug_' + key).text()).select();
             document.execCommand("copy");
             $temp.remove();
             toastr.info('Ссылка скопирована');
+        }
+
+        function EditLink(id, slug) {
+            $('#id').val(id);
+            $('#slug').val(slug);
+            $('#editLinkModal').show();
+        }
+
+        $('#form').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: '{{ route('edit_link') }}',
+                data: $('#form').serialize(),
+                success: function (request) {
+                    if(request.error === 0) {
+                        CloseForm();
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        function CloseForm() {
+            $('#id').val();
+            $('#slug').val();
+            $('#editLinkModal').hide();
         }
     </script>
 @endsection

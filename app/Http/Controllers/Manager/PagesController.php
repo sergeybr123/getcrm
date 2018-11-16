@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\User;
+use Mockery\Exception;
 
 class PagesController extends Controller
 {
@@ -101,5 +102,19 @@ class PagesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function editLink(Request $request)
+    {
+        $company = Company::find($request->id);
+//        dd($request);
+        $company->slug = $request->slug;
+        $company->save();
+        try{
+            return response()->json(['error' => 0]);
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception]);
+        }
+
     }
 }

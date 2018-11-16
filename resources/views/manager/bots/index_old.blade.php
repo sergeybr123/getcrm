@@ -45,11 +45,14 @@
                                 <a href="{{ route('manager.users.show', ['id' => $boto->owner->id]) }}">{{ $boto->owner->email }}</a>
                             </p>
                             <div class="form-inline">
-                                <a href="https://getchat.me/constructor/{{ $boto->id }}" class="btn btn-circle btn-sm btn-outline-blue" target="_blank">
+                                <a href="https://getchat.me/constructor/{{ $boto->id }}" class="btn btn-circle btn-sm btn-outline-blue" title="{{ __('Перейти в конструктор') }}" target="_blank">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <a href="#" class="btn btn-circle btn-sm btn-outline-blue ml-1" data-toggle="modal" data-target="#editLinkModal" title="{{ __('Редактировать ссылку') }}" onclick="EditLink({{ $boto->id }}, '{{ $boto->slug }}')">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
-                                <div class="dropdown">
-                                    <button class="btn btn-circle btn-sm btn-outline-blue ml-1" type="button" id="dropdownMenuButton"
+                                <div class="dropdown ml-1">
+                                    <button class="btn btn-circle btn-sm btn-outline-blue" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                             style="width:30px;height:30px;">
                                         <i class="fa fa-ellipsis-v"></i>
@@ -94,6 +97,30 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form" action="#">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Редактирование ссылки') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" id="id" name="id">
+                        <input class="form-control" type="text" name="slug" id="slug">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="CloseForm()" data-dismiss="modal">{{ __('Отмена') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
@@ -104,6 +131,33 @@
             document.execCommand("copy");
             $temp.remove();
             toastr.info('Ссылка скопирована');
+        }
+
+        function EditLink(id, slug) {
+            $('#id').val(id);
+            $('#slug').val(slug);
+            $('#editLinkModal').show();
+        }
+
+        $('#form').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: '{{ route('edit_link') }}',
+                data: $('#form').serialize(),
+                success: function (request) {
+                    if(request.error === 0) {
+                        CloseForm();
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        function CloseForm() {
+            $('#id').val();
+            $('#slug').val();
+            $('#editLinkModal').hide();
         }
     </script>
 @endsection

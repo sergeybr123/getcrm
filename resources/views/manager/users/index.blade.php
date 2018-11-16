@@ -3,8 +3,10 @@
 @section('title', __('users.users'))
 
 @section('content')
-<a class="float-right btn btn-outline-info mt-2" href="{{ route('manager.users.create') }}">{{ __('Добавить пользователя') }}</a>
-<h1>{{ __('users.users') }}</h1>
+    <div>
+        <h1>{{ __('users.users') }} <a class="btn btn-sm btn-outline-blue" href="{{ route('manager.users.create') }}"><i class="fa fa-plus"></i></a></h1>
+    </div>
+
 <div class="card card-accent-primary mt-3">
     <div class="card-body">
         <div class="px-3 mb-3">

@@ -67,20 +67,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-//        $this->validate($request, [
-//            'email' => ['email',],
-//            'phone' => ['string',]
-//        ]);
         $password = $this->generatePassword();
-//        dd($request);
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'username' => $request->phone,
             'email' => $request->email,
             'password' => bcrypt($password),
         ]);
-        return redirect()->route('manager.users.index');
-
+        return redirect()->route('manager.users.show', $user);
     }
 
     /**
