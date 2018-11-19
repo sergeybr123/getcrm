@@ -21,34 +21,37 @@ Route::middleware('auth')->group(function() {
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
         // Работа с пользователями
-        Route::name('users.')->group(function() {
-            Route::get('users', 'Manager\UsersController@index')->name('index');
-            Route::get('users/create', 'Manager\UsersController@create')->name('create');
-            Route::post('users/store', 'Manager\UsersController@store')->name('store');
-            Route::get('users/{id}', 'Manager\UsersController@show')->name('show');
-            Route::get('users/{id}/edit', 'Manager\UsersController@edit')->name('edit');
-            Route::post('users/{id}/update', 'Manager\UsersController@update')->name('update');
+        Route::prefix('users')->name('users.')->group(function() {
+            Route::get('', 'Manager\UsersController@index')->name('index');
+            Route::get('create', 'Manager\UsersController@create')->name('create');
+            Route::post('store', 'Manager\UsersController@store')->name('store');
+            Route::get('{id}', 'Manager\UsersController@show')->name('show');
+            Route::get('{id}/edit', 'Manager\UsersController@edit')->name('edit');
+            Route::post('{id}/update', 'Manager\UsersController@update')->name('update');
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');
         });
-
-
-
         Route::get( 'bots/old', 'Manager\BotsController@bot_old');
         Route::get( 'bots/new', 'Manager\BotsController@bot_new');
         // Работа со счетами
         Route::name('invoices.')->group(function() {
-            Route::get( 'invoices', 'Manager\InvoicesController@index')->name('index');
+            Route::get( '', 'Manager\InvoicesController@index')->name('index');
+        });
+        Route::prefix('subscribes')->name('subscribes.')->group(function(){
+            Route::get('', 'Manager\SubscribesController@index')->name('index');
         });
 
         // Оплатить и активировать
         Route::post('/pay-activate', 'Manager\UsersController@payActivate')->name('pay.activate');
     });
     // Partner
+
+    // Редактирование ссылки страниц и авточатов
+    Route::post('edit-link', 'Manager\PagesController@editLink')->name('edit_link');
 });
 
-Route::post('edit-link', 'Manager\PagesController@editLink')->name('edit_link');
+
 
 
 

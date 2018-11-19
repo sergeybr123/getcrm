@@ -31,7 +31,6 @@
                     <i><i class="fa fa-tachometer-alt"></i></i> @lang('sidebar.dashboard')
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.users.index') }}">
                     <i><i class="fa fa-users"></i></i> @lang('sidebar.users')
@@ -42,12 +41,6 @@
                     <i><i class="fa fa-copy"></i></i> @lang('sidebar.pages')
                 </a>
             </li>
-            {{--<li class="nav-item">--}}
-                {{--<a class="nav-link" href="{{ route('manager.bots.index') }}">--}}
-                    {{--<i><i class="fa fa-comments"></i></i> @lang('sidebar.bots')--}}
-                {{--</a>--}}
-            {{--</li>--}}
-
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
                     <i><i class="fa fa-comments"></i></i> {{ __('sidebar.bots') }}
@@ -65,18 +58,16 @@
                     </li>
                 </ul>
             </li>
-
-
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.invoices.index') }}">
                     <i><i class="fa fa-file-invoice"></i></i> @lang('sidebar.invoices')
                 </a>
             </li>
-            {{--<li class="nav-item">--}}
-                {{--<a class="nav-link" href="#">--}}
-                    {{--<i><i class="fa fa-exchange-alt" aria-hidden="true"></i></i> @lang('sidebar.swap_bots')--}}
-                {{--</a>--}}
-            {{--</li>--}}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('manager.subscribes.index') }}">
+                    <i><i class="fa fa-file-alt" aria-hidden="true"></i></i> {{ __('Подписки') }}
+                </a>
+            </li>
             @endrole
             @role('partner')
             <li class="nav-item">
