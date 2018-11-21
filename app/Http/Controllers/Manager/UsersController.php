@@ -86,14 +86,11 @@ class UsersController extends Controller
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
 
         // Получаем подписку пользователя
-        $URI = config('app.billing_url') . '/subscribe/' . $user->id;
-        $response = $client->get($URI);
-        $subscribe_resp = json_decode($response->getBody());
-//        if($subscribe_resp->error != 1){
-            $subscribe = $subscribe_resp->data;
-//        } else {
-//            $subscribe = [];
-//        }
+//        $URI = config('app.billing_url') . '/subscribe/' . $user->id;
+//        $response = $client->get($URI);
+//        $subscribe_resp = json_decode($response->getBody());
+//        $subscribe = $subscribe_resp->data;
+        $subscribe = BillingSubscribe::where('user_id', $id)->first();
 
 
         // Позже переделать
