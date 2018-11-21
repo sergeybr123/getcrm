@@ -66,30 +66,52 @@
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
+                @if($subscribe != null)
                 <div>
-                    <p class="h4">{{ __("Тарифный план: ") . $plan->plan->name }}</p>
-                    <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($plan->created_at->date)->format('d.m.Y') }}</span><br>
-                    <strong>Подписка с:</strong> {{ \Carbon\Carbon::parse($plan->start_at)->format('d.m.Y') }}
+                    <p class="h4">{{ __("Тарифный план: ") . $subscribe->plan->name ?? __('Free') }}</p>
+                    <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at->date)->format('d.m.Y') ?? '' }}</span><br>
+                    <strong>Подписка с:</strong> {{ \Carbon\Carbon::parse($subscribe->start_at)->format('d.m.Y') ?? '' }}
                     <strong>по:</strong>
-                    @if($plan->end_at != null)
-                        {{ \Carbon\Carbon::parse($plan->end_at)->format('d.m.Y') }}
+                    @if($subscribe->end_at != null)
+                        {{ \Carbon\Carbon::parse($subscribe->end_at)->format('d.m.Y') }}
                     @else
                         {{ __('Бессрочная') }}
                     @endif
                     <br><strong>Статус:</strong>
-                    @if($plan->active == 1)
+                    @if($subscribe->active == 1)
                         <span class="badge badge-success">Активная</span>
                     @else
                         <span class="badge badge-danger">Не активная</span>
                     @endif
                 </div>
+                @if($subscribe->plan->id == 2 || $subscribe->plan->id == 3)
+                <div style="display: none">
+                    <form id="change-plan">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        <p class="mb-1">{{ __('Выберите тарифный план') }}:</p>
+                        @foreach($plans as $plan)
+                            @if($plan->price != null && $plan->on_show == 1)
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="customRadio-{{ $plan->id }}" name="plan_id" class="custom-control-input" value="{{ $plan->id }}">
+                                <label class="custom-control-label" for="customRadio-{{ $plan->id }}">{{ $plan->name }}</label>
+                            </div>
+                            @endif
+                        @endforeach
+                        <div class="text-right mt-1">
+                            <button class="btn btn-sm btn-outline-blue" type="submit" id="sendFormPlans" disabled>{{ __('Сохранить') }}</button>
+                        </div>
+                    </form>
+                </div>
+                @endif
                 <div>
-                    @if($plan->plan_id == 4 || $plan->active == 0)
+                    @if($subscribe->plan_id == 4 || $subscribe->active == 0)
                         <button class="btn btn-outline-blue" type="button" data-toggle="modal" data-target="#payActivateModal" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
                             Активировать
                         </button>
                     @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -633,5 +655,35 @@
             }
         });
         $('.dataTable').attr('style','border-collapse: collapse !important');
+
+
+
+        /*-------------*/
+        $('.custom-control-input').on('click', function() {
+            $('#sendFormPlans').removeAttr('disabled');
+        });
+
+
+
+
+        $('#change-plan').submit(function ( e ) {
+            let data;
+
+            data = $('#change-plan').serialize();
+
+            $.ajax({
+                url: "{{ route('change_plan') }}",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                success: function (req) {
+                    console.log(req);
+                }
+            });
+
+            e.preventDefault();
+        });
     </script>
 @endsection

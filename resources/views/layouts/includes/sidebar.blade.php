@@ -2,15 +2,22 @@
     <nav class="sidebar-nav">
         <ul class="nav">
             @role('admin')
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin::plans::index') }}">
-                    <i><i class="fa fa-clipboard-list"></i></i> {{ __('Тарифные планы') }}
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i><i class="fa fa-cogs"></i></i> {{ __('Управление') }}
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin::subscribes::index') }}">
-                    <i><i class="fa fa-clipboard-list"></i></i> {{ __('Подписки') }}
-                </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin::plans::index') }}">
+                            <i><i class="fa fa-clipboard-list"></i></i> {{ __('Тарифные планы') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('admin::subscribes::index') }}">
+                            <i><i class="fa fa-clipboard-list"></i></i> {{ __('Подписки') }}
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">

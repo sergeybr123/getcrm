@@ -6,24 +6,34 @@
     <h1>{{ __('Тарифные планы') }}</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
-            <div class="px-3">
-                Фильтр
-                {{-- ($invoices[0]) --}}
-            </div>
+            {{--<div class="px-3">--}}
+            {{--</div>--}}
             <ul class="list-group mb-3">
                 @forelse($plans as $key => $plan)
                     <li class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ $plan->name }}</h5>
-                            <small class="text-muted" title="Дата создания">
-                                {{-- \Carbon\Carbon::parse($plan->created_at)->format('d.m.Y') ?? '' --}}
-                            </small>
+                        <div id="normal_{{ $plan->id }}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ $plan->name }}</h5>
+                                <small class="text-muted" title="Дата создания">
+                                    @if($plan->created_at != null)
+                                    {{ \Carbon\Carbon::parse($plan->created_at)->format('d.m.Y') }}
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-1">
+                                    <strong>{{ __('Стоимость') }}: </strong>{{ number_format($plan->price, 0, '.', '') }}
+                                </p>
+                                <div>
+                                    <a class="btn btn-sm btn-outline-blue" href="#">
+                                        <i class="fa fa-pencil-alt"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-1">
-                                <strong>{{ __('Стоимость') }}: </strong>{{ number_format($plan->price, 0, '.', '') }}
-                            </p>
-                        </div>
+                        {{--<div id="edit_{{ $plan->id }}">--}}
+                            {{----}}
+                        {{--</div>--}}
                     </li>
                 @empty
                     <li class="list-group-item">Страницы отсутствуют</li>

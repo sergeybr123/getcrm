@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Manager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
+use Throwable;
 
 use App\User;
 use App\Models\Company;
@@ -12,8 +14,8 @@ use App\Models\Phone;
 use App\Models\Bot;
 use App\Models\Account;
 use App\Models\Profile;
-use PragmaRX\Countries\Package\Countries;
-use Carbon\Carbon;
+use App\Models\BillingPlan;
+use App\Models\BillingSubscribe;
 
 class UsersController extends Controller
 {
@@ -26,26 +28,18 @@ class UsersController extends Controller
     {
         $type = $request->type;
         $text = $request->text;
-//        dd($search);
         if($text != null) {
             if($type == 1) {
                 $users = User::where('email', 'LIKE', '%' . $text . '%')->with('phone')->orderBy('id', 'desc')->paginate(30);
             }
             if($type == 2) {
                 $phone = substr($text, -10, 10);
-//                dd($phone);
                 $query = Phone::where('phone', $phone)->pluck('user_id');
                 $users = User::whereIn('id', $query)->with('phone')->orderBy('id', 'desc')->paginate(30);
             }
-//            if($type == 3) {
-//                $users = User::where('created_at', 'LIKE', '%' . Carbon::parse($text)->format('Y-m-d') . '%')->with('phone')->orderBy('id', 'desc')->paginate(30);
-//            }
-
-//            dd($users);
         } else {
             $users = User::with('phone')->orderBy('id', 'desc')->paginate(30);
         }
-
         return view('manager.users.index', ['users' => $users, 'type' => $type, 'text' => $text]);
     }
 
@@ -90,19 +84,30 @@ class UsersController extends Controller
         $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+
+        // Получаем подписку пользователя
         $URI = config('app.billing_url') . '/subscribe/' . $user->id;
         $response = $client->get($URI);
-        $plan = json_decode($response->getBody());
+        $subscribe_resp = json_decode($response->getBody());
+//        if($subscribe_resp->error != 1){
+            $subscribe = $subscribe_resp->data;
+//        } else {
+//            $subscribe = [];
+//        }
 
-//        dd($plan);
 
-        $client1 = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+        // Позже переделать
+//        $url_plans = config('app.billing_url') . '/plan/all';
+//        $resp_plans = $client->get($url_plans);
+//        $plans = json_decode($resp_plans->getBody());
+        $plans = BillingPlan::all();
+
+        // Получаем все счета пользователя
         $url_inv = config('app.billing_url') . '/user-invoice/' . $user->id;
-        $resp_inv = $client1->get($url_inv);
+        $resp_inv = $client->get($url_inv);
         $invoices = json_decode($resp_inv->getBody());
 
-//        dd($invoices);
-        return view('manager.users.show', ['user' => $user, 'bots' => $bots, 'pages' => $pages, 'plan' => $plan->data, 'invoices' => $invoices]);
+        return view('manager.users.show', ['user' => $user, 'bots' => $bots, 'pages' => $pages, 'subscribe' => $subscribe, 'plans' => $plans, 'invoices' => $invoices]);
     }
 
     /**
@@ -225,7 +230,6 @@ class UsersController extends Controller
 
     public function payActivate(Request $request)
     {
-//        dd($request);
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
         $URI = config('app.billing_url') . '/activate';
         $response = $client->post($URI, [
@@ -239,6 +243,22 @@ class UsersController extends Controller
             return redirect()->route('manager.users.show', ['id' => $request->user_id]);
         } else {
             dd($resp);
+        }
+    }
+
+    public function change_plan(Request $request)
+    {
+//        return response()->json([$request->user_id]);
+        $user = $request->user_id;
+        $subscribe = BillingSubscribe::where('user_id', $user)->first();
+        $subscribe->plan_id = $request->plan_id;
+        $subscribe->save();
+//        return response()->json(['error' => 0, 'message' => 'План изменен']);
+        try{
+            return response()->json(['error' => 0, 'message' => 'План изменен']);
+        }
+        catch (Throwable $t){
+            return response()->json(['error' => 1, 'message' => $t]);
         }
     }
 }

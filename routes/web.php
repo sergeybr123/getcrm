@@ -13,6 +13,7 @@ Route::middleware('auth')->group(function() {
     Route::prefix('admin')->name('admin::')->group(function() {
         Route::prefix('plans')->name('plans::')->group(function() {
             Route::get( '', 'Admin\PlansController@index')->name('index');
+            Route::match(['get', 'post'], '/{id}/edit', 'Admin\PlansController@index')->name('edit');
         });
         Route::prefix('subscribes')->name('subscribes::')->group(function(){
             Route::get('', 'Admin\SubscribeController@index')->name('index');
@@ -49,6 +50,8 @@ Route::middleware('auth')->group(function() {
 
     // Редактирование ссылки страниц и авточатов
     Route::post('edit-link', 'Manager\PagesController@editLink')->name('edit_link');
+    // Изменение типа подписки пользователя для перехода на новый тарифный план
+    Route::post('change-plan', 'Manager\UsersController@change_plan')->name('change_plan');
 });
 
 
