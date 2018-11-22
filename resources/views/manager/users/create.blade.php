@@ -6,11 +6,8 @@
                     class="fa fa-angle-double-left"></i> {{ __('Назад') }}</a>
     </div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-8">
             <div class="card card-accent-primary mt-3">
-                {{--<div class="card-header">--}}
-                    {{----}}
-                {{--</div>--}}
                 <div class="card-body justify-content-center w-100">
                     <p class="h4 text-center mb-3">{{ __('Добавление нового пользователя') }}</p>
                     <form action="{{ route('manager.users.store') }}" method="post">

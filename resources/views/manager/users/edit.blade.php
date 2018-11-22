@@ -6,7 +6,7 @@
                     class="fa fa-angle-double-left"></i> {{ __('Назад') }}</a>
     </div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-8">
             <div class="card card-accent-primary mt-3">
                 <div class="card-header">
                     <p class="h3 text-center">{{ $user->email }}</p>
@@ -73,8 +73,8 @@
                                 <input type="text" class="form-control" id="location" name="location" placeholder="Город, стр" value="{{ $user->profile != null ? $user->profile->location : '' }}">
                             </div>
                         </div>
-                        <div>
-                            <button type="submit">Сохранить</button>
+                        <div class="text-right">
+                            <button class="btn btn-outline-blue" type="submit">Сохранить</button>
                         </div>
                     </form>
                 </div>
