@@ -122,7 +122,7 @@
     </div>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
-            <ul class="nav nav-tabs nav-justified" id="myTab1" role="tablist">
+            <ul class="nav nav-tabs" id="myTab1" role="tablist">
                 <li class="nav-item"><a class="nav-link active show" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>
                 <li class="nav-item"><a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Страницы</a></li>
                 <li class="nav-item"><a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>

@@ -14,17 +14,17 @@
                 <div class="row">
                     <div class="col-md-10">
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group row">
-                                    <label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap px-0">Поиск</label>
-                                    <div class="col-sm-10">
+                            <div class="col-md-3 pl-0">
+                                {{--<div class="form-group row">--}}
+                                    {{--<label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap px-0">Поиск</label>--}}
+                                    {{--<div class="col-sm-10">--}}
                                         <select class="form-control" name="type">
                                             <option value="1" {{ $type == 1 ? 'selected' : '' }}>по email</option>
                                             <option value="2" {{ $type == 2 ? 'selected' : '' }}>по номеру телефона</option>
                                             {{--<option value="3">по дате регистрации</option>--}}
                                         </select>
-                                    </div>
-                                </div>
+                                    {{--</div>--}}
+                                {{--</div>--}}
                             </div>
                             <div class="col-md-9">
                                 <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}" value="{{ $text }}">
