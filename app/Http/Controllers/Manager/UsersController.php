@@ -102,7 +102,10 @@ class UsersController extends Controller
         // Получаем все счета пользователя
         $url_inv = config('app.billing_url') . '/user-invoice/' . $user->id;
         $resp_inv = $client->get($url_inv);
-        $invoices = json_decode($resp_inv->getBody());
+        $invoices_resp = json_decode($resp_inv->getBody());
+        $invoices = $invoices_resp->data;
+
+//        dd($invoices);
 
         return view('manager.users.show', ['user' => $user, 'bots' => $bots, 'pages' => $pages, 'subscribe' => $subscribe, 'plans' => $plans, 'invoices' => $invoices]);
     }
@@ -227,6 +230,7 @@ class UsersController extends Controller
 
     public function payActivate(Request $request)
     {
+//        dd($request);
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
         $URI = config('app.billing_url') . '/activate';
         $response = $client->post($URI, [
@@ -237,6 +241,7 @@ class UsersController extends Controller
         ]);
         $resp = json_decode($response->getBody());
         if($resp->error == 0) {
+            dd($resp);
             return redirect()->route('manager.users.show', ['id' => $request->user_id]);
         } else {
             dd($resp);

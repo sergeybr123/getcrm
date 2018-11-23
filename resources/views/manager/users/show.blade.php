@@ -5,8 +5,8 @@
 @section('styles')
     <link href="{{ asset('vendors/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <style>
-        #DataTables_Table_0_wrapper {
-            padding: 8px 0 0 0;
+        #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper {
+            padding: 0;
         }
         .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
             border-radius: 0;
@@ -255,7 +255,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($invoices->data as $invoice)
+                        @foreach($invoices as $invoice)
                             <tr>
                                 <td>{{ $invoice->id }}</td>
                                 <td>{{ $invoice->type->name }}</td>
@@ -306,7 +306,7 @@
                     <div id="plan_place"></div>
                     <div id="periodDiv" class="mt-2" style="display: none">
                         <strong>Период</strong>
-                        <input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">
+                        <input class="form-control" type="number" id="periodMonth" min="1" max="11" value="1">
                     </div>
                     <div class="mt-3" id="amount_place">
                         <strong>Итого: </strong><span id="amount">0</span>
@@ -334,13 +334,15 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @forelse($invoices->data as $item)
+                        @forelse($invoices as $invoice)
+                            @if($invoice->paid == 1)
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">
                                 <label class="form-check-label" for="inv{{ $invoice->id }}">
-                                    {{ $invoice->id }}
+                                    {{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
                                 </label>
                             </div>
+                            @endif
                         @empty
                             <span>Данные отсутствуют</span>
                         @endforelse
@@ -603,7 +605,7 @@
         // Отправка данных на сервер
         function PostForm()
         {
-            period = $('#period').val();
+            period = parseInt($('#periodMonth').val());
             let data = {
                 manager_id: '{{ Auth::user()->id }}',
                 user_id: '{{ $user->id }}',
@@ -611,9 +613,10 @@
                 type_id: typeId,
                 plan_id: planId,
                 service_id: serviceId,
-                // period: period,
+                period: period,
                 description: $('#description').val()
             };
+            // console.log(data);
             $.ajax({
                 type: "POST",
                 url: billing_url + "/invoice",

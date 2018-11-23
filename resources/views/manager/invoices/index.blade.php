@@ -173,6 +173,7 @@
                         "Authorization": "Basic " + billing_token
                     },
                     success: function (request) {
+                        // console.log(request);
                         if(request.error === 0) {
                             $('#dropdownCalendar_' + invoiceId).hide();
                             location.reload();
