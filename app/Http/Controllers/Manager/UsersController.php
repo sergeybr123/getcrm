@@ -50,7 +50,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('manager.users.create');
+        $path = 'js\phone.json';
+        $content = json_decode(file_get_contents($path), true);
+//        dd($content);
+        return view('manager.users.create', ['phones' => $content]);
     }
 
     /**
@@ -61,6 +64,18 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
+        $path = 'js\phone.json';
+        $content = json_decode(file_get_contents($path), true);
+
+        $user_phone = [];
+        foreach($content as $item) {
+            if($item['code'] == $request->code) {
+                $user_phone = $item;
+            }
+        }
+//        dd($user_phone);
+
+
         $password = $this->generatePassword();
         $user = User::create([
             'name' => $request->name,
@@ -68,6 +83,11 @@ class UsersController extends Controller
             'email' => $request->email,
             'password' => bcrypt($password),
         ]);
+        $user->phones()->save(new Phone([
+            'country_code' => str_replace('+', '', $user_phone['dial_code']),
+            'cca2' => $user_phone['code'],
+            'phone' => $request->phone
+        ]));
         return redirect()->route('manager.users.show', $user);
     }
 

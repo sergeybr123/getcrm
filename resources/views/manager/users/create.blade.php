@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@section('styles')
+<link href="{{ asset('vendors/css/select2.min.css') }}" rel="stylesheet">
+@endsection
 @section('title', __('Добавление нового пользователя'))
 @section('content')
     <div>
@@ -35,13 +38,28 @@
                         <div class="form-group row">
                             <label for="email" class="col-sm-2 col-form-label">{{ __('Email') }}</label>
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email адрес" value="{{ old('email') }}">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Email адрес" value="{{ old('email') }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="select2-1" class="col-sm-2 col-form-label">{{ __('Код') }}</label>
+                            <div class="col-sm-10">
+                                {{--<select class="form-control">--}}
+                                    {{--@foreach($phones as $phone)--}}
+                                    {{--<option value="{{ $phone['code'] }}">{{ $phone['dial_code'] }}</option>--}}
+                                    {{--@endforeach--}}
+                                {{--</select>--}}
+                                <select id="select2-1" class="form-control select2-single" name="code">
+                                    @foreach($phones as $phone)
+                                        <option value="{{ $phone['code'] }}" {{ $phone['code'] == 'KZ' ? 'selected' : '' }}>{{ $phone['name'] . ' ' . $phone['dial_code'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="phone" class="col-sm-2 col-form-label">{{ __('Телефон') }}</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Пример: +77777777777" value="{{ old('phone') }}">
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Пример: 7777777777" value="{{ old('phone') }}" required>
                             </div>
                         </div>
                         <div>
@@ -57,6 +75,10 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('vendors/js/select2.min.js') }}"></script>
     <script>
+        $('#select2-1').select2({
+            theme: "bootstrap"
+        });
     </script>
 @endsection

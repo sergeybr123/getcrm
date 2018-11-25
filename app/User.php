@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Models\Profile;
+use App\Models\Phone;
 
 class User extends Authenticatable
 {
@@ -39,6 +40,11 @@ class User extends Authenticatable
     public function phone()
     {
         return $this->belongsTo('App\Models\Phone', 'id', 'user_id');
+    }
+
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
     }
 
     public static function generatePassword($length = 8)
