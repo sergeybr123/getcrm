@@ -21,6 +21,9 @@ Route::middleware('auth')->group(function() {
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
+        Route::prefix('mywork')->name('mywork.')->group(function(){
+            Route::get( '', 'Manager\MyWorkController@index')->name('index');
+        });
         // Работа с пользователями
         Route::prefix('users')->name('users.')->group(function() {
             Route::get('', 'Manager\UsersController@index')->name('index');
@@ -29,6 +32,7 @@ Route::middleware('auth')->group(function() {
             Route::get('{id}', 'Manager\UsersController@show')->name('show');
             Route::get('{id}/edit', 'Manager\UsersController@edit')->name('edit');
             Route::post('{id}/update', 'Manager\UsersController@update')->name('update');
+
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');
@@ -52,7 +56,11 @@ Route::middleware('auth')->group(function() {
     Route::post('edit-link', 'Manager\PagesController@editLink')->name('edit_link');
     // Изменение типа подписки пользователя для перехода на новый тарифный план
     Route::post('change-plan', 'Manager\UsersController@change_plan')->name('change_plan');
+
+
 });
+// Создание авточата
+Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot');
 
 
 

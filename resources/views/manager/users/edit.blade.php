@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('title', __('Редактирование пользователя'))
+@section('styles')
+    <link href="{{ asset('vendors/css/select2.min.css') }}" rel="stylesheet">
+@endsection
 @section('content')
     <div>
         <a href="{{ route('manager.users.show', $user->id) }}" class="btn btn-outline-blue"><i
@@ -40,7 +43,12 @@
                         <div class="form-group row">
                             <label for="country_code" class="col-sm-2 col-form-label">Код</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="country_code" name="country_code" placeholder="country_code" value="{{ $user->phone->country_code }}">
+                                <select id="select2-1" class="form-control select2-single" name="code">
+                                    @foreach($phones as $phone)
+                                        <option value="{{ $phone['code'] }}" {{ str_replace('+', '', $phone['dial_code']) == $user->phone->country_code ? 'selected' : '' }}>{{ $phone['name'] . ' ' . $phone['dial_code'] }}</option>
+                                    @endforeach
+                                </select>
+                                {{--<input type="text" class="form-control" id="country_code" name="country_code" placeholder="country_code" value="{{ $user->phone->country_code }}">--}}
                             </div>
                         </div>
                         <div class="form-group row">
@@ -83,6 +91,10 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('vendors/js/select2.min.js') }}"></script>
     <script>
+        $('#select2-1').select2({
+            theme: "bootstrap"
+        });
     </script>
 @endsection

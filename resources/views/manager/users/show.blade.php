@@ -4,6 +4,8 @@
 
 @section('styles')
     <link href="{{ asset('vendors/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('js/jquery-ui/jquery-ui.theme.min.css') }}" rel="stylesheet">
     <style>
         #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper {
             padding: 0;
@@ -56,7 +58,7 @@
                         <i class="fa fa-file-invoice"></i>
                     </a>
                     <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;"
-                       title="Добавить авточат">
+                       title="Добавить авточат" data-toggle="modal" data-target="#createBotModal">
                         <i class="fa fa-comments"></i>
                     </a>
                 </div>
@@ -118,6 +120,11 @@
                                 Активировать
                             </button>
                         @endif
+                        @if($subscribe->active == 1 && $subscribe->end_at > \Carbon\Carbon::today())
+                            <button class="btn btn-outline-blue" type="button" data-toggle="modal" data-target="#subscribeModal" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                                {{ __('Продлить') }}
+                            </button>
+                        @endif
                     </div>
                 @endif
             </div>
@@ -156,12 +163,12 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="https://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
+                                        <a href="https://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                            <i class="fa fa-wrench"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $bot->id }}, '{{ $bot->slug }}')" title="{{ __('Редактирование ссылки') }}">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
-                                        {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">--}}
-                                            {{--<i class="fa fa-chart-line"></i>--}}
-                                        {{--</a>--}}
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue ml-1" type="button"
                                                     id="dropdownMenuButton"
@@ -174,6 +181,7 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
+                                                <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $bot->id }}, '{{ $bot->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                                 <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $bot->id }})">
                                                     <i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}
                                                 </a>
@@ -193,7 +201,7 @@
                             <th width="120">Наименование</th>
                             <th>Ссылка</th>
                             <th width="100">Дата создания</th>
-                            <th width="90"></th>
+                            <th width="50"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -211,11 +219,8 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($page->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;">
+                                        <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')" title="{{ __('Редактирование ссылки') }}">
                                             <i class="fa fa-pencil-alt"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">
-                                            <i class="fa fa-chart-line"></i>
                                         </a>
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue ml-1" type="button"
@@ -229,6 +234,7 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
+                                                <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $page->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                                 <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">
                                                     <i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}
                                                 </a>
@@ -252,6 +258,9 @@
                             <th width="70">Статус</th>
                             <th width="100">Дата создания</th>
                             <th width="100">Дата оплаты</th>
+                            @permission('confirm-pay')
+                            <th width="20"></th>
+                            @endpermission
                         </tr>
                         </thead>
                         <tbody>
@@ -282,6 +291,23 @@
                                         {{ \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
                                     @endif
                                 </td>
+                                @permission('confirm-pay')
+                                <td>
+                                    @if($invoice->paid == 0)
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice->id }})"><i class="fa fa-credit-card"></i></button>
+                                            <div id="dropdownCalendar_{{ $invoice->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                <div style="height:27px;padding-right:10px;">
+                                                    <button type="button" class="close" aria-label="Close" onclick="closeDatapicker({{ $invoice->id }})">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="datepicker"></div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </td>
+                                @endpermission
                             </tr>
                         @endforeach
                         </tbody>
@@ -337,8 +363,8 @@
                         @forelse($invoices as $invoice)
                             @if($invoice->paid == 1)
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">
-                                <label class="form-check-label" for="inv{{ $invoice->id }}">
+                                <input class="form-check-input" type="radio" name="invoice_id" id="inv_{{ $invoice->id }}" value="{{ $invoice->id }}">
+                                <label class="form-check-label" for="inv_{{ $invoice->id }}">
                                     {{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
                                 </label>
                             </div>
@@ -356,20 +382,128 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('manager.pay.activate') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Продление подписки пользователя') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @forelse($invoices as $invoice)
+                            @if($invoice->type->id == 1 && $invoice->paid == 1)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">
+                                    <label class="form-check-label" for="inv{{ $invoice->id }}">
+                                        {{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
+                                    </label>
+                                </div>
+                            @endif
+                        @empty
+                            <span>Данные отсутствуют</span>
+                        @endforelse
+                        <input class="form-control mt-3" name="date" type="date">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Активировать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Изменение ссылки--}}
+    <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form" action="#">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Редактирование ссылки') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" id="id" name="id">
+                        <input class="form-control" type="text" name="slug" id="slug">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="CloseForm()" data-dismiss="modal">{{ __('Отмена') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Изменение владельца--}}
+    <div class="modal fade" id="changeOwnerModal" tabindex="-1" role="dialog" aria-labelledby="changeOwnerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="changeOwnerForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Изменить владельца') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>{{ __('Ссылка:') }}</strong> https://getchat.me/<strong id="owner_link_slug"></strong></p>
+                        <input type="hidden" id="company_owner_id" name="company_id">
+                        <input id="user" class="form-control" type="text" name="user" list="user_list">
+                        <datalist id="user_list">
+                        </datalist>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Создание нового авточата--}}
+    <div class="modal fade" id="createBotModal" tabindex="-1" role="dialog" aria-labelledby="createBotModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="createBotForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Создание нового авточата') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <strong>{{ __('Ссылка:') }}</strong>
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        <input id="link" class="form-control" type="text" name="link">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script src="{{ asset('vendors/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendors/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
     <script>
         /*-------------------Копирование ссылок---------------------*/
-        function copyToClipboard(key) {
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val($('#slug_' + key).text()).select();
-            document.execCommand("copy");
-            $temp.remove();
-            toastr.info('Ссылка скопирована');
-        }
         function copyPageToClipboard(key) {
             var $temp = $("<input>");
             $("body").append($temp);
@@ -393,11 +527,6 @@
         let strPlan = '';
         let strService = '';
         let period = $('#periodMonth').val();
-
-        // $('#periodMonth').on('change', function() {
-        //     period = this.value;
-        //     Itogo();
-        // });
 
         $('#periodMonth').bind('keyup mouseup', function() {
             period = this.value;
@@ -554,11 +683,6 @@
             url = '';
             $('#servicePlace').remove();
             if($('#developChat').is(':checked')) {
-                // if(planId === 1) {
-                //     url = billing_url + "/service/plan-not-null";
-                // } else {
-                //     url = billing_url + "/service/" + planId + "/plan";
-                // }
                 $.ajax({
                     type: "GET",
                     url: billing_url + "/service/plan-not-null", //url,
@@ -696,5 +820,159 @@
 
             e.preventDefault();
         });
+
+
+
+        /*------------Выставить оплату счета------------*/
+        let invoiceId = 0;
+        let datePay = '';
+        function selectInvoice(id) {
+            invoiceId = id;
+            $('#dropdownCalendar_' + id).show();
+        }
+        $( ".datepicker" ).datepicker({
+            onSelect: function () {
+                datePay = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
+                let data = {
+                    id: invoiceId,
+                    date: datePay
+                };
+                $.ajax({
+                    type: "POST",
+                    url: billing_url + "/pay-with-day",
+                    dataType: 'json',
+                    async: false,
+                    data: data,
+                    headers: {
+                        "Authorization": "Basic " + billing_token
+                    },
+                    success: function (request) {
+                        // console.log(request);
+                        if(request.error === 0) {
+                            $('#dropdownCalendar_' + invoiceId).hide();
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+        function closeDatapicker(id) {
+            $('#dropdownCalendar_' + id).hide();
+        }
+
+        /*------------------------Редактирование ссылки на страницу----------------------------*/
+        function EditLink(id, slug) {
+            $('#id').val(id);
+            $('#slug').val(slug);
+            $('#editLinkModal').show();
+        }
+
+        $('#form').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: '{{ route('edit_link') }}',
+                data: $('#form').serialize(),
+                success: function (request) {
+                    if(request.error === 0) {
+                        CloseForm();
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        function CloseForm() {
+            $('#id').val();
+            $('#slug').val();
+            $('#editLinkModal').hide();
+        }
+
+
+
+        /*-------------------Смена владельца-----------------------*/
+        let email = '';
+        let str = '';
+        function changeOwnerButtonClick(id, slug){
+            $('#company_owner_id').val(id);
+            $('#owner_link_slug').text(slug);
+        }
+        $('#user').on('input', function(){
+            email = $(this).val();
+            let data = {
+                email: email
+            };
+            if(email.length > 2){
+                $.post( "/api/get-users", data, function(req) {
+                    $('.test_opt').remove();
+                    str = '';
+                    // console.log(req);
+                    $.each(req, function(key, value) {
+                        str += '<option class="test_opt" value="' + value.email + '">';
+                    });
+                    $('#user_list').append(str);
+                    // this.req = '';
+                });
+                str = '';
+            }
+        });
+        $('#changeOwnerForm').on('submit', function (e) {
+            e.preventDefault();
+            // console.log($('#changeOwnerForm').serialize())
+            $.ajax({
+                type: "post",
+                url: "/api/change-owner",
+                data: $('#changeOwnerForm').serialize(),
+                success: function (request) {
+                    if(request.error === 0) {
+                        CloseChangeOwnerForm();
+                        location.reload();
+                    } else {
+                        console.log(request)
+                    }
+                }
+            });
+        });
+        function CloseChangeOwnerForm(){
+            $('#user').val('');
+            str = '';
+            $('.test_opt').remove();
+            email = '';
+        }
+
+        /*-------------------------создание нового авточата----------------------------*/
+        $('#createBotForm').on('submit', function (e) {
+            e.preventDefault();
+            console.log($('#createBotForm').serialize());
+            $.ajax({
+                type: "post",
+                url: "{{ route('create_bot') }}",
+                data: $('#createBotForm').serialize(),
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (request) {
+                    if(request.error === 0) {
+                        // CloseChangeOwnerForm();
+                        $('#createBotModal').hide();
+                        $('#link').val('');
+                        location.reload();
+                        // let url = "https://getchat.me/constructor/" + request.company.slug;
+                        // window.open(url, '_blank');
+                    } else {
+                        console.log(request)
+                    }
+                }
+            });
+        });
+
+        // function copyPageToClipboard(key) {
+        //     var $temp = $("<input>");
+        //     $("body").append($temp);
+        //     $temp.val($('#link_' + key).text()).select();
+        //     document.execCommand("copy");
+        //     $temp.remove();
+        //     toastr.info('Ссылка скопирована');
+        // }
     </script>
 @endsection

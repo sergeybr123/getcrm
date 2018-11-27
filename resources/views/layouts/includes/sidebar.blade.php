@@ -39,6 +39,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('manager.mywork.index') }}">
+                    <i><i class="fa fa-archive"></i></i> {{ __('Мои страницы') }}
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.users.index') }}">
                     <i><i class="fa fa-users"></i></i> @lang('sidebar.users')
                 </a>

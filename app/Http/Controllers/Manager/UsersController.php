@@ -50,7 +50,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $path = 'js\phone.json';
+        $path = 'js/phone.json';
         $content = json_decode(file_get_contents($path), true);
 //        dd($content);
         return view('manager.users.create', ['phones' => $content]);
@@ -64,7 +64,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $path = 'js\phone.json';
+        $path = 'js/phone.json';
         $content = json_decode(file_get_contents($path), true);
 
         $user_phone = [];
@@ -79,7 +79,7 @@ class UsersController extends Controller
         $password = $this->generatePassword();
         $user = User::create([
             'name' => $request->name,
-            'username' => $request->phone,
+            'username' => str_replace('+', '', $user_phone['dial_code']) . $request->phone,
             'email' => $request->email,
             'password' => bcrypt($password),
         ]);
@@ -139,7 +139,11 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('manager.users.edit', ['user' => $user]);
+
+        $path = 'js/phone.json';
+        $phones = json_decode(file_get_contents($path), true);
+
+        return view('manager.users.edit', ['user' => $user, 'phones' => $phones]);
     }
 
     /**
@@ -261,7 +265,7 @@ class UsersController extends Controller
         ]);
         $resp = json_decode($response->getBody());
         if($resp->error == 0) {
-            dd($resp);
+//            dd($resp);
             return redirect()->route('manager.users.show', ['id' => $request->user_id]);
         } else {
             dd($resp);
@@ -281,6 +285,21 @@ class UsersController extends Controller
         }
         catch (Throwable $t){
             return response()->json(['error' => 1, 'message' => $t]);
+        }
+    }
+
+    public function createBot(Request $request)
+    {
+//        return response()->json([$request->user_id]);
+        $company = new Company;
+        $company->user_id = $request->user_id;
+        $company->slug = $request->link;
+        $company->bot = "{}";
+        $company->save();
+        try{
+            return response()->json(['error' => 0, 'company' => $company]);
+        } catch (Throwable $th){
+            return response()->json(['error' => 1, 'message' => $th]);
         }
     }
 }

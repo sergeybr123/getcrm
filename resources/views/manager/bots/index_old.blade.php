@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('users.users'))
+@section('title', __('Авточаты'))
 
 @section('content')
     <h1>{{ __('Авточаты старые') }} ({{ $bots_old->total() }})</h1>
@@ -59,7 +59,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="https://getchat.me/{{ $boto->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
-                                        <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>
+                                        <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $boto->id }}, '{{ $boto->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
                                 </div>
@@ -121,6 +121,34 @@
             </div>
         </div>
     </div>
+
+    {{--Изменение владельца--}}
+    <div class="modal fade" id="changeOwnerModal" tabindex="-1" role="dialog" aria-labelledby="changeOwnerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="changeOwnerForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Изменить владельца') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>{{ __('Ссылка:') }}</strong> https://getchat.me/<strong id="owner_link_slug"></strong></p>
+                        <input type="hidden" id="company_owner_id" name="company_id">
+                        <input id="user" class="form-control" type="text" name="user" list="user_list">
+                        <datalist id="user_list">
+                        </datalist>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
@@ -158,6 +186,56 @@
             $('#id').val();
             $('#slug').val();
             $('#editLinkModal').hide();
+        }
+
+        /*-------------------Смена владельца-----------------------*/
+        let email = '';
+        let str = '';
+        function changeOwnerButtonClick(id, slug){
+            $('#company_owner_id').val(id);
+            $('#owner_link_slug').text(slug);
+        }
+        $('#user').on('input', function(){
+            email = $(this).val();
+            let data = {
+                email: email
+            };
+            if(email.length > 2){
+                $.post( "/api/get-users", data, function(req) {
+                    $('.test_opt').remove();
+                    str = '';
+                    // console.log(req);
+                    $.each(req, function(key, value) {
+                        str += '<option class="test_opt" value="' + value.email + '">';
+                    });
+                    $('#user_list').append(str);
+                    // this.req = '';
+                });
+                str = '';
+            }
+        });
+        $('#changeOwnerForm').on('submit', function (e) {
+            e.preventDefault();
+            // console.log($('#changeOwnerForm').serialize())
+            $.ajax({
+                type: "post",
+                url: "/api/change-owner",
+                data: $('#changeOwnerForm').serialize(),
+                success: function (request) {
+                    if(request.error === 0) {
+                        CloseChangeOwnerForm();
+                        location.reload();
+                    } else {
+                        console.log(request)
+                    }
+                }
+            });
+        });
+        function CloseChangeOwnerForm(){
+            $('#user').val('');
+            str = '';
+            $('.test_opt').remove();
+            email = '';
         }
     </script>
 @endsection
