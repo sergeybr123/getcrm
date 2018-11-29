@@ -92,8 +92,8 @@
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                    <button type="button" class="btn btn-primary">{{ __('Сохранить') }}</button>
                 </div>
             </div>
         </div>
@@ -143,8 +143,8 @@
                         </datalist>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
                     </div>
                 </form>
             </div>

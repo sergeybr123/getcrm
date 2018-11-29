@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function() {
         Route::get( 'bots/old', 'Manager\BotsController@bot_old');
         Route::get( 'bots/new', 'Manager\BotsController@bot_new');
         // Работа со счетами
-        Route::name('invoices.')->group(function() {
+        Route::prefix('invoices')->name('invoices.')->group(function() {
             Route::get( '', 'Manager\InvoicesController@index')->name('index');
         });
         Route::prefix('subscribes')->name('subscribes.')->group(function(){

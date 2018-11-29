@@ -9,7 +9,7 @@
 
 @section('content')
 
-    <h1>{{ __('Счета и платежи') }}</h1>
+    <h1>{{ __('Счета и платежи') }} (@isset($all->meta){{ $all->meta->total }}@endisset)</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <form>
@@ -138,8 +138,8 @@
                     ...
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                    <button type="button" class="btn btn-primary">{{ __('Сохранить') }}</button>
                 </div>
             </div>
         </div>

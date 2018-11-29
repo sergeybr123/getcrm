@@ -340,8 +340,8 @@
                     <textarea id="description" class="form-control mt-2" rows="3" placeholder="Описание(не обязательно)"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseForm()">Отмена</button>
-                    <button type="button" class="btn btn-primary" onclick="PostForm()">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseForm()">{{ __('Закрыть') }}</button>
+                    <button type="button" class="btn btn-primary" onclick="PostForm()">{{ __('Сохранить') }}</button>
                 </div>
             </div>
         </div>
@@ -375,8 +375,8 @@
                         <input class="form-control mt-3" name="date" type="date">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Активировать</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>
                     </div>
                 </form>
             </div>
@@ -411,8 +411,8 @@
                         <input class="form-control mt-3" name="date" type="date">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <button type="submit" class="btn btn-primary">Активировать</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>
                     </div>
                 </form>
             </div>
@@ -464,8 +464,8 @@
                         </datalist>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseChangeOwnerForm()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
                     </div>
                 </form>
             </div>
@@ -750,6 +750,7 @@
                     "Authorization": "Basic " + billing_token
                 },
                 success: function (request) {
+                    console.log(request);
                     if(request.error == 0) {
                         CloseForm();
                     }
@@ -777,6 +778,7 @@
             Itogo();
             $('#amount').text(amount);
             $('#invoiceModal').modal('hide');
+            location.reload();
         }
         /*-----------------------Выставление счета------------------------------*/
 
@@ -875,14 +877,14 @@
                 data: $('#form').serialize(),
                 success: function (request) {
                     if(request.error === 0) {
-                        CloseForm();
+                        editCloseForm();
                         location.reload();
                     }
                 }
             });
         });
 
-        function CloseForm() {
+        function editCloseForm() {
             $('#id').val();
             $('#slug').val();
             $('#editLinkModal').hide();
