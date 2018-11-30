@@ -1,6 +1,11 @@
 <div class="sidebar">
     <nav class="sidebar-nav">
         <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('dashboard') }}">
+                    <i><i class="fa fa-tachometer-alt"></i></i> @lang('sidebar.dashboard')
+                </a>
+            </li>
             @role('admin')
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
@@ -33,11 +38,6 @@
             </li>
             @endrole
             @role('admin|manager')
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">
-                    <i><i class="fa fa-tachometer-alt"></i></i> @lang('sidebar.dashboard')
-                </a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.mywork.index') }}">
                     <i><i class="fa fa-archive"></i></i> {{ __('Мои страницы') }}
@@ -81,12 +81,22 @@
                 </a>
             </li>
             @endrole
-            @role('partner')
+            @role('partner+')
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="icon-bubble"></i> @lang('sidebar.bots')
+                <a class="nav-link" href="{{ route('partner::users::index') }}">
+                    <i><i class="fa fa-users"></i></i> {{ __('Пользователи') }}
                 </a>
             </li>
+            {{--<li class="nav-item">--}}
+                {{--<a class="nav-link" href="#">--}}
+                    {{--<i><i class="fa fa-comments"></i></i> {{ __('Авточаты') }}--}}
+                {{--</a>--}}
+            {{--</li>--}}
+            {{--<li class="nav-item">--}}
+                {{--<a class="nav-link" href="#">--}}
+                    {{--<i><i class="fa fa-file-invoice"></i></i> {{ __('Счета') }}--}}
+                {{--</a>--}}
+            {{--</li>--}}
             @endrole
             @role('analyst')
             <li class="nav-item nav-dropdown">

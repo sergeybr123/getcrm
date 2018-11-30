@@ -51,6 +51,13 @@ Route::middleware('auth')->group(function() {
         Route::post('/pay-activate', 'Manager\UsersController@payActivate')->name('pay.activate');
     });
     // Partner
+    Route::prefix('partner')->name('partner::')->group(function(){
+        Route::prefix('users')->name('users::')->group(function(){
+            Route::get('', 'Partner\UserController@index')->name('index');
+            Route::get('{id}/show', 'Partner\UserController@show')->name('show');
+            Route::match(['get', 'post'], 'create-bot/{id?}', 'Partner\UserController@createBot')->name('create-bot');
+        });
+    });
 
     // Редактирование ссылки страниц и авточатов
     Route::post('edit-link', 'Manager\PagesController@editLink')->name('edit_link');

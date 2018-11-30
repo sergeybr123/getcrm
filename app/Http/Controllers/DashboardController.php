@@ -15,6 +15,8 @@ class DashboardController extends Controller
             return view('dashboard.admin');
         } elseif($user->hasRole(['manager', 'analyst', 'accountant'])) {
             return view('dashboard.manager');
+        } elseif($user->hasRole(['partner+'])) {
+            return view('dashboard.partner');
         } else {
             Auth::logout();
             return Redirect::route('home');

@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
-                        @if($invoice[1]->paid == 0)
+                        @if($invoice[1]->paid == 0 && $invoice[1]->created_at > \Carbon\Carbon::today()->subDay(7))
                             <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                     onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
                             </button>

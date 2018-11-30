@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Models\Profile;
 use App\Models\Phone;
+use App\Models\Company;
 
 class User extends Authenticatable
 {
@@ -45,6 +46,12 @@ class User extends Authenticatable
     public function phones()
     {
         return $this->hasMany(Phone::class);
+    }
+
+    public function partnerCompanies()
+    {
+        return $this->belongsToMany(Company::class, 'partners_companies')
+            ->withTimestamps();
     }
 
     public static function generatePassword($length = 8)

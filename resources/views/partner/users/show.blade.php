@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('users.users'))
+@section('title', __('Пользователь ' . $user->email))
 
 @section('styles')
     <link href="{{ asset('vendors/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -25,7 +25,7 @@
 
 @section('content')
     <div>
-        <a href="{{ route('manager.users.index') }}" class="btn btn-outline-blue">
+        <a href="{{ route('partner::users::index') }}" class="btn btn-outline-blue">
             <i class="fa fa-angle-double-left"></i> {{ __('Назад') }}
         </a>
     </div>
@@ -48,19 +48,19 @@
                     </div>
                 </div>
                 <div class="form-inline" style="align-items: normal;">
-                    <a href="{{ route('manager.users.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-blue" style="border-radius:50%;width:30px;height:30px;"
-                       title="{{ __('Редактировать') }}">
-                        <i class="fa fa-pencil-alt"></i>
-                    </a>
+                    {{--<a href="{{ route('manager.users.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-blue" style="border-radius:50%;width:30px;height:30px;"--}}
+                       {{--title="{{ __('Редактировать') }}">--}}
+                        {{--<i class="fa fa-pencil-alt"></i>--}}
+                    {{--</a>--}}
                     <a href="#" class="btn btn-sm btn-outline-blue ml-1"
                        style="border-radius:50%;width:30px;height:30px;" data-toggle="modal" data-target="#invoiceModal"
                        title="Выставить счет" onclick="Load();">
                         <i class="fa fa-file-invoice"></i>
                     </a>
-                    <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;"
-                       title="Добавить авточат" data-toggle="modal" data-target="#createBotModal">
-                        <i class="fa fa-comments"></i>
-                    </a>
+                    {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;"--}}
+                       {{--title="Добавить авточат" data-toggle="modal" data-target="#createBotModal">--}}
+                        {{--<i class="fa fa-comments"></i>--}}
+                    {{--</a>--}}
                 </div>
             </div>
         </div>
@@ -72,9 +72,6 @@
                     <div>
                         <p class="h4">{{ __("Тарифный план: ") . __('Free') }}</p>
                     </div>
-                    <button class="btn btn-outline-blue" type="button" data-toggle="modal" data-target="#payActivateModal" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
-                        Активировать
-                    </button>
                 @endif
                 @if($subscribe != null)
                     <div>
@@ -92,38 +89,6 @@
                             <span class="badge badge-success">Активная</span>
                         @else
                             <span class="badge badge-danger">Не активная</span>
-                        @endif
-                    </div>
-                    @if($subscribe->plan->id == 2 || $subscribe->plan->id == 3)
-                    <div style="display: none">
-                        <form id="change-plan">
-                            @csrf
-                            <input type="hidden" name="user_id" value="{{ $user->id }}">
-                            <p class="mb-1">{{ __('Выберите тарифный план') }}:</p>
-                            @foreach($plans as $plan)
-                                @if($plan->price != null && $plan->on_show == 1)
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="customRadio-{{ $plan->id }}" name="plan_id" class="custom-control-input" value="{{ $plan->id }}">
-                                    <label class="custom-control-label" for="customRadio-{{ $plan->id }}">{{ $plan->name }}</label>
-                                </div>
-                                @endif
-                            @endforeach
-                            <div class="text-right mt-1">
-                                <button class="btn btn-sm btn-outline-blue" type="submit" id="sendFormPlans" disabled>{{ __('Сохранить') }}</button>
-                            </div>
-                        </form>
-                    </div>
-                    @endif
-                    <div>
-                        @if($subscribe->active == 0)
-                            <button class="btn btn-outline-blue" type="button" data-toggle="modal" data-target="#payActivateModal" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
-                                Активировать
-                            </button>
-                        @endif
-                        @if($subscribe->active == 1 && $subscribe->end_at > \Carbon\Carbon::today())
-                            <button class="btn btn-outline-blue" type="button" data-toggle="modal" data-target="#subscribeModal" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
-                                {{ __('Продлить') }}
-                            </button>
                         @endif
                     </div>
                 @endif
@@ -210,7 +175,7 @@
                                 <td>{{ $page->slug }}</td>
                                 <td>
                                     <span id="page_slug_{{ $key }}">https://getchat.me/{{ $page->slug }}</span>
-                                    <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
+                                    <button class="btn btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
                                         <i class="fa fa-copy"></i>
@@ -259,9 +224,6 @@
                             <th width="100">Дата создания</th>
                             <th width="100">Дата оплаты</th>
                             <th width="20"></th>
-                            @permission('confirm-pay')
-                            <th width="20"></th>
-                            @endpermission
                         </tr>
                         </thead>
                         <tbody>
@@ -292,31 +254,14 @@
                                         {{ \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
                                     @endif
                                 </td>
-                                <td>
+                                <th>
                                     <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
                                         </button>
                                     @endif
-                                </td>
-                                @permission('confirm-pay')
-                                <td>
-                                    @if($invoice->paid == 0)
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice->id }})"><i class="fa fa-credit-card"></i></button>
-                                            <div id="dropdownCalendar_{{ $invoice->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                                <div style="height:27px;padding-right:10px;">
-                                                    <button type="button" class="close" aria-label="Close" onclick="closeDatapicker({{ $invoice->id }})">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="datepicker"></div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </td>
-                                @endpermission
+                                </th>
                             </tr>
                         @endforeach
                         </tbody>
@@ -482,30 +427,30 @@
     </div>
 
     {{--Создание нового авточата--}}
-    <div class="modal fade" id="createBotModal" tabindex="-1" role="dialog" aria-labelledby="createBotModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="createBotForm">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">{{ __('Создание нового авточата') }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <strong>{{ __('Ссылка:') }}</strong>
-                        <input type="hidden" name="user_id" value="{{ $user->id }}">
-                        <input id="link" class="form-control" type="text" name="link">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    {{--<div class="modal fade" id="createBotModal" tabindex="-1" role="dialog" aria-labelledby="createBotModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<form id="createBotForm">--}}
+                    {{--@csrf--}}
+                    {{--<div class="modal-header">--}}
+                        {{--<h5 class="modal-title">{{ __('Создание нового авточата') }}</h5>--}}
+                        {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+                            {{--<span aria-hidden="true">&times;</span>--}}
+                        {{--</button>--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-body">--}}
+                        {{--<strong>{{ __('Ссылка:') }}</strong>--}}
+                        {{--<input type="hidden" name="user_id" value="{{ $user->id }}">--}}
+                        {{--<input id="link" class="form-control" type="text" name="link">--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-footer">--}}
+                        {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>--}}
+                        {{--<button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>--}}
+                    {{--</div>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 @endsection
 @section('scripts')
     <script src="{{ asset('vendors/js/jquery.dataTables.min.js') }}"></script>
@@ -541,7 +486,6 @@
             period = this.value;
             Itogo();
         });
-
         function Load()
         {
             let str = '';
@@ -567,7 +511,6 @@
                 }
             });
         }
-
         function ChoiseType(id)
         {
             typeId = id;
@@ -663,7 +606,6 @@
             }
             Itogo();
         }
-
         function ChoisePlan(id, code, price)
         {
             planAmount = 0;
@@ -680,12 +622,10 @@
             Itogo();
             LoadServices()
         }
-
         function ChoiseDevelop()
         {
             LoadServices();
         }
-
         function LoadServices()
         {
             strService = '';
@@ -720,7 +660,6 @@
                 Itogo();
             }
         }
-
         function ChoiseService(id, price)
         {
             serviceAmount = 0;
@@ -728,13 +667,11 @@
             serviceAmount += price;
             Itogo();
         }
-
         function Itogo()
         {
             amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
             $('#amount').text(amount);
         }
-
         // Отправка данных на сервер
         function PostForm()
         {
@@ -766,7 +703,6 @@
                 }
             });
         }
-
         // Закрытие формы
         function CloseForm()
         {
@@ -790,8 +726,6 @@
             location.reload();
         }
         /*-----------------------Выставление счета------------------------------*/
-
-
         $('.dataTable').DataTable({
             "order": [[ 0, "desc" ]],
             "lengthMenu": [[30, 50, 100, -1], [30, 50, 100, "Все"]],
@@ -801,17 +735,10 @@
             }
         });
         $('.dataTable').attr('style','border-collapse: collapse !important');
-
-
-
         /*-------------*/
         $('.custom-control-input').on('click', function() {
             $('#sendFormPlans').removeAttr('disabled');
         });
-
-
-
-
         $('#change-plan').submit(function ( e ) {
             let data;
 
@@ -831,53 +758,12 @@
 
             e.preventDefault();
         });
-
-
-
-        /*------------Выставить оплату счета------------*/
-        let invoiceId = 0;
-        let datePay = '';
-        function selectInvoice(id) {
-            invoiceId = id;
-            $('#dropdownCalendar_' + id).show();
-        }
-        $( ".datepicker" ).datepicker({
-            onSelect: function () {
-                datePay = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
-                let data = {
-                    id: invoiceId,
-                    date: datePay
-                };
-                $.ajax({
-                    type: "POST",
-                    url: billing_url + "/pay-with-day",
-                    dataType: 'json',
-                    async: false,
-                    data: data,
-                    headers: {
-                        "Authorization": "Basic " + billing_token
-                    },
-                    success: function (request) {
-                        // console.log(request);
-                        if(request.error === 0) {
-                            $('#dropdownCalendar_' + invoiceId).hide();
-                            location.reload();
-                        }
-                    }
-                });
-            }
-        });
-        function closeDatapicker(id) {
-            $('#dropdownCalendar_' + id).hide();
-        }
-
         /*------------------------Редактирование ссылки на страницу----------------------------*/
         function EditLink(id, slug) {
             $('#id').val(id);
             $('#slug').val(slug);
             $('#editLinkModal').show();
         }
-
         $('#form').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
@@ -892,15 +778,11 @@
                 }
             });
         });
-
         function editCloseForm() {
             $('#id').val();
             $('#slug').val();
             $('#editLinkModal').hide();
         }
-
-
-
         /*-------------------Смена владельца-----------------------*/
         let email = '';
         let str = '';
@@ -929,7 +811,6 @@
         });
         $('#changeOwnerForm').on('submit', function (e) {
             e.preventDefault();
-            // console.log($('#changeOwnerForm').serialize())
             $.ajax({
                 type: "post",
                 url: "/api/change-owner",
@@ -950,7 +831,6 @@
             $('.test_opt').remove();
             email = '';
         }
-
         /*-------------------------создание нового авточата----------------------------*/
         $('#createBotForm').on('submit', function (e) {
             e.preventDefault();
@@ -968,8 +848,6 @@
                         $('#createBotModal').hide();
                         $('#link').val('');
                         location.reload();
-                        // let url = "https://getchat.me/constructor/" + request.company.slug;
-                        // window.open(url, '_blank');
                     } else {
                         console.log(request)
                     }
