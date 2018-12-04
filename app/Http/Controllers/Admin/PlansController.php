@@ -8,11 +8,6 @@ use GuzzleHttp\Client;
 
 class PlansController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $token = config('app.billing_token');
@@ -21,75 +16,72 @@ class PlansController extends Controller
         $url = $billing_url.'/plan/all';
         $response = $client->get($url);
         $plans = json_decode($response->getBody());
-
-//        dd($plans->data);
-
         return view('admin.plans.index', ['plans' => $plans->data]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.plans.create');
+        if($request->isMethod('POST')) {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+            $URI = config('app.billing_url') . '/plans';
+            $response = $client->post($URI, [
+                'body' => $request,
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ]
+            ]);
+            $resp = json_decode($response->getBody());
+            if($resp->error == 0) {
+                return redirect()->route('admin::plans::index');
+            } else {
+                return redirect()->route('admin::plans::create');
+            }
+        } else {
+            return view('admin.plans.create');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        if($request->isMethod('POST')) {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+            $URI = config('app.billing_url') . '/plans/' . $id;
+            $response = $client->put($URI, [
+                'body' => $request,
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ]
+            ]);
+            $resp = json_decode($response->getBody());
+            if($resp->error == 0) {
+                return redirect()->route('admin::plans::index');
+            } else {
+                return redirect()->route('admin::plans::edit', $id);
+            }
+        } else {
+            $token = config('app.billing_token');
+            $billing_url = config('app.billing_url');
+            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . $token]]);
+            $url = $billing_url.'/plans/' . $id;
+            $response = $client->get($url);
+            $plan = json_decode($response->getBody());
+            if(!isset($plan->error)){
+                return view('admin.plans.edit', ['plan' => $plan->data]);
+            } else {
+                return redirect()->route('admin::plans::index');
+            }
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function delete($id)
     {
-        //
+        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+        $URI = config('app.billing_url') . '/plans/' . $id;
+        $response = $client->delete($URI);
+        $req = json_decode($response->getBody());
+        if($req->error == 0) {
+            return redirect()->route('admin::plans::index');
+        }
+//        dd(json_decode($response->getBody()));
     }
 }

@@ -17,6 +17,7 @@
                 <div class="card-body justify-content-center w-100">
                     <form action="{{ route('manager.users.update', $user->id) }}" method="post">
                         @csrf
+                        {{--<input type="hidden" class="form-control" name="id" value="{{ $user->id }}">--}}
                         @if (session('success'))
                             <p class="text-success">
                                 {{ session('success') }}
@@ -43,7 +44,7 @@
                         <div class="form-group row">
                             <label for="country_code" class="col-sm-2 col-form-label">Код</label>
                             <div class="col-sm-10">
-                                <select id="select2-1" class="form-control select2-single" name="code">
+                                <select id="select2-1" class="form-control select2-single" name="country_code">
                                     @foreach($phones as $phone)
                                         <option value="{{ $phone['code'] }}" {{ str_replace('+', '', $phone['dial_code']) == $user->phone->country_code ? 'selected' : '' }}>{{ $phone['name'] . ' ' . $phone['dial_code'] }}</option>
                                     @endforeach

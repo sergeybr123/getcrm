@@ -13,7 +13,9 @@ Route::middleware('auth')->group(function() {
     Route::prefix('admin')->name('admin::')->group(function() {
         Route::prefix('plans')->name('plans::')->group(function() {
             Route::get( '', 'Admin\PlansController@index')->name('index');
-            Route::match(['get', 'post'], '/{id}/edit', 'Admin\PlansController@index')->name('edit');
+            Route::match(['get', 'post'], '/create', 'Admin\PlansController@create')->name('create');
+            Route::match(['get', 'post'], '/{id}/update', 'Admin\PlansController@update')->name('update');
+            Route::post('/{id}/delete', 'Admin\PlansController@delete')->name('delete');
         });
         Route::prefix('subscribes')->name('subscribes::')->group(function(){
             Route::get('', 'Admin\SubscribeController@index')->name('index');

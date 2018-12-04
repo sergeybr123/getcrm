@@ -133,12 +133,12 @@
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <ul class="nav nav-tabs" id="myTab1" role="tablist">
-                <li class="nav-item"><a class="nav-link active show" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>
-                <li class="nav-item"><a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Страницы</a></li>
-                <li class="nav-item"><a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
+                <li class="nav-item"><a class="nav-link active show" id="bot-tab" data-toggle="tab" href="#bot-tab-content" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>
+                <li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Страницы</a></li>
+                <li class="nav-item"><a class="nav-link" id="invoice-tab" data-toggle="tab" href="#invoice-tab-content" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
             </ul>
             <div class="tab-content" id="myTab1Content">
-                <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="tab-pane fade active show" id="bot-tab-content" role="tabpanel" aria-labelledby="bot-tab">
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
@@ -194,7 +194,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="tab-pane fade" id="page-tab-content" role="tabpanel" aria-labelledby="page-tab">
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
@@ -247,7 +247,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="tab-pane fade" id="invoice-tab-content" role="tabpanel" aria-labelledby="invoice-tab">
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
@@ -258,9 +258,9 @@
                             <th width="70">Статус</th>
                             <th width="100">Дата создания</th>
                             <th width="100">Дата оплаты</th>
-                            <th width="20"></th>
+                            <th width="10"></th>
                             @permission('confirm-pay')
-                            <th width="20"></th>
+                            <th width="10"></th>
                             @endpermission
                         </tr>
                         </thead>
@@ -295,14 +295,14 @@
                                 <td>
                                     <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
-                                        <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
+                                        <button class="btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
                                         </button>
                                     @endif
                                 </td>
                                 @permission('confirm-pay')
                                 <td>
-                                    @if($invoice->paid == 0)
+                                    @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice->id }})"><i class="fa fa-credit-card"></i></button>
                                             <div id="dropdownCalendar_{{ $invoice->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

@@ -3,7 +3,7 @@
 @section('title', __('Тарифные планы'))
 
 @section('content')
-    <h1>{{ __('Тарифные планы') }}</h1>
+    <h1>{{ __('Тарифные планы') }} <a href="{{ route('admin::plans::create') }}" class="btn btn-outline-blue"><i class="fa fa-plus"></i></a></h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             {{--<div class="px-3">--}}
@@ -25,15 +25,19 @@
                                     <strong>{{ __('Стоимость') }}: </strong>{{ number_format($plan->price, 0, '.', '') }}
                                 </p>
                                 <div>
-                                    <a class="btn btn-sm btn-outline-blue" href="#">
+                                    <a class="btn btn-sm btn-outline-blue" href="{{ route('admin::plans::update', $plan->id) }}">
                                         <i class="fa fa-pencil-alt"></i>
                                     </a>
+                                    <a class="btn btn-sm btn-outline-danger" href="{{ route('admin::plans::delete', $plan->id) }}"
+                                       onclick="event.preventDefault();document.getElementById('delete-form-{{ $plan->id }}').submit();">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                    <form id="delete-form-{{ $plan->id }}" action="{{ route('admin::plans::delete', $plan->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        {{--<div id="edit_{{ $plan->id }}">--}}
-                            {{----}}
-                        {{--</div>--}}
                     </li>
                 @empty
                     <li class="list-group-item">Страницы отсутствуют</li>

@@ -156,35 +156,34 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'id' => 'required|numeric',
             'email' => [
                 'required',
                 'email',
-//                Rule::unique('users')->ignore($request->id)
             ],
             'country_code' => 'required',
             'phone' => [
                 'required',
                 'numeric',
-//                Rule::unique('phones')->ignore($request->id, 'user_id')
             ]
         ]);
 
         $user = User::findOrFail($id);
+        $phone = Phone::where('user_id', $id)->first();
 
         $user->email = $request->email;
 
-        $country_code = explode('-', $request->country_code);
-        $cca2 = $country_code[0];
-        $code = $country_code[0];
+        $path = 'js/phone.json';
+        $content = json_decode(file_get_contents($path), true);
 
-        $phone = $user->phone()->first();
-        if (!$phone) {
-            $phone = new Phone();
-            $phone->user_id = $user->id;
+        $user_phone = [];
+        foreach($content as $item) {
+            if($item['code'] == $request->country_code) {
+                $user_phone = $item;
+            }
         }
-        $phone->cca2 = $cca2;
-        $phone->country_code = $code;
+
+        $phone->country_code = str_replace('+', '', $user_phone['dial_code']);
+        $phone->cca2 = $user_phone['code'];
         $phone->phone = $request->phone;
 
         if (

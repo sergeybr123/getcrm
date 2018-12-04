@@ -54,7 +54,7 @@
                     <td>
                         <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
                         @if($invoice[1]->paid == 0 && $invoice[1]->created_at > \Carbon\Carbon::today()->subDay(7))
-                            <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
+                            <button class="float-right btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                     onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
                             </button>
                         @endif
@@ -92,9 +92,9 @@
                     </td>
                     @permission('confirm-pay')
                     <td>
-                        @if($invoice[1]->paid == 0)
+                        @if($invoice[1]->paid == 0 && $invoice[1]->created_at > \Carbon\Carbon::today()->subDay(7))
                             <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-info" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice[1]->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice[1]->id }})"><i class="fa fa-credit-card"></i></button>
+                                <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice[1]->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice[1]->id }})"><i class="fa fa-credit-card"></i></button>
                                 <div id="dropdownCalendar_{{ $invoice[1]->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <div style="height:27px;padding-right:10px;">
                                         <button type="button" class="close" aria-label="Close" onclick="closeDatapicker({{ $invoice[1]->id }})">
