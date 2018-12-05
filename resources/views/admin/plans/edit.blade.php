@@ -55,9 +55,9 @@
                             <label for="interval" class="col-sm-3 col-form-label">{{ __('Интервал') }}</label>
                             <div class="col-sm-9">
                                 <select id="interval" name="interval" class="form-control{{ $errors->has('discount') ? ' is-invalid' : '' }}">
-                                    <option value="unlimited">{{ __('Неограниченно') }}</option>
-                                    <option value="month" selected>{{ __('Месяц') }}</option>
-                                    <option value="year">{{ __('Год') }}</option>
+                                    <option value="unlimited" {{ $plan->interval == 'unlimited' ? 'selected' : '' }}>{{ __('Неограниченно') }}</option>
+                                    <option value="month" {{ $plan->interval == 'month' ? 'selected' : '' }}>{{ __('Месяц') }}</option>
+                                    <option value="year" {{ $plan->interval == 'year' ? 'selected' : '' }}>{{ __('Год') }}</option>
                                 </select>
                             </div>
                         </div>
