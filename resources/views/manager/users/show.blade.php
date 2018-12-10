@@ -95,7 +95,7 @@
                         @endif
                     </div>
                     @if($subscribe->plan->id == 2 || $subscribe->plan->id == 3)
-                    <div style="display: none">
+                    <div>
                         <form id="change-plan">
                             @csrf
                             <input type="hidden" name="user_id" value="{{ $user->id }}">
@@ -825,10 +825,13 @@
                 },
                 type: 'POST',
                 success: function (req) {
-                    console.log(req);
+                    if(req.error === 0) {
+                        location.reload();
+                    } else {
+                        console.log(req);
+                    }
                 }
             });
-
             e.preventDefault();
         });
 

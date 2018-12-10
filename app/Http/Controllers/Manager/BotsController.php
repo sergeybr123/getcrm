@@ -70,7 +70,12 @@ class BotsController extends Controller
         $company = Company::findOrFail($request->id);
         $company->temp_bot = NULL;
         $company->save();
-        return back();
+        if($company != null){
+            return response()->json(['error' => 0, 'message' => 'Сброшено успешно!']);
+        } else {
+            return response()->json(['error' => 1, 'message' => 'Произошла ошибка!']);
+        }
+//        return back();
     }
 
 

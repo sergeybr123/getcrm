@@ -266,7 +266,6 @@
                     } else {
                         console.log(data)
                     }
-
                 });
         }
     </script>
