@@ -59,6 +59,10 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="https://getchat.me/{{ $boto->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
+                                        @if($boto->temp_bot)
+                                            <button class="dropdown-item" onclick="confirmBot({{ $boto->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить') }}</button>
+                                            <button class="dropdown-item" onclick="resetBot({{ $boto->id }})"><i class="fa fa-undo-alt"></i> {{ __('Сбросить') }}</button>
+                                        @endif
                                         <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $boto->id }}, '{{ $boto->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
@@ -236,6 +240,34 @@
             str = '';
             $('.test_opt').remove();
             email = '';
+        }
+
+        /*--------Подтверждение авточата--------*/
+        function confirmBot(id) {
+            $.get( "{{ route('manager.bots.confirmBot') }}",
+                { id: id },
+                function(data) {
+                if(data.error === 0){
+                    location.reload();
+                    console.log(data)
+                } else {
+                    console.log(data)
+                }
+
+            });
+        }
+        /*--------Сброс авточата--------*/
+        function resetBot(id) {
+            $.get( "{{ route('manager.bots.resetBot') }}",
+                { id: id },
+                function(data) {
+                    if(data.error === 0){
+                        location.reload();
+                    } else {
+                        console.log(data)
+                    }
+
+                });
         }
     </script>
 @endsection

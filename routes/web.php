@@ -39,8 +39,13 @@ Route::middleware('auth')->group(function() {
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');
         });
-        Route::get( 'bots/old', 'Manager\BotsController@bot_old');
-        Route::get( 'bots/new', 'Manager\BotsController@bot_new');
+        Route::prefix('bots')->name('bots.')->group(function(){
+            Route::get( 'old', 'Manager\BotsController@bot_old')->name('bot_old');
+            Route::get( 'new', 'Manager\BotsController@bot_new')->name('bot_new');
+            Route::get('confirm', 'Manager\BotsController@confirm')->name('confirmBot');
+            Route::get('reset', 'Manager\BotsController@reset')->name('resetBot');
+        });
+
         // Работа со счетами
         Route::prefix('invoices')->name('invoices.')->group(function() {
             Route::get( '', 'Manager\InvoicesController@index')->name('index');

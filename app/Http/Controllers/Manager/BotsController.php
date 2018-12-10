@@ -49,6 +49,33 @@ class BotsController extends Controller
         return view('manager.bots.index_new', ['bots_new' => $bots_new]);
     }
 
+
+
+
+    public function confirm(Request $request)
+    {
+        $company = Company::findOrFail($request->id);
+        $company->bot = $company->temp_bot;
+        $company->temp_bot = NULL;
+        $company->save();
+        if($company != null){
+            return response()->json(['error' => 0, 'message' => 'Подтверждено успешно!']);
+        } else {
+            return response()->json(['error' => 1, 'message' => 'Произошла ошибка!']);
+        }
+//        return back();
+    }
+    public function reset(Request $request)
+    {
+        $company = Company::findOrFail($request->id);
+        $company->temp_bot = NULL;
+        $company->save();
+        return back();
+    }
+
+
+
+
     /**
      * Show the form for creating a new resource.
      *
