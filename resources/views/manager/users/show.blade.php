@@ -43,8 +43,7 @@
                         @endif
                     </div>
                     <div>
-                        <strong>Дата
-                            регистрации: </strong>{{ \Carbon\Carbon::parse($user->created_at)->format('d.m.Y') }}
+                        <strong>Дата регистрации: </strong>{{ \Carbon\Carbon::parse($user->created_at)->format('d.m.Y') }}
                     </div>
                 </div>
                 <div class="form-inline" style="align-items: normal;">
@@ -52,11 +51,15 @@
                        title="{{ __('Редактировать') }}">
                         <i class="fa fa-pencil-alt"></i>
                     </a>
-                    <a href="#" class="btn btn-sm btn-outline-blue ml-1"
-                       style="border-radius:50%;width:30px;height:30px;" data-toggle="modal" data-target="#invoiceModal"
-                       title="Выставить счет" onclick="Load();">
+                    <a href="{{ route('manager.users.create_invoice', $user->id) }}" class="btn btn-sm btn-outline-blue ml-1"
+                       style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
+                    {{--<a href="#" class="btn btn-sm btn-outline-blue ml-1"--}}
+                       {{--style="border-radius:50%;width:30px;height:30px;" data-toggle="modal" data-target="#invoiceModal"--}}
+                       {{--title="Выставить счет" onclick="Load();">--}}
+                        {{--<i class="fa fa-file-invoice"></i>--}}
+                    {{--</a>--}}
                     <a href="#" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;"
                        title="Добавить авточат" data-toggle="modal" data-target="#createBotModal">
                         <i class="fa fa-comments"></i>
@@ -293,7 +296,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
+                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <button class="btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
@@ -341,7 +344,7 @@
                     <div id="plan_place"></div>
                     <div id="periodDiv" class="mt-2" style="display: none">
                         <strong>Период</strong>
-                        <input class="form-control" type="number" id="periodMonth" min="1" max="11" value="1">
+                        <input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">
                     </div>
                     <div class="mt-3" id="amount_place">
                         <strong>Итого: </strong><span id="amount">0</span>
@@ -536,6 +539,7 @@
         let strPlan = '';
         let strService = '';
         let period = $('#periodMonth').val();
+        let plan_discount = 0;
 
         $('#periodMonth').bind('keyup mouseup', function() {
             period = this.value;
@@ -591,11 +595,13 @@
                     success: function (request) {
                         // console.log(request.data/*.plan.name + ', ' +request.data.plan.price*/);
                         planId = request.data.plan.id;
-                        if(planId === 2) {
-                            $('#periodDiv').css('display', 'block');
-                        }
+                        plan_discount = request.data.plan.discount;
+                        // if(planId > 3) {
+                        //     $('#periodDiv').css('display', 'block');
+                        // }
                         // console.log(planId);
                         subscribeAmount = parseInt(parseFloat(request.data.plan.price).toFixed(0)) || 0;
+                        $('#periodDiv').css('display', 'block');
                     }
                 });
             }
@@ -616,9 +622,9 @@
                         strPlan += '<div class="mt-2" id="planPlace">';
                         strPlan += '<strong>Тарифный план:</strong>';
                         $.each(request.data, function (key, value) {
-                            if(value.price !== null){
+                            if(value.id > 3){
                                 strPlan += '<div class="form-check">';
-                                strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+')" id="plansRadios' + key + '" value="' + value.id + '">';
+                                strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+', ' +value.discount+ ')" id="plansRadios' + key + '" value="' + value.id + '">';
                                 strPlan += '    <label class="form-check-label" for="plansRadios' + key + '">' + value.name + '</label>';
                                 strPlan += '</div>';
                             }
@@ -664,12 +670,14 @@
             Itogo();
         }
 
-        function ChoisePlan(id, code, price)
+        function ChoisePlan(id, code, price, discount)
         {
+            plan_discount = discount;
+            // console.log(discount);
             planAmount = 0;
             serviceAmount = 0;
             planId = id;
-            if(planId === 2) {
+            if(planId > 3) {
                 $('#periodDiv').css('display', 'block');
             } else {
                 $('#periodMonth').val(1);
@@ -731,7 +739,14 @@
 
         function Itogo()
         {
-            amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
+            if(plan_discount === 0 || plan_discount === undefined) {
+                plan_discount = 1;
+            }
+            if(period >= 12) {
+                amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount - (serviceAmount * (plan_discount / 100)));
+            } else {
+                amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
+            }
             $('#amount').text(amount);
         }
 
@@ -759,8 +774,9 @@
                     "Authorization": "Basic " + billing_token
                 },
                 success: function (request) {
-                    console.log(request);
-                    if(request.error == 0) {
+
+                    if(request.error === undefined) {
+                        // console.log(request);
                         CloseForm();
                     }
                 }

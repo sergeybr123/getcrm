@@ -255,7 +255,7 @@
                                     @endif
                                 </td>
                                 <th>
-                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
+                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
@@ -286,7 +286,7 @@
                     <div id="plan_place"></div>
                     <div id="periodDiv" class="mt-2" style="display: none">
                         <strong>Период</strong>
-                        <input class="form-control" type="number" id="periodMonth" min="1" max="11" value="1">
+                        <input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">
                     </div>
                     <div class="mt-3" id="amount_place">
                         <strong>Итого: </strong><span id="amount">0</span>
@@ -301,77 +301,77 @@
         </div>
     </div>
 
-    <div class="modal fade" id="payActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="{{ route('manager.pay.activate') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Выберите счет</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        @forelse($invoices as $invoice)
-                            @if($invoice->paid == 1)
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="invoice_id" id="inv_{{ $invoice->id }}" value="{{ $invoice->id }}">
-                                <label class="form-check-label" for="inv_{{ $invoice->id }}">
-                                    {{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
-                                </label>
-                            </div>
-                            @endif
-                        @empty
-                            <span>Данные отсутствуют</span>
-                        @endforelse
-                        <input class="form-control mt-3" name="date" type="date">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    {{--<div class="modal fade" id="payActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<form action="{{ route('manager.pay.activate') }}" method="post">--}}
+                    {{--@csrf--}}
+                    {{--<input type="hidden" name="user_id" value="{{ $user->id }}">--}}
+                    {{--<div class="modal-header">--}}
+                        {{--<h5 class="modal-title" id="exampleModalLabel">Выберите счет</h5>--}}
+                        {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+                            {{--<span aria-hidden="true">&times;</span>--}}
+                        {{--</button>--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-body">--}}
+                        {{--@forelse($invoices as $invoice)--}}
+                            {{--@if($invoice->paid == 1)--}}
+                            {{--<div class="form-check">--}}
+                                {{--<input class="form-check-input" type="radio" name="invoice_id" id="inv_{{ $invoice->id }}" value="{{ $invoice->id }}">--}}
+                                {{--<label class="form-check-label" for="inv_{{ $invoice->id }}">--}}
+                                    {{--{{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}--}}
+                                {{--</label>--}}
+                            {{--</div>--}}
+                            {{--@endif--}}
+                        {{--@empty--}}
+                            {{--<span>Данные отсутствуют</span>--}}
+                        {{--@endforelse--}}
+                        {{--<input class="form-control mt-3" name="date" type="date">--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-footer">--}}
+                        {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>--}}
+                        {{--<button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>--}}
+                    {{--</div>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 
-    <div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="{{ route('manager.pay.activate') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Продление подписки пользователя') }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        @forelse($invoices as $invoice)
-                            @if($invoice->type->id == 1 && $invoice->paid == 1)
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">
-                                    <label class="form-check-label" for="inv{{ $invoice->id }}">
-                                        {{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}
-                                    </label>
-                                </div>
-                            @endif
-                        @empty
-                            <span>Данные отсутствуют</span>
-                        @endforelse
-                        <input class="form-control mt-3" name="date" type="date">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    {{--<div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<form action="{{ route('manager.pay.activate') }}" method="post">--}}
+                    {{--@csrf--}}
+                    {{--<input type="hidden" name="user_id" value="{{ $user->id }}">--}}
+                    {{--<div class="modal-header">--}}
+                        {{--<h5 class="modal-title" id="exampleModalLabel">{{ __('Продление подписки пользователя') }}</h5>--}}
+                        {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+                            {{--<span aria-hidden="true">&times;</span>--}}
+                        {{--</button>--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-body">--}}
+                        {{--@forelse($invoices as $invoice)--}}
+                            {{--@if($invoice->type->id == 1 && $invoice->paid == 1)--}}
+                                {{--<div class="form-check">--}}
+                                    {{--<input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">--}}
+                                    {{--<label class="form-check-label" for="inv{{ $invoice->id }}">--}}
+                                        {{--{{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}--}}
+                                    {{--</label>--}}
+                                {{--</div>--}}
+                            {{--@endif--}}
+                        {{--@empty--}}
+                            {{--<span>Данные отсутствуют</span>--}}
+                        {{--@endforelse--}}
+                        {{--<input class="form-control mt-3" name="date" type="date">--}}
+                    {{--</div>--}}
+                    {{--<div class="modal-footer">--}}
+                        {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>--}}
+                        {{--<button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>--}}
+                    {{--</div>--}}
+                {{--</form>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 
     {{--Изменение ссылки--}}
     <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
@@ -481,6 +481,7 @@
         let strPlan = '';
         let strService = '';
         let period = $('#periodMonth').val();
+        let plan_discount = 0;
 
         $('#periodMonth').bind('keyup mouseup', function() {
             period = this.value;
@@ -534,11 +535,13 @@
                     success: function (request) {
                         // console.log(request.data/*.plan.name + ', ' +request.data.plan.price*/);
                         planId = request.data.plan.id;
-                        if(planId === 2) {
-                            $('#periodDiv').css('display', 'block');
-                        }
+                        plan_discount = request.data.plan.discount;
+                        // if(planId > 3) {
+                        //     $('#periodDiv').css('display', 'block');
+                        // }
                         // console.log(planId);
                         subscribeAmount = parseInt(parseFloat(request.data.plan.price).toFixed(0)) || 0;
+                        $('#periodDiv').css('display', 'block');
                     }
                 });
             }
@@ -559,9 +562,9 @@
                         strPlan += '<div class="mt-2" id="planPlace">';
                         strPlan += '<strong>Тарифный план:</strong>';
                         $.each(request.data, function (key, value) {
-                            if(value.price !== null){
+                            if(value.id > 3){
                                 strPlan += '<div class="form-check">';
-                                strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+')" id="plansRadios' + key + '" value="' + value.id + '">';
+                                strPlan += '    <input class="form-check-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+', ' +value.discount+ ')" id="plansRadios' + key + '" value="' + value.id + '">';
                                 strPlan += '    <label class="form-check-label" for="plansRadios' + key + '">' + value.name + '</label>';
                                 strPlan += '</div>';
                             }
@@ -606,12 +609,13 @@
             }
             Itogo();
         }
-        function ChoisePlan(id, code, price)
+        function ChoisePlan(id, code, price, discount)
         {
+            plan_discount = discount;
             planAmount = 0;
             serviceAmount = 0;
             planId = id;
-            if(planId === 2) {
+            if(planId > 3) {
                 $('#periodDiv').css('display', 'block');
             } else {
                 $('#periodMonth').val(1);
@@ -669,7 +673,14 @@
         }
         function Itogo()
         {
-            amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
+            if(plan_discount === 0 || plan_discount === undefined) {
+                plan_discount = 1;
+            }
+            if(period >= 12) {
+                amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount - (serviceAmount * (plan_discount / 100)));
+            } else {
+                amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount;
+            }
             $('#amount').text(amount);
         }
         // Отправка данных на сервер
@@ -696,8 +707,9 @@
                     "Authorization": "Basic " + billing_token
                 },
                 success: function (request) {
-                    console.log(request);
-                    if(request.error == 0) {
+                    // console.log(request);
+                    if(request.error === undefined) {
+                        // console.log(request);
                         CloseForm();
                     }
                 }

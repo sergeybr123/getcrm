@@ -301,4 +301,10 @@ class UsersController extends Controller
             return response()->json(['error' => 1, 'message' => $th]);
         }
     }
+
+    public function invoice($id)
+    {
+        $user = User::findOrFail($id);
+        return view('manager.users.invoice', ['user' => $user]);
+    }
 }
