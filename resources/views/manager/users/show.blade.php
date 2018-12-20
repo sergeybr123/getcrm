@@ -154,7 +154,7 @@
                         <tbody>
                         @foreach($bots as $bot)
                             <tr>
-                                <td>{{ $bot->slug }}</td>
+                                <td>{{ $bot->name }}</td>
                                 <td>
                                     <span id="page_slug_{{ $bot->id }}">https://getchat.me/{{ $bot->slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
@@ -202,7 +202,7 @@
                         <thead>
                         <tr>
                             <th width="120">Наименование</th>
-                            <th>Ссылка</th>
+                            <th class="d-none d-md-table-cell">Ссылка</th>
                             <th width="100">Дата создания</th>
                             <th width="50"></th>
                         </tr>
@@ -210,8 +210,8 @@
                         <tbody>
                         @foreach($pages as $key => $page)
                             <tr>
-                                <td>{{ $page->slug }}</td>
-                                <td>
+                                <td>{{ $page->name }}</td>
+                                <td class="d-none d-md-table-cell">
                                     <span id="page_slug_{{ $key }}">https://getchat.me/{{ $page->slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
@@ -863,10 +863,12 @@
         $( ".datepicker" ).datepicker({
             onSelect: function () {
                 datePay = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
+                // console.log(datePay);
                 let data = {
                     id: invoiceId,
                     date: datePay
                 };
+                // console.log(data);
                 $.ajax({
                     type: "POST",
                     url: billing_url + "/pay-with-day",
@@ -877,7 +879,7 @@
                         "Authorization": "Basic " + billing_token
                     },
                     success: function (request) {
-                        // console.log(request);
+                        console.log(request);
                         if(request.error === 0) {
                             $('#dropdownCalendar_' + invoiceId).hide();
                             location.reload();

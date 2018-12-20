@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-md-10">
                         <div class="row">
-                            <div class="col-md-3 pl-0">
+                            <div class="col-md-3 pl-md-0">
                                 {{--<div class="form-group row">--}}
                                     {{--<label for="inputPassword" class="col-sm-2 col-form-label flex-nowrap px-0">Поиск</label>--}}
                                     {{--<div class="col-sm-10">--}}
@@ -26,12 +26,12 @@
                                     {{--</div>--}}
                                 {{--</div>--}}
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-9 mt-2 mt-md-0">
                                 <input class="form-control" name="text" type="text" placeholder="{{ __('Введите для поиска') }}" value="{{ $text }}">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2 pr-0">
+                    <div class="col-md-2 pr-md-0 mt-2 mt-md-0">
                         <button class="btn btn-outline-info btn-block" type="submit">{{ __('Поиск') }}</button>
                     </div>
                 </div>
