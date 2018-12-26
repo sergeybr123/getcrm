@@ -181,6 +181,8 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
+                                                <button class="dropdown-item" onclick="botConfirm({{ $bot->id }})"><i class="far fa-check"></i> {{ __('Подтвердить')  }}</button>
+                                                <button class="dropdown-item" onclick="botReset({{ $bot->id }})"><i class="far fa-times"></i> {{ __('Сбросить')  }}</button>
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
@@ -1006,6 +1008,28 @@
             document.execCommand("copy");
             $temp.remove();
             toastr.info('Ссылка скопирована');
+        }
+
+        function botConfirm(id) {
+            let data = {
+                id: id
+            };
+            if(req.error === 0) {
+                location.reload();
+            } else {
+                console.log(req);
+            }
+        }
+
+        function botReset(id) {
+            let data = {
+                id: id
+            };
+            if(req.error === 0) {
+                location.reload();
+            } else {
+                console.log(req);
+            }
         }
     </script>
 @endsection

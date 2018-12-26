@@ -234,21 +234,21 @@ class UsersController extends Controller
     }
 
     /*Подписка на бесплатный пакет пользователей не имеющих авточат*/
-//    public function selectNotSubscribed()
-//    {
-////        set_time_limit(0);
-//        /*Раскомментировать рабочий код, не удалять*/
-//        $users = Company::whereNull('bot')->whereNull('deleted_at')->select('user_id')->distinct()->get();
-//        foreach ($users as $user) {
-//            if(Bot::where('botable_id', $user->user_id)->doesntExist())
-//            {
-//                $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-//                $URI = config('app.billing_url') . '/subscribe/free/' . $user->id;
-//                $response = $client->get($URI);
-//                $plan = json_decode($response->getBody());
-//            }
-//        }
-//    }
+    public function selectNotSubscribed()
+    {
+//        set_time_limit(0);
+        /*Раскомментировать рабочий код, не удалять*/
+        $users = Company::whereNull('bot')->whereNull('deleted_at')->select('user_id')->distinct()->get();
+        foreach ($users as $user) {
+            if(Bot::where('botable_id', $user->user_id)->doesntExist())
+            {
+                $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+                $URI = config('app.billing_url') . '/subscribe/free/' . $user->id;
+                $response = $client->get($URI);
+                $plan = json_decode($response->getBody());
+            }
+        }
+    }
 
 
     public function payActivate(Request $request)
@@ -287,20 +287,20 @@ class UsersController extends Controller
         }
     }
 
-    public function createBot(Request $request)
-    {
-//        return response()->json([$request->user_id]);
-        $company = new Company;
-        $company->user_id = $request->user_id;
-        $company->slug = $request->link;
-        $company->bot = "{}";
-        $company->save();
-        try{
-            return response()->json(['error' => 0, 'company' => $company]);
-        } catch (Throwable $th){
-            return response()->json(['error' => 1, 'message' => $th]);
-        }
-    }
+//    public function createBot(Request $request)
+//    {
+////        return response()->json([$request->user_id]);
+//        $company = new Company;
+//        $company->user_id = $request->user_id;
+//        $company->slug = $request->link;
+//        $company->bot = "{}";
+//        $company->save();
+//        try{
+//            return response()->json(['error' => 0, 'company' => $company]);
+//        } catch (Throwable $th){
+//            return response()->json(['error' => 1, 'message' => $th]);
+//        }
+//    }
 
     public function invoice($id)
     {
