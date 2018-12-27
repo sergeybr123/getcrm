@@ -100,7 +100,12 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $bots = Company::where('user_id', $id)->whereNotNull('bot')->whereNull('deleted_at')->get();
+        $bots = Company::where('user_id', $id)
+            ->where(function($result) {
+                $result->whereNotNull('bot')
+                    ->orWhere('temp_bot', '!=', null);
+            })->get();
+        //->whereNotNull('bot')->orWhere('temp_bot', '!=', null)->whereNull('deleted_at')->get();
         $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -287,20 +292,20 @@ class UsersController extends Controller
         }
     }
 
-//    public function createBot(Request $request)
-//    {
-////        return response()->json([$request->user_id]);
-//        $company = new Company;
-//        $company->user_id = $request->user_id;
-//        $company->slug = $request->link;
-//        $company->bot = "{}";
-//        $company->save();
-//        try{
-//            return response()->json(['error' => 0, 'company' => $company]);
-//        } catch (Throwable $th){
-//            return response()->json(['error' => 1, 'message' => $th]);
-//        }
-//    }
+    public function createBot(Request $request)
+    {
+//        return response()->json([$request->user_id]);
+        $company = new Company;
+        $company->user_id = $request->user_id;
+        $company->slug = $request->link;
+        // {"bot": [], "menu": {"text": null, "actions": []}, "profile": {"name": null, "avatar": null, "company": null, "background": {"value": null}}, "welcome": []}
+        $company->save();
+        try{
+            return response()->json(['error' => 0, 'company' => $company]);
+        } catch (Throwable $th){
+            return response()->json(['error' => 1, 'message' => $th]);
+        }
+    }
 
     public function invoice($id)
     {

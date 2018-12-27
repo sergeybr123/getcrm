@@ -62,6 +62,9 @@
                             <a href="{{ route('manager.users.show', ['id' => $invoice[0]['id']]) }}">
                                 {{ $invoice[0]['email'] }}
                             </a>
+                            @if($invoice[1]->description != null)
+                            <span><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="bottom" title="{{ $invoice[1]->description }}"></i></span>
+                            @endif
                         @endif
                     </td>
                     <td>
@@ -148,6 +151,8 @@
 @section('scripts')
     <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
     <script>
+        $('[data-toggle="tooltip"]').tooltip();
+
         let invoiceId = 0;
         let datePay = '';
         let billing_token = '{{ config('app.billing_token') }}';

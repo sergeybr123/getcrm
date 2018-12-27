@@ -131,43 +131,29 @@
 
                     console.log(Math.floor(days));
 
-                    if(request.data.additional != null){
-
-
-
-
-                        $.ajax({
-                            type: "GET",
-                            url: billing_url + "/additional/" + request.data.id,
-                            dataType: 'json',
-                            async: false,
-                            headers: {
-                                "Authorization": "Basic " + billing_token
-                            },
-                            success: function (request_addit) {
-
-
-
-
-                                additional_str += '<div id="additional_place">';
-                                additional_str += '<strong>Дополнительно к подписке:</strong><br>';
-                                $.each(request_addit.data, function (key, value) {
-                                    additional_str += '<label class="mb-0">Наименование: ' + value.additional_type.name + '; Кол-во: ' + value.quantity + '; Стоимость: ' + parseInt(value.additional_type.price) + ' &#8376;/мес.</label><br>';
-                                    additional_total += parseInt(value.quantity) * parseInt(value.additional_type.price);
-                                });
-                                additional_str += '<b>Всего: ' + additional_total + '</b>';
-                                additional_str += '</div>';
-                                $('#plan_place').append(additional_str);
-                                additional_str = '';
-
-
-                            }
-                        });
-
-
-
-
-                    }
+                    // if(request.data.additional != null){
+                    //     $.ajax({
+                    //         type: "GET",
+                    //         url: billing_url + "/additional/" + request.data.id,
+                    //         dataType: 'json',
+                    //         async: false,
+                    //         headers: {
+                    //             "Authorization": "Basic " + billing_token
+                    //         },
+                    //         success: function (request_addit) {
+                    //             additional_str += '<div id="additional_place">';
+                    //             additional_str += '<strong>Дополнительно к подписке:</strong><br>';
+                    //             $.each(request_addit.data, function (key, value) {
+                    //                 additional_str += '<label class="mb-0">Наименование: ' + value.additional_type.name + '; Кол-во: ' + value.quantity + '; Стоимость: ' + parseInt(value.additional_type.price) + ' &#8376;/мес.</label><br>';
+                    //                 additional_total += parseInt(value.quantity) * parseInt(value.additional_type.price);
+                    //             });
+                    //             additional_str += '<b>Всего: ' + additional_total + '</b>';
+                    //             additional_str += '</div>';
+                    //             $('#plan_place').append(additional_str);
+                    //             additional_str = '';
+                    //         }
+                    //     });
+                    // }
                     subscribeAmount = parseInt(parseFloat(request.data.plan.price).toFixed(0)) || 0;
                     $('#periodDiv').css('display', 'block');
                 }
@@ -311,7 +297,7 @@
             plan_discount = 1;
         }
         if(period >= 12) {
-            amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount - (serviceAmount * (plan_discount / 100)))/* + (additional_total * period)*/;
+            amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount/*-Раскомментировать 01,01,2019 - (serviceAmount * (plan_discount / 100))*/)/* + (additional_total * period)*/;
         } else {
             amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount/* + (additional_total * period)*/;
         }
@@ -321,21 +307,34 @@
     // Отправка данных на сервер
     function PostForm()
     {
+        let data = null;
         if(typeId < 3) {
             period = parseInt($('#periodMonth').val());
-        } else {
-            period = null;
+            data = {
+                manager_id: '{{ Auth::user()->id }}',
+                user_id: '{{ $user->id }}',
+                amount: amount,
+                type_id: typeId,
+                plan_id: planId,
+                service_id: serviceId,
+                period: period,
+                description: $('#description').val()
+            };
+        } else if (typeId === 3) {
+            // period = null;
+            // planId = null;
+            data = {
+                manager_id: '{{ Auth::user()->id }}',
+                user_id: '{{ $user->id }}',
+                amount: amount,
+                type_id: typeId,
+                // plan_id: planId,
+                service_id: serviceId,
+                // period: period,
+                description: $('#description').val()
+            };
         }
-        let data = {
-            manager_id: '{{ Auth::user()->id }}',
-            user_id: '{{ $user->id }}',
-            amount: amount,
-            type_id: typeId,
-            plan_id: planId,
-            service_id: serviceId,
-            period: period,
-            description: $('#description').val()
-        };
+
         // console.log(data);
         $.ajax({
             type: "POST",
@@ -346,9 +345,9 @@
                 "Authorization": "Basic " + billing_token
             },
             success: function (request) {
-
+                console.log(request);
                 if(request.error === undefined) {
-                    // console.log(request);
+                    console.log(request);
                     // CloseForm();
                     window.location.replace("{{ route('manager.users.show', $user->id) }}");
                 }

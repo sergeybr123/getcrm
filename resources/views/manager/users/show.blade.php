@@ -181,8 +181,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
-                                                <button class="dropdown-item" onclick="botConfirm({{ $bot->id }})"><i class="far fa-check"></i> {{ __('Подтвердить')  }}</button>
-                                                <button class="dropdown-item" onclick="botReset({{ $bot->id }})"><i class="far fa-times"></i> {{ __('Сбросить')  }}</button>
+                                                @if($bot->temp_bot != null)
+                                                <button class="dropdown-item" onclick="botConfirm({{ $bot->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить')  }}</button>
+                                                <button class="dropdown-item" onclick="botReset({{ $bot->id }})"><i class="fa fa-times"></i> {{ __('Сбросить')  }}</button>
+                                                @endif
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
@@ -206,7 +208,7 @@
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
                             <th width="100">Дата создания</th>
-                            <th width="50"></th>
+                            <th width="90"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -224,6 +226,9 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($page->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
+                                        <a href="https://getchat.me/constructor/{{ $page->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                            <i class="fa fa-wrench"></i>
+                                        </a>
                                         <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')" title="{{ __('Редактирование ссылки') }}">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
@@ -236,6 +241,10 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
+                                                @if($page->temp_bot != null)
+                                                    <button class="dropdown-item" onclick="botConfirm({{ $page->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить')  }}</button>
+                                                    <button class="dropdown-item" onclick="botReset({{ $page->id }})"><i class="fa fa-times"></i> {{ __('Сбросить')  }}</button>
+                                                @endif
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
@@ -298,7 +307,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice->id }}</span>
+                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <button class="btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
@@ -1014,22 +1023,43 @@
             let data = {
                 id: id
             };
-            if(req.error === 0) {
-                location.reload();
-            } else {
-                console.log(req);
-            }
+
+            $.ajax({
+                type: "get",
+                url: "{{ route('manager.bots.confirmBot') }}",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (request) {
+                    if(request.error === 0) {
+                        location.reload();
+                    } else {
+                        console.log(request)
+                    }
+                }
+            });
         }
 
         function botReset(id) {
             let data = {
                 id: id
             };
-            if(req.error === 0) {
-                location.reload();
-            } else {
-                console.log(req);
-            }
+            $.ajax({
+                type: "get",
+                url: "{{ route('manager.bots.resetBot') }}",
+                data: data,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (request) {
+                    if(request.error === 0) {
+                        location.reload();
+                    } else {
+                        console.log(request)
+                    }
+                }
+            });
         }
     </script>
 @endsection
