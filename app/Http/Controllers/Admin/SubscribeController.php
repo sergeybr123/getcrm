@@ -12,7 +12,7 @@ class SubscribeController extends Controller
 {
     public function index()
     {
-        $subscriptions = BillingSubscribe::whereNotIn('plan_id', [1, 4])->
+        $subscriptions = BillingSubscribe::whereNotIn('plan_id', [1])->
             join('billing.plans', 'subscribes.plan_id', '=', 'plans.id')->
             join('getchat.users', 'subscribes.user_id', '=', 'users.id')->
             join('getchat.phones', 'subscribes.user_id', '=', 'phones.user_id')->
