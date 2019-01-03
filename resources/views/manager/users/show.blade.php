@@ -309,7 +309,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
+                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice->id }}</span>
                                     @if($invoice->status == 'active')
                                         <button class="btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>

@@ -52,7 +52,7 @@
                         {{ $invoice[1]->id }}
                     </td>
                     <td>
-                        <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
+                        <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice[1]->id }}</span>
                         @if($invoice[1]->status == 'active')
                             <button class="float-right btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                     onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
