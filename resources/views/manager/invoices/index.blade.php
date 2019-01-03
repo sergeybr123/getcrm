@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice[1]->id }}</span>
-                        @if($invoice[1]->paid == 0 && $invoice[1]->created_at > \Carbon\Carbon::today()->subDay(7))
+                        @if($invoice[1]->status == 'active')
                             <button class="float-right btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                     onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
                             </button>
@@ -79,10 +79,12 @@
                         {{ number_format($invoice[1]->amount, 0, '.', '') }} тг.
                     </td>
                     <td class="text-center">
-                        @if($invoice[1]->paid == 0)
+                        @if($invoice[1]->status == 'active')
                             <span class="badge badge-danger">Нет</span>
-                        @else
+                        @elseif($invoice[1]->status == 'paid')
                             <span class="badge badge-success">Да</span>
+                        @else
+                            <span class="badge badge-warning">Завершен</span>
                         @endif
                     </td>
                     <td class="text-center">
@@ -95,7 +97,7 @@
                     </td>
                     @permission('confirm-pay')
                     <td>
-                        @if($invoice[1]->paid == 0 && $invoice[1]->created_at > \Carbon\Carbon::today()->subDay(7))
+                        @if($invoice[1]->status == 'active')
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice[1]->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice[1]->id }})"><i class="fa fa-credit-card"></i></button>
                                 <div id="dropdownCalendar_{{ $invoice[1]->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

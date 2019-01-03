@@ -294,10 +294,12 @@
                                 </td>
                                 <td class="text-right">{{ number_format($invoice->amount, 0, '', ' ') }} тг.</td>
                                 <td class="text-center">
-                                    @if($invoice->paid == 0)
-                                        <span class="badge badge-secondary">Не оплачен</span>
-                                    @else
+                                    @if($invoice->status == 'active')
+                                        <span class="badge badge-danger">Не оплачен</span>
+                                    @elseif($invoice->status == 'paid')
                                         <span class="badge badge-success">Оплачен</span>
+                                    @else
+                                        <span class="badge badge-warning">Завершен</span>
                                     @endif
                                 </td>
                                 <td class="text-center">{{ \Carbon\Carbon::parse($invoice->created_at)->format('d.m.Y') ?? '' }}</td>
@@ -308,7 +310,7 @@
                                 </td>
                                 <td>
                                     <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/new_pay/{{ $invoice->id }}</span>
-                                    @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
+                                    @if($invoice->status == 'active')
                                         <button class="btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
                                         </button>
@@ -316,7 +318,7 @@
                                 </td>
                                 @permission('confirm-pay')
                                 <td>
-                                    @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
+                                    @if($invoice->status == 'active')
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton_{{ $invoice->id }}" data-toggle="dropdown" onclick="selectInvoice({{ $invoice->id }})"><i class="fa fa-credit-card"></i></button>
                                             <div id="dropdownCalendar_{{ $invoice->id }}" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

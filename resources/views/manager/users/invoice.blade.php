@@ -207,9 +207,10 @@
                     "Authorization": "Basic " + billing_token
                 },
                 success: function (request) {
+                    // console.log(request)
                     strService += '<div class="mt-2" id="servicePlace">';
                     strService += '<strong>Услуги:</strong>';
-                    $.each(request, function (key, value) {
+                    $.each(request.data, function (key, value) {
                         strService += '<div class="custom-control custom-radio">';
                         strService += '    <input class="custom-control-input" type="radio" name="service_id" onclick="ChoiseService('+value.id+', '+value.price+')" id="serviceRadios'+key+'" value="'+value.id+'">';
                         strService += '    <label class="custom-control-label" for="serviceRadios'+key+'">'+value.name+'</label>';
@@ -227,9 +228,8 @@
     function ChoisePlan(id, code, price, discount)
     {
         plan_discount = discount;
-        // console.log(discount);
         planAmount = 0;
-        serviceAmount = 0;
+        // serviceAmount = 0;
         planId = id;
         if(planId > 3) {
             $('#periodDiv').css('display', 'block');
@@ -240,48 +240,68 @@
         }
         planAmount +=  price;
         Itogo();
-        LoadServices()
+        // LoadServices()
     }
 
     function ChoiseDevelop()
     {
-        LoadServices();
-    }
-
-    function LoadServices()
-    {
-        strService = '';
-        url = '';
-        $('#servicePlace').remove();
-        if($('#developChat').is(':checked')) {
+        // LoadServices();
+        if($('#developChat').prop('checked')) {
             $.ajax({
                 type: "GET",
-                url: billing_url + "/service/plan-not-null", //url,
+                url: billing_url + "/services/1", //url,
                 dataType: 'json',
                 async: false,
                 headers: {
                     "Authorization": "Basic " + billing_token
                 },
                 success: function (request) {
-                    strService += '<div class="mt-2" id="servicePlace">';
-                    strService += '<strong>Услуги:</strong>';
-                    $.each(request, function (key, value) {
-                        strService += '<div class="custom-control custom-radio">';
-                        strService += '    <input class="custom-control-input" type="radio" name="service_id" onclick="ChoiseService('+value.id+', '+value.price+')" id="serviceRadios'+key+'" value="'+value.id+'">';
-                        strService += '    <label class="custom-control-label" for="serviceRadios'+key+'">'+value.name+'</label>';
-                        strService += '</div>';
-                    });
-                    strService += '</div>';
-                    $('#plan_place').append(strService);
-                    strService = '';
+                    serviceId = request.data.id;
+                    serviceAmount = parseInt(request.data.price) || 0;
                 }
             });
         } else {
-            $('#servicePlace').remove();
+            serviceId = null;
             serviceAmount = 0;
-            Itogo();
         }
+        Itogo();
+        // console.log(serviceAmount);
     }
+
+    // function LoadServices()
+    // {
+    //     strService = '';
+    //     url = '';
+    //     $('#servicePlace').remove();
+    //     if($('#developChat').is(':checked')) {
+    //         $.ajax({
+    //             type: "GET",
+    //             url: billing_url + "/services", //url,
+    //             dataType: 'json',
+    //             async: false,
+    //             headers: {
+    //                 "Authorization": "Basic " + billing_token
+    //             },
+    //             success: function (request) {
+    //                 strService += '<div class="mt-2" id="servicePlace">';
+    //                 strService += '<strong>Услуги:</strong>';
+    //                 $.each(request, function (key, value) {
+    //                     strService += '<div class="custom-control custom-radio">';
+    //                     strService += '    <input class="custom-control-input" type="radio" name="service_id" onclick="ChoiseService('+value.id+', '+value.price+')" id="serviceRadios'+key+'" value="'+value.id+'">';
+    //                     strService += '    <label class="custom-control-label" for="serviceRadios'+key+'">'+value.name+'</label>';
+    //                     strService += '</div>';
+    //                 });
+    //                 strService += '</div>';
+    //                 $('#plan_place').append(strService);
+    //                 strService = '';
+    //             }
+    //         });
+    //     } else {
+    //         $('#servicePlace').remove();
+    //         serviceAmount = 0;
+    //         Itogo();
+    //     }
+    // }
 
     function ChoiseService(id, price)
     {
@@ -297,7 +317,7 @@
             plan_discount = 1;
         }
         if(period >= 12) {
-            amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount/*-Раскомментировать 01,01,2019 - (serviceAmount * (plan_discount / 100))*/)/* + (additional_total * period)*/;
+            amount = (subscribeAmount * period - ((subscribeAmount * period) * (plan_discount / 100))) + (planAmount * period - ((planAmount * period) * (plan_discount / 100))) + (serviceAmount - (serviceAmount * (plan_discount / 100)))/* + (additional_total * period)*/;
         } else {
             amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount/* + (additional_total * period)*/;
         }
