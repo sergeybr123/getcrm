@@ -242,10 +242,12 @@
                                 </td>
                                 <td class="text-right">{{ number_format($invoice->amount, 0, '', ' ') }} тг.</td>
                                 <td class="text-center">
-                                    @if($invoice->paid == 0)
-                                        <span class="badge badge-secondary">Не оплачен</span>
-                                    @else
+                                    @if($invoice->status == 'active')
+                                        <span class="badge badge-danger">Не оплачен</span>
+                                    @elseif($invoice->status == 'paid')
                                         <span class="badge badge-success">Оплачен</span>
+                                    @else
+                                        <span class="badge badge-warning">Завершен</span>
                                     @endif
                                 </td>
                                 <td class="text-center">{{ \Carbon\Carbon::parse($invoice->created_at)->format('d.m.Y') ?? '' }}</td>
@@ -638,7 +640,7 @@
             if($('#developChat').is(':checked')) {
                 $.ajax({
                     type: "GET",
-                    url: billing_url + "/service/plan-not-null", //url,
+                    url: billing_url + "/services", //url,
                     dataType: 'json',
                     async: false,
                     headers: {
