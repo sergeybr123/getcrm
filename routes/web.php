@@ -6,8 +6,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+
+
 Auth::routes();
 Route::middleware('auth')->group(function() {
+
+    Route::get('exchange-multilink', 'Admin\MultiLinkController@change_multilink')->name('change_multilink');
+
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
     // Admin
     Route::prefix('admin')->name('admin::')->group(function() {
