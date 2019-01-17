@@ -24,8 +24,8 @@ class MultiLinkController extends Controller
             $bot->type = "multilink";
             $bot->botable_id = $item->company_id;
             $bot->botable_type = "App\\Models\\Company";
-            $bot->name = "MultiLink " . $company->slug;
-            $bot->description = "MultiLink";
+            $bot->name = $company->slug;
+            $bot->active = true;
             $bot->save();
 
             $bot_listener = new BotListener();
@@ -35,7 +35,13 @@ class MultiLinkController extends Controller
 
             $bot_answer = new BotAnswer();
             $bot_answer->bot_listener_id = $bot_listener->id;
-            $bot_answer->data = ['text' => "Whatsapp", 'type' => 'whatsapp', 'phone' => str_replace(['+', ' ', '-', '(', ')', '_'], '', $item->account_service_id)];
+            $bot_answer->data = ['text' => "Мы рады приветствовать вас!"];
+            $bot_answer->type = "GurmanAlexander\\TheBot\\Models\\Answers\\TextAnswer";
+            $bot_answer->save();
+
+            $bot_answer = new BotAnswer();
+            $bot_answer->bot_listener_id = $bot_listener->id;
+            $bot_answer->data = ['text' => "Whatsapp", 'type' => 'whatsapp', 'phone' => str_replace(['+', ' ', '-', '(', ')', '_'], '', $item->account_service_id), 'wa_text' => 'Привет'];
             $bot_answer->type = "GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer";
             $bot_answer->save();
         }
