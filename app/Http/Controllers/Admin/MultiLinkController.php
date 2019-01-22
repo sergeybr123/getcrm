@@ -37,12 +37,14 @@ class MultiLinkController extends Controller
             $bot_answer->bot_listener_id = $bot_listener->id;
             $bot_answer->data = ['text' => "Мы рады приветствовать вас!"];
             $bot_answer->type = "GurmanAlexander\\TheBot\\Models\\Answers\\TextAnswer";
+            $bot_answer->order = 1;
             $bot_answer->save();
 
             $bot_answer = new BotAnswer();
             $bot_answer->bot_listener_id = $bot_listener->id;
             $bot_answer->data = ['text' => "Whatsapp", 'type' => 'whatsapp', 'phone' => str_replace(['+', ' ', '-', '(', ')', '_'], '', $item->account_service_id), 'wa_text' => 'Привет'];
             $bot_answer->type = "GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer";
+            $bot_answer->order = 2;
             $bot_answer->save();
         }
         try{
