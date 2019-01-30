@@ -15,10 +15,10 @@ class MultiLinkController extends Controller
 {
     public function change_multilink()
     {
-        $whatsapp = Account::where('type', 'WhatsApp')->get();
+        $whatsapp = Account::where('company_id', '>', 35068)->where('type', 'WhatsApp')->get();
 
         foreach ($whatsapp as $item) {
-            $company = Company::where('id', $item->company_id)->whereNull('bot')->whereNull('temp_bot')->first();
+            $company = Company::where('id', $item->company_id)->where('id', '>', 35068)->whereNull('bot')->whereNull('temp_bot')->first();
 
             if($company != null) {
                 $bot = new Bot();
