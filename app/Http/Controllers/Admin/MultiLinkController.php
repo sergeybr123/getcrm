@@ -23,7 +23,7 @@ class MultiLinkController extends Controller
             if($company != null) {
                 $bot = new Bot();
                 $bot->type = "multilink";
-                $bot->botable_id = $item->company_id;
+                $bot->botable_id = $company->id;
                 $bot->botable_type = "App\\Models\\Company";
                 $bot->name = $company->slug;
                 $bot->active = true;

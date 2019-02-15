@@ -12,7 +12,7 @@
                 @forelse($bot_old as $key => $bo)
                     <li class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">https://getchat.me/</span>{{ $bo->slug }}</h5>
+                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">http://getchat.me/</span>{{ $bo->slug }}</h5>
                             <small class="text-muted" title="Дата создания">
                                 {{ \Carbon\Carbon::parse($bo->created_at)->format('d.m.Y') }}
                             </small>
@@ -26,7 +26,7 @@
                                 <a href="#" class="btn btn-circle btn-sm btn-outline-blue mr-1" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $bo->id }}, '{{ $bo->slug }}')">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
-                                <a href="https://getchat.me/constructor/{{ $bo->id }}" target="_blank" class="btn btn-circle btn-sm btn-outline-blue">
+                                <a href="http://getchat.me/constructor/{{ $bo->id }}" target="_blank" class="btn btn-circle btn-sm btn-outline-blue">
                                     <i class="fa fa-wrench"></i>
                                 </a>
                                 <div class="dropdown">
@@ -36,7 +36,7 @@
                                         <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="https://getchat.me/{{ $bo->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
+                                        <a class="dropdown-item" href="http://getchat.me/{{ $bo->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         {{--<button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>--}}
                                         @if($bo->temp_bot)
                                             <button class="dropdown-item" onclick="confirmBot({{ $bo->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить') }}</button>
@@ -68,7 +68,7 @@
                     {{--@foreach($bn->bots as $bot)--}}
 
                             {{--<div class="d-flex w-100 justify-content-between">--}}
-                                {{--<h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">https://getchat.me/</span>{{ $bn->slug }}</h5>--}}
+                                {{--<h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">http://getchat.me/</span>{{ $bn->slug }}</h5>--}}
                                 {{--<small class="text-muted" title="Дата создания">--}}
                                     {{--{{ \Carbon\Carbon::parse($bn->created_at)->format('d.m.Y') }}--}}
                                 {{--</small>--}}
@@ -81,7 +81,7 @@
                     {{--@if($bn->bots != '')--}}
                         {{--<li class="list-group-item">--}}
                             {{--<div class="d-flex w-100 justify-content-between">--}}
-                                {{--<h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">https://getchat.me/</span>{{ $bn->slug }}</h5>--}}
+                                {{--<h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">http://getchat.me/</span>{{ $bn->slug }}</h5>--}}
                                 {{--<small class="text-muted" title="Дата создания">--}}
                                     {{--{{ \Carbon\Carbon::parse($bn->created_at)->format('d.m.Y') }}--}}
                                 {{--</small>--}}
@@ -102,7 +102,7 @@
                                             {{--<i class="fa fa-ellipsis-v"></i>--}}
                                         {{--</button>--}}
                                         {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">--}}
-                                            {{--<a class="dropdown-item" href="https://getchat.me/{{ $bn->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>--}}
+                                            {{--<a class="dropdown-item" href="http://getchat.me/{{ $bn->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>--}}
                                             {{--<button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>--}}
                                             {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>--}}
                                         {{--</div>--}}
@@ -127,7 +127,7 @@
                 @forelse($pages as $key => $page)
                     <li class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">https://getchat.me/</span>{{ $page->slug }}</h5>
+                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">http://getchat.me/</span>{{ $page->slug }}</h5>
                             <small class="text-muted" title="Дата создания">
                                 {{ \Carbon\Carbon::parse($page->created_at)->format('d.m.Y') }}
                             </small>
@@ -148,7 +148,7 @@
                                         <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
+                                        <a class="dropdown-item" href="http://getchat.me/{{ $page->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         {{--<button class="dropdown-item" data-toggle="modal" data-target="#changeLinkModal"><i class="fa fa-exchange-alt"></i> {{ __('Изменить ссылку') }}</button>--}}
                                         <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $page->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
@@ -177,7 +177,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>{{ __('Ссылка:') }}</strong> https://getchat.me/<strong id="owner_link_slug"></strong></p>
+                        <p><strong>{{ __('Ссылка:') }}</strong> http://getchat.me/<strong id="owner_link_slug"></strong></p>
                         <input type="hidden" id="company_owner_id" name="company_id">
                         <input id="user" class="form-control" type="text" name="user" list="user_list">
                         <datalist id="user_list">

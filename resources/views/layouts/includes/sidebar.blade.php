@@ -50,7 +50,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.pages.index') }}">
-                    <i><i class="fa fa-copy"></i></i> @lang('sidebar.pages')
+                    <i><i class="fa fa-copy"></i></i> {{ __('MultiLink') }}
                 </a>
             </li>
             <li class="nav-item nav-dropdown">

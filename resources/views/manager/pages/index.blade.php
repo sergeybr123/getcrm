@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', __('Страницы'))
+@section('title', __('MultiLink'))
 
 @section('content')
-    <h1>{{ __('pages.pages') }} (@if($pages){{ $pages->total() }}@endif)</h1>
+    <h1>{{ __('MultiLink') }} (@if($pages){{ $pages->total() }}@endif)</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="px-3 mb-3">
@@ -33,7 +33,7 @@
                 @forelse($pages as $key => $page)
                     <li class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">https://getchat.me/</span>{{ $page->slug }}</h5>
+                            <h5 id="page_slug_{{ $key }}" class="mb-1"><span class="text-muted">http://getchat.me/</span>{{ $page->slug }}</h5>
                             <small class="text-muted" title="Дата создания">
                                 {{ \Carbon\Carbon::parse($page->created_at)->format('d.m.Y') }}
                             </small>
@@ -57,7 +57,7 @@
                                         <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
+                                        <a class="dropdown-item" href="http://getchat.me/{{ $page->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $page->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
@@ -136,7 +136,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>{{ __('Ссылка:') }}</strong> https://getchat.me/<strong id="owner_link_slug"></strong></p>
+                        <p><strong>{{ __('Ссылка:') }}</strong> http://getchat.me/<strong id="owner_link_slug"></strong></p>
                         <input type="hidden" id="company_owner_id" name="company_id">
                         <input id="user" class="form-control" type="text" name="user" list="user_list">
                         <datalist id="user_list">

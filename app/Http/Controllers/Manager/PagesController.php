@@ -21,16 +21,16 @@ class PagesController extends Controller
         $text = $request->text;
 
         if($type == 1 && $text != null) {
-            $pages = Company::where('slug', $text)->doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+            $pages = Company::where('slug', $text)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
         } elseif($type == 2 && $text != null) {
             $user = User::where('email', 'LIKE', '%' . $text . '%')->first();
             if($user != null) {
-                $pages = Company::where('user_id', $user->id)->doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+                $pages = Company::where('user_id', $user->id)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
             } else {
                 $pages = [];
             }
         } else {
-            $pages = Company::doesntHave('bots')->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+            $pages = Company::whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
         }
         return view('manager.pages.index', ['pages' => $pages, 'type' => $type, 'text' => $text]);
     }

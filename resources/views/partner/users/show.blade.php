@@ -118,7 +118,7 @@
                             <tr>
                                 <td>{{ $bot->slug }}</td>
                                 <td>
-                                    <span id="page_slug_{{ $bot->id }}">https://getchat.me/{{ $bot->slug }}</span>
+                                    <span id="page_slug_{{ $bot->id }}">http://getchat.me/{{ $bot->slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $bot->id }})" style="border-radius:50%;">
@@ -128,7 +128,7 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="https://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                        <a href="http://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
                                             <i class="fa fa-wrench"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $bot->id }}, '{{ $bot->slug }}')" title="{{ __('Редактирование ссылки') }}">
@@ -143,7 +143,7 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
+                                                <a class="dropdown-item" href="http://getchat.me/{{ $bot->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
                                                 <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $bot->id }}, '{{ $bot->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
@@ -174,7 +174,7 @@
                             <tr>
                                 <td>{{ $page->slug }}</td>
                                 <td>
-                                    <span id="page_slug_{{ $key }}">https://getchat.me/{{ $page->slug }}</span>
+                                    <span id="page_slug_{{ $key }}">http://getchat.me/{{ $page->slug }}</span>
                                     <button class="btn btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
@@ -196,7 +196,7 @@
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right"
                                                  aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item" href="https://getchat.me/{{ $page->slug }}" target="_blank">
+                                                <a class="dropdown-item" href="http://getchat.me/{{ $page->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
                                                 <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $page->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
@@ -257,7 +257,7 @@
                                     @endif
                                 </td>
                                 <th>
-                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice->id }}</span>
+                                    <span id="invoice_{{ $invoice->id }}" style="display:none;">http://getchat.me/order/pay/{{ $invoice->id }}</span>
                                     @if($invoice->paid == 0 && $invoice->created_at > \Carbon\Carbon::today()->subDay(7))
                                         <button class="float-right btn btn-outline-info btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                                 onclick="copyInvoiceToClipboard({{ $invoice->id }})" type="button"><i class="fa fa-copy"></i>
@@ -413,7 +413,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>{{ __('Ссылка:') }}</strong> https://getchat.me/<strong id="owner_link_slug"></strong></p>
+                        <p><strong>{{ __('Ссылка:') }}</strong> http://getchat.me/<strong id="owner_link_slug"></strong></p>
                         <input type="hidden" id="company_owner_id" name="company_id">
                         <input id="user" class="form-control" type="text" name="user" list="user_list">
                         <datalist id="user_list">
