@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function() {
             Route::get('{id}/edit', 'Manager\UsersController@edit')->name('edit');
             Route::post('{id}/update', 'Manager\UsersController@update')->name('update');
             Route::match(['get', 'post'], 'create/{id}/invoice', 'Manager\UsersController@invoice')->name('create_invoice');
+            Route::post('/delete-chat/{id}/{user_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');

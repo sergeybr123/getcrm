@@ -306,4 +306,23 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         return view('manager.users.invoice', ['user' => $user]);
     }
+
+    public function delete_chat($id, $user_id)
+    {
+//        dd($user_id);
+        $company = Company::find($id);
+//        dd($company);
+        if($company) {
+            $bot = Bot::find($company->id);
+            if($bot) {
+                $bot->delete();
+            }
+            $company->delete();
+//            return response()->json(['message' => 'Deleted'], 200);
+            return redirect()->route('manager.users.show', ['id' => $user_id]);
+        } else {
+//            return response()->json(['message' => 'Error'], 500);
+            return redirect()->route('manager.users.show', ['id' => $user_id]);
+        }
+    }
 }
