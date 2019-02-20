@@ -252,7 +252,7 @@
                                                 <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">
                                                     <i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}
                                                 </a>
-                                                <a class="dropdown-item" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
+                                                <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
                                                     <i class="fa fa-trash"></i> {{ __('Удалить') }}
                                                 </a>
                                                 <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $page->id, 'user_id' => $user->id]) }}" method="POST" style="display: none;">
