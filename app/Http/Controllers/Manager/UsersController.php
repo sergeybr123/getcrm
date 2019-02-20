@@ -313,16 +313,16 @@ class UsersController extends Controller
         $company = Company::find($id);
 //        dd($company);
         if($company) {
-            $bot = Bot::find($company->id);
+            $bot = Bot::where('botable_id', $company->id)->first();
+//            dd($bot);
             if($bot) {
                 $bot->delete();
             }
             $company->delete();
 //            return response()->json(['message' => 'Deleted'], 200);
             return redirect()->route('manager.users.show', ['id' => $user_id]);
-        } else {
-//            return response()->json(['message' => 'Error'], 500);
+        } /*else {
             return redirect()->route('manager.users.show', ['id' => $user_id]);
-        }
+        }*/
     }
 }
