@@ -12,6 +12,8 @@ use App\User;
 use App\Models\Company;
 use App\Models\Phone;
 use App\Models\Bot;
+use App\Models\BotListener;
+use App\Models\BotAnswer;
 use App\Models\Account;
 use App\Models\Profile;
 use App\Models\BillingPlan;
@@ -106,7 +108,13 @@ class UsersController extends Controller
                     ->orWhere('temp_bot', '!=', null);
             })->get();
         //->whereNotNull('bot')->orWhere('temp_bot', '!=', null)->whereNull('deleted_at')->get();
-        $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
+//        $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
+
+        $pages = Company::where('user_id', $user->id)
+            ->join('bots','bots.botable_id','=','companies.id')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->where('bots.type', 'multilink')
+            ->get();
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
 
@@ -299,6 +307,99 @@ class UsersController extends Controller
         } catch (Throwable $th){
             return response()->json(['error' => 1, 'message' => $th]);
         }
+    }
+
+    public function create_multilink(Request $request, $user_id)
+    {
+        $user = User::find($user_id);
+        if($request->isMethod('POST')) {
+            $company = new Company();
+            $company->user_id = $user->id;
+            $company->slug = $request->link;
+            $company->name = 'Multilink';
+            $company->description = $request->description;
+            $company->save();
+
+            $bot = new Bot();
+            $bot->type = 'multilink';
+            $bot->botable_id = $company->id;
+            $bot->botable_type = 'App\\Models\\Company';
+            $bot->name = 'Multilink';
+            $bot->active = 1;
+            $bot->save();
+
+            $bot_listener = new BotListener();
+            $bot_listener->bot_id = $bot->id;
+            $bot_listener->text = 'welcome';
+            $bot_listener->save();
+
+            if($request->welcome_text != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                $bot_answer->data = ['text' => $request->welcome_text];
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\TextAnswer';
+                $bot_answer->order = 1;
+                $bot_answer->save();
+            }
+            if($request->whatsapp != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                if($request->whatsapp_message != null) {
+                    $bot_answer->data = ['text' => 'Whatsapp', 'type' => 'whatsapp', 'phone' => str_replace(['+', ' ', '-', '(', ')', '_'], '', $request->whatsapp), 'wa_text' => $request->whatsapp_message];
+                } else {
+                    $bot_answer->data = ['text' => 'Whatsapp', 'type' => 'whatsapp', 'phone' => str_replace(['+', ' ', '-', '(', ')', '_'], '', $request->whatsapp), 'wa_text' => 'Приветствуем'];
+                }
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer';
+                $bot_answer->order = 2;
+                $bot_answer->save();
+            }
+            if($request->telegram != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                $bot_answer->data = ['text' => 'Telegram', 'type' => 'telegram', 'name' => str_replace('@', '', $request->telegram)];
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer';
+                $bot_answer->order = 3;
+                $bot_answer->save();
+            }
+            if($request->site != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                $bot_answer->data = ['text' => 'Ссылка на сайт', 'type' => 'link', 'url' => $request->site];
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer';
+                $bot_answer->order = 4;
+                $bot_answer->save();
+            }
+            if($request->phone != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                $bot_answer->data = ['text' => 'Телефон', 'type' => 'link', 'url' => 'tel:' . $request->phone];
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer';
+                $bot_answer->order = 5;
+                $bot_answer->save();
+            }
+            if($request->mail != null) {
+                $bot_answer = new BotAnswer();
+                $bot_answer->bot_listener_id = $bot_listener->id;
+                $bot_answer->data = ['text' => 'Электронная почта', 'type' => 'link', 'url' => 'mailto:' . $request->mail];
+                $bot_answer->type = 'GurmanAlexander\\TheBot\\Models\\Answers\\ActionAnswer';
+                $bot_answer->order = 6;
+                $bot_answer->save();
+            }
+            return redirect()->route('manager.users.show', $user->id);
+//            return response()->json([
+//                'ok'        => true,
+//                'message'   => 'Успешно создан',
+//                'company'   => $company
+//            ])->setStatusCode(201);
+        } else {
+//            return redirect()->route('manager.users.create_multilink');
+            return view('manager.multilink.create', ['user' => $user]);
+        }
+    }
+
+    public function edit_multilink(Request $request, $id)
+    {
+
     }
 
     public function invoice($id)
