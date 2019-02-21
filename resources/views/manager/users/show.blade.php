@@ -66,7 +66,7 @@
                             <a href="{{ route('manager.users.create_multilink', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить мультилик">
                                 {{ __('Добавить мультилик') }}
                             </a>
-                            <a href="#" class="dropdown-item" title="Добавить новый авточат">
+                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить новый авточат">
                                 {{ __('Добавить новый авточат') }}
                             </a>
                         </div>
@@ -145,6 +145,7 @@
         <div class="card-body">
             <ul class="nav nav-tabs" id="myTab1" role="tablist">
                 <li class="nav-item"><a class="nav-link active show" id="bot-tab" data-toggle="tab" href="#bot-tab-content" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>
+                <li class="nav-item"><a class="nav-link" id="new-bot-tab" data-toggle="tab" href="#new-bot-tab-content" role="tab" aria-controls="new-bot" aria-selected="true">Новые авточаты</a></li>
                 <li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Страницы</a></li>
                 <li class="nav-item"><a class="nav-link" id="invoice-tab" data-toggle="tab" href="#invoice-tab-content" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
             </ul>
@@ -209,6 +210,75 @@
                         </tbody>
                     </table>
                 </div>
+
+
+                <div class="tab-pane fade" id="new-bot-tab-content" role="tabpanel" aria-labelledby="new-bot-tab">
+                    <table class="table table-bordered table-striped dataTable">
+                        <thead>
+                        <tr>
+                            <th width="120">Наименование</th>
+                            <th class="d-none d-md-table-cell">Ссылка</th>
+                            <th width="100">Дата создания</th>
+                            <th width="90"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($new_bots as $key => $new_bot)
+                            <tr>
+                                <td>{{ $new_bot->BotName }}</td>
+                                <td class="d-none d-md-table-cell">
+                                    <span id="page_slug_{{ $key }}">https://getchat.me/{{ $new_bot->Slug }}</span>
+                                    <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
+                                            title="Копировать ссылку"
+                                            onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center">{{ \Carbon\Carbon::parse($new_bot->CompanyCreated)->format('d.m.Y') ?? '' }}</td>
+                                <td>
+                                    <div class="form-inline">
+                                        <a href="https://getchat.me/constructor2/{{ $new_bot->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                            <i class="fa fa-wrench"></i>
+                                        </a>
+                                        {{--<a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')" title="{{ __('Редактирование ссылки') }}">--}}
+                                        {{--<i class="fa fa-pencil-alt"></i>--}}
+                                        {{--</a>--}}
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-blue ml-1" type="button"
+                                                    id="dropdownMenuButton"
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                    style="border-radius:50%;width:30px;height:30px;">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                                {{--@if($new_bot->temp_bot != null)--}}
+                                                {{--<button class="dropdown-item" onclick="botConfirm({{ $new_bot->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить')  }}</button>--}}
+                                                {{--<button class="dropdown-item" onclick="botReset({{ $new_bot->id }})"><i class="fa fa-times"></i> {{ __('Сбросить')  }}</button>--}}
+                                                {{--@endif--}}
+                                                <a class="dropdown-item" href="https://getchat.me/{{ $new_bot->Slug }}" target="_blank">
+                                                    <i class="far fa-eye"></i> {{ __('buttons.view') }}
+                                                </a>
+                                                {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $new_bot->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
+                                                {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
+                                                {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
+                                                {{--</a>--}}
+                                                <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
+                                                    <i class="fa fa-trash"></i> {{ __('Удалить') }}
+                                                </a>
+                                                <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $new_bot->Id, 'user_id' => $user->id]) }}" method="POST" style="display: none;">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+
                 <div class="tab-pane fade" id="page-tab-content" role="tabpanel" aria-labelledby="page-tab">
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
@@ -234,7 +304,7 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($page->CompanyCreated)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="https://getchat.me/the-bot/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                        <a href="https://getchat.me/constructor2/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
                                             <i class="fa fa-wrench"></i>
                                         </a>
                                         {{--<a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')" title="{{ __('Редактирование ссылки') }}">--}}

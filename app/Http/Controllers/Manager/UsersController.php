@@ -107,8 +107,16 @@ class UsersController extends Controller
                 $result->whereNotNull('bot')
                     ->orWhere('temp_bot', '!=', null);
             })->get();
+
+
         //->whereNotNull('bot')->orWhere('temp_bot', '!=', null)->whereNull('deleted_at')->get();
 //        $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
+
+        $new_bots = Company::where('user_id', $user->id)
+            ->join('bots','bots.botable_id','=','companies.id')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->where('bots.type', 'bot')
+            ->get();
 
         $pages = Company::where('user_id', $user->id)
             ->join('bots','bots.botable_id','=','companies.id')
@@ -140,7 +148,7 @@ class UsersController extends Controller
 
 //        dd($invoices);
 
-        return view('manager.users.show', ['user' => $user, 'bots' => $bots, 'pages' => $pages, 'subscribe' => $subscribe, 'plans' => $plans, 'invoices' => $invoices]);
+        return view('manager.users.show', ['user' => $user, 'bots' => $bots, 'new_bots' => $new_bots, 'pages' => $pages, 'subscribe' => $subscribe, 'plans' => $plans, 'invoices' => $invoices]);
     }
 
     /**
@@ -386,13 +394,7 @@ class UsersController extends Controller
                 $bot_answer->save();
             }
             return redirect()->route('manager.users.show', $user->id);
-//            return response()->json([
-//                'ok'        => true,
-//                'message'   => 'Успешно создан',
-//                'company'   => $company
-//            ])->setStatusCode(201);
         } else {
-//            return redirect()->route('manager.users.create_multilink');
             return view('manager.multilink.create', ['user' => $user]);
         }
     }
@@ -400,6 +402,31 @@ class UsersController extends Controller
     public function edit_multilink(Request $request, $id)
     {
 
+    }
+
+    public function create_bot(Request $request, $user_id)
+    {
+        $user = User::find($user_id);
+        if($request->isMethod('POST')) {
+            $company = new Company();
+            $company->user_id = $user->id;
+            $company->slug = $request->link;
+            $company->name = $request->name;
+            $company->description = $request->description;
+            $company->save();
+
+            $bot = new Bot();
+            $bot->type = 'bot';
+            $bot->botable_id = $company->id;
+            $bot->botable_type = 'App\\Models\\Company';
+            $bot->name = $request->name;
+            $bot->active = 1;
+            $bot->save();
+
+            return redirect()->route('manager.users.show', $user->id);
+        } else {
+            return view('manager.bots.create', ['user' => $user]);
+        }
     }
 
     public function invoice($id)
