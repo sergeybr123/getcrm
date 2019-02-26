@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function() {
 });
 // Создание авточата
 Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot');
+Route::get('create-bot-on-exist/{company_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
 
 
 

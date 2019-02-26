@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 use Throwable;
 
 use App\User;
@@ -427,6 +428,22 @@ class UsersController extends Controller
         } else {
             return view('manager.bots.create', ['user' => $user]);
         }
+    }
+
+    public function createBotOnExist($company_id)
+    {
+        $company = Company::findOrFail($company_id);
+
+        $bot = new Bot();
+        $bot->type = 'bot';
+        $bot->botable_id = $company->id;
+        $bot->botable_type = 'App\\Models\\Company';
+        $bot->name = $company->name;
+        $bot->active = 1;
+        $bot->save();
+
+        return response()->json(['bot_id' => $bot->id]);
+//        return Redirect::to('https://getchat.me/constructor2/'.$bot->id);
     }
 
     public function invoice($id)

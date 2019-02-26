@@ -63,6 +63,7 @@
                                             <button class="dropdown-item" onclick="confirmBot({{ $boto->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить') }}</button>
                                             <button class="dropdown-item" onclick="resetBot({{ $boto->id }})"><i class="fa fa-undo-alt"></i> {{ __('Сбросить') }}</button>
                                         @endif
+                                        <button class="dropdown-item" onclick="createOnExist({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('Создать новый авточат') }}</button>
                                         <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $boto->id }}, '{{ $boto->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
@@ -153,6 +154,8 @@
             </div>
         </div>
     </div>
+
+    {{--<form method="post" action="{{ route('create_bot_on_exist') }}"></form>--}}
 @endsection
 @section('scripts')
     <script>
@@ -266,6 +269,17 @@
                     } else {
                         console.log(data)
                     }
+                });
+        }
+
+        /*--------Создание нового авточата по старой ссылке--------*/
+        function createOnExist(id) {
+            $.get("/create-bot-on-exist/" + id,
+                function(data) {
+                    var url = 'https://getchat.me/constructor2/' + data.bot_id;
+                    var target = $(this).prop('target');
+                    window.open(url, target);
+                    console.log(url);
                 });
         }
     </script>
