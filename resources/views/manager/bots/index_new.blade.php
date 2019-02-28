@@ -13,19 +13,21 @@
                 @forelse($bots_new as $key => $botn)
                     <li class="list-group-item">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ $botn->name }}</h5>
-                            <span id="bot_link_{{ $key }}" style="display: none;">https://getchat.me/{{ $botn->company->slug }}</span>
+                            <h5 class="mb-1">https://getchat.me/{{ $botn->Slug }}</h5>
+                            <span id="bot_link_{{ $key }}" style="display: none;">https://getchat.me/{{ $botn->Slug }}</span>
                             <small class="text-muted" title="Дата создания">
-                                {{ \Carbon\Carbon::parse($botn->created_at)->format('d.m.Y') }}
+                                @if(!is_null($botn->CompanyCreated))
+                                    {{ \Carbon\Carbon::parse($botn->CompanyCreated)->format('d.m.Y') }}
+                                @endif
                             </small>
                         </div>
                         <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1">
                                 <strong>{{ __('pages.owner') }}: </strong>
-                                <a href="{{ route('manager.users.show', ['id' => $botn->company->owner->id]) }}">{{ $botn->company->owner->email }}</a>
+                                <a href="{{ route('manager.users.show', ['id' => $botn->UserId]) }}">{{ $botn->UserEmail }}</a>
                             </p>
                             <div class="form-inline">
-                                <a href="https://getchat.me/constructor/{{ $botn->id }}" class="btn btn-circle btn-sm btn-outline-blue">
+                                <a href="https://getchat.me/constructor/{{ $botn->Id }}" class="btn btn-circle btn-sm btn-outline-blue">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
                                 <div class="dropdown">
@@ -35,7 +37,7 @@
                                         <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="https://getchat.me/{{ $botn->company->slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
+                                        <a class="dropdown-item" href="https://getchat.me/{{ $botn->Slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
                                         <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyBotToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>

@@ -104,6 +104,7 @@ class UsersController extends Controller
     {
         $user = User::find($id);
         $bots = Company::where('user_id', $id)
+            ->whereNull('deleted_at')
             ->where(function($result) {
                 $result->whereNotNull('bot')
                     ->orWhere('temp_bot', '!=', null);
@@ -115,14 +116,19 @@ class UsersController extends Controller
 
         $new_bots = Company::where('user_id', $user->id)
             ->join('bots','bots.botable_id','=','companies.id')
-            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->whereNull('companies.deleted_at')
             ->where('bots.type', 'bot')
+
             ->get();
+
+//        dd($new_bots);
 
         $pages = Company::where('user_id', $user->id)
             ->join('bots','bots.botable_id','=','companies.id')
-            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
             ->where('bots.type', 'multilink')
+            ->whereNull('companies.deleted_at')
             ->get();
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -421,7 +427,7 @@ class UsersController extends Controller
             $bot->botable_id = $company->id;
             $bot->botable_type = 'App\\Models\\Company';
             $bot->name = $request->name;
-            $bot->active = 1;
+            $bot->active = 0;
             $bot->save();
 
             return redirect()->route('manager.users.show', $user->id);
@@ -438,8 +444,8 @@ class UsersController extends Controller
         $bot->type = 'bot';
         $bot->botable_id = $company->id;
         $bot->botable_type = 'App\\Models\\Company';
-        $bot->name = $company->name;
-        $bot->active = 1;
+        $bot->name = $company->name ?? 'Новый авточат';
+        $bot->active = 0;
         $bot->save();
 
         return response()->json(['bot_id' => $bot->id]);

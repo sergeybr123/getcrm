@@ -45,7 +45,28 @@ class BotsController extends Controller
     }
     public function bot_new()
     {
-        $bots_new = Bot::whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+//        $bots_new = Bot::whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+
+        $bots_new = Company::/*where('user_id', $user->id)
+            ->*/
+        join('bots','bots.botable_id','=','companies.id')
+            ->join('users', 'users.id', '=', 'companies.user_id')
+            ->select(
+                'companies.id as Id',
+                'users.id as UserId',
+                'users.email as UserEmail',
+                'companies.slug as Slug',
+                'companies.created_at as CompanyCreated',
+                'companies.deleted_at as CompanyDeleted',
+                'bots.id as BotId', 'bots.type as BotType',
+                'bots.name as BotName',
+                'bots.active as BotActive'
+            )
+            ->whereNull('companies.deleted_at')
+            ->where('bots.type', 'bot')
+
+            ->paginate(30);
+
         return view('manager.bots.index_new', ['bots_new' => $bots_new]);
     }
 

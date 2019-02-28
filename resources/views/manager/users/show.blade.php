@@ -236,6 +236,7 @@
                                 </td>
                                 <td class="text-center">{{ \Carbon\Carbon::parse($new_bot->CompanyCreated)->format('d.m.Y') ?? '' }}</td>
                                 <td>
+
                                     <div class="form-inline">
                                         <a href="https://getchat.me/constructor2/{{ $new_bot->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
                                             <i class="fa fa-wrench"></i>
