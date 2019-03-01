@@ -20,18 +20,28 @@ class PagesController extends Controller
         $type = $request->type;
         $text = $request->text;
 
-        if($type == 1 && $text != null) {
-            $pages = Company::where('slug', $text)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
-        } elseif($type == 2 && $text != null) {
-            $user = User::where('email', 'LIKE', '%' . $text . '%')->first();
-            if($user != null) {
-                $pages = Company::where('user_id', $user->id)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
-            } else {
-                $pages = [];
-            }
-        } else {
-            $pages = Company::whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
-        }
+//        if($type == 1 && $text != null) {
+//            $pages = Company::where('slug', $text)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+//        } elseif($type == 2 && $text != null) {
+//            $user = User::where('email', 'LIKE', '%' . $text . '%')->first();
+//            if($user != null) {
+//                $pages = Company::where('user_id', $user->id)->whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+//            } else {
+//                $pages = [];
+//            }
+//        } else {
+//            $pages = Company::whereNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+//        }
+
+        $pages = Company::join('bots','bots.botable_id','=','companies.id')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->where('bots.type', 'multilink')
+            ->whereNull('companies.deleted_at')
+            ->orderBy('companies.id', 'desc')
+            ->paginate(30);
+
+//        dd($pages);
+
         return view('manager.pages.index', ['pages' => $pages, 'type' => $type, 'text' => $text]);
     }
 

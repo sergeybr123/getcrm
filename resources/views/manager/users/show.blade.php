@@ -146,7 +146,7 @@
             <ul class="nav nav-tabs" id="myTab1" role="tablist">
                 <li class="nav-item"><a class="nav-link active show" id="bot-tab" data-toggle="tab" href="#bot-tab-content" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>
                 <li class="nav-item"><a class="nav-link" id="new-bot-tab" data-toggle="tab" href="#new-bot-tab-content" role="tab" aria-controls="new-bot" aria-selected="true">Новые авточаты</a></li>
-                <li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Страницы</a></li>
+                <li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Мультилинки</a></li>
                 <li class="nav-item"><a class="nav-link" id="invoice-tab" data-toggle="tab" href="#invoice-tab-content" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
             </ul>
             <div class="tab-content" id="myTab1Content">
@@ -216,6 +216,7 @@
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
+                            <th width="50">#</th>
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
                             <th width="100">Дата создания</th>
@@ -225,6 +226,7 @@
                         <tbody>
                         @foreach($new_bots as $key => $new_bot)
                             <tr>
+                                <td>{{ $new_bot->BotId }}</td>
                                 <td>{{ $new_bot->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
                                     <span id="page_slug_{{ $key }}">https://getchat.me/{{ $new_bot->Slug }}</span>
@@ -284,6 +286,7 @@
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
+                            <th width="50">#</th>
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
                             <th width="100">Дата создания</th>
@@ -293,6 +296,7 @@
                         <tbody>
                         @foreach($pages as $key => $page)
                             <tr>
+                                <td>{{ $page->BotId }}</td>
                                 <td>{{ $page->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
                                     <span id="page_slug_{{ $key }}">https://getchat.me/{{ $page->Slug }}</span>

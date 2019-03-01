@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('users.users'))
+@section('title', __('Новые автоЧаты'))
 
 @section('content')
     <h1>{{ __('Авточаты новые') }} ({{ $bots_new->total() }})</h1>
@@ -23,12 +23,13 @@
                         </div>
                         <div class="d-flex w-100 justify-content-between">
                             <p class="mb-1">
+                                #{{ $botn->BotId }}
                                 <strong>{{ __('pages.owner') }}: </strong>
                                 <a href="{{ route('manager.users.show', ['id' => $botn->UserId]) }}">{{ $botn->UserEmail }}</a>
                             </p>
                             <div class="form-inline">
-                                <a href="https://getchat.me/constructor/{{ $botn->Id }}" class="btn btn-circle btn-sm btn-outline-blue">
-                                    <i class="fa fa-pencil-alt"></i>
+                                <a href="https://getchat.me/constructor2/{{ $botn->BotId }}" target="_blank" class="btn btn-circle btn-sm btn-outline-blue">
+                                    <i class="fa fa-wrench"></i>
                                 </a>
                                 <div class="dropdown">
                                     <button class="btn btn-circle btn-sm btn-outline-blue ml-1" type="button" id="dropdownMenuButton"
@@ -38,7 +39,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="https://getchat.me/{{ $botn->Slug }}" target="_blank"><i class="far fa-eye"></i> {{ __('buttons.view') }}</a>
-                                        <button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>
+                                        {{--<button class="dropdown-item" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-exchange-alt"></i> {{ __('buttons.change_owner') }}</button>--}}
                                         <a class="dropdown-item" href="#" onclick="copyBotToClipboard({{ $key }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
                                 </div>
@@ -57,25 +58,25 @@
 
 
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{ __('pages.change_owner') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{--<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
+        {{--<div class="modal-dialog" role="document">--}}
+            {{--<div class="modal-content">--}}
+                {{--<div class="modal-header">--}}
+                    {{--<h5 class="modal-title" id="exampleModalLabel">{{ __('pages.change_owner') }}</h5>--}}
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+                        {{--<span aria-hidden="true">&times;</span>--}}
+                    {{--</button>--}}
+                {{--</div>--}}
+                {{--<div class="modal-body">--}}
+                    {{--...--}}
+                {{--</div>--}}
+                {{--<div class="modal-footer">--}}
+                    {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>--}}
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
 @endsection
 @section('scripts')
     <script>

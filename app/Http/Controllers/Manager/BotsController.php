@@ -58,7 +58,8 @@ class BotsController extends Controller
                 'companies.slug as Slug',
                 'companies.created_at as CompanyCreated',
                 'companies.deleted_at as CompanyDeleted',
-                'bots.id as BotId', 'bots.type as BotType',
+                'bots.id as BotId',
+                'bots.type as BotType',
                 'bots.name as BotName',
                 'bots.active as BotActive'
             )
