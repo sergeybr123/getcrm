@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 use App\User;
@@ -411,24 +413,20 @@ class UsersController extends Controller
 
     }
 
+    function RandomString($length) {
+        $original_string = array_merge(range(0,9), range('a','z'), range('A', 'Z'));
+        $original_string = implode("", $original_string);
+        return substr(str_shuffle($original_string), 0, $length);
+    }
+
     public function create_bot(Request $request, $user_id)
     {
         $user = User::find($user_id);
         if($request->isMethod('POST')) {
-            $company = new Company();
-            $company->user_id = $user->id;
-            $company->slug = $request->link;
-            $company->name = $request->name;
-            $company->description = $request->description;
-            $company->save();
 
-            $bot = new Bot();
-            $bot->type = 'bot';
-            $bot->botable_id = $company->id;
-            $bot->botable_type = 'App\\Models\\Company';
-            $bot->name = $request->name;
-            $bot->active = 0;
-            $bot->save();
+//            dd($request);
+
+
 
             return redirect()->route('manager.users.show', $user->id);
         } else {

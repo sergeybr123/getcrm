@@ -31,4 +31,20 @@ class ApiController extends Controller
             return response()->json(['error' => 1, 'message' => $th]);
         }
     }
+
+    /*----------Получаем список шаблонов для авточата-----------*/
+    public function getTemplates(Request $request)
+    {
+        $templates = Company::
+        join('bots','bots.botable_id','=','companies.id')
+            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->where('bots.type', 'bot_template')
+            ->whereNull('companies.deleted_at')
+            ->paginate(30);
+        try{
+            return response()->json(['error' => 0, 'templates' => $templates]);
+        } catch (Throwable $th) {
+            return response()->json(['error' => 1, 'message' => $th]);
+        }
+    }
 }

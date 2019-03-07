@@ -49,14 +49,15 @@
                                         <i class="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <button class="dropdown-item" onclick="createOnExist({{ $page->id }})"><i class="fa fa-copy"></i> {{ __('Создать новый авточат') }}</button>
+                                        <a class="dropdown-item" href="https://getchat.me/{{ $page->Slug }}" target="_blank">
+                                            <i class="far fa-eye"></i> {{ __('buttons.view') }}
+                                        </a>
+                                        <button class="dropdown-item" onclick="createOnExist({{ $page->Id }})"><i class="fa fa-copy"></i> {{ __('Создать новый авточат') }}</button>
                                         {{--@if($new_bot->temp_bot != null)--}}
                                         {{--<button class="dropdown-item" onclick="botConfirm({{ $new_bot->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить')  }}</button>--}}
                                         {{--<button class="dropdown-item" onclick="botReset({{ $new_bot->id }})"><i class="fa fa-times"></i> {{ __('Сбросить')  }}</button>--}}
                                         {{--@endif--}}
-                                        <a class="dropdown-item" href="https://getchat.me/{{ $page->Slug }}" target="_blank">
-                                            <i class="far fa-eye"></i> {{ __('buttons.view') }}
-                                        </a>
+
                                         {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $new_bot->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
                                         {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
                                         {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}

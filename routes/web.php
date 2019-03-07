@@ -28,6 +28,11 @@ Route::middleware('auth')->group(function() {
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
+        /*----------Шаблоны авточатов----------*/
+        Route::prefix('templates')->name('templates.')->group(function(){
+            Route::get( '', 'Manager\TemplateController@index')->name('index');
+        });
+        /*----------Мои работы----------*/
         Route::prefix('mywork')->name('mywork.')->group(function(){
             Route::get( '', 'Manager\MyWorkController@index')->name('index');
         });
@@ -84,9 +89,12 @@ Route::middleware('auth')->group(function() {
 // Создание авточата
 Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot');
 Route::get('create-bot-on-exist/{company_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
+Route::get('get-templates', 'Api\ApiController@getTemplates')->name('get_templates');
 
 
-
+Route::prefix('templates')->name('templates.')->group(function(){
+    Route::get( '', 'Manager\TemplateController@index')->name('index');
+});
 
 
 //Route::get('/home', 'HomeController@index')->name('home');

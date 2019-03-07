@@ -71,6 +71,11 @@
                 </ul>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('manager.templates.index') }}">
+                    <i><i class="fa fa-copy"></i></i> {{ __('Шаблоны') }}
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.invoices.index') }}">
                     <i><i class="fa fa-file-invoice"></i></i> @lang('sidebar.invoices')
                 </a>
