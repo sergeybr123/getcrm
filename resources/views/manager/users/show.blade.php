@@ -263,7 +263,7 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $new_bot->Slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
-                                                <button class="dropdown-item" onclick="createOnExist({{ $bot->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
+                                                <button class="dropdown-item" onclick="createOnExist({{ $new_bot->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
                                                 {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $new_bot->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
                                                 {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
                                                 {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
