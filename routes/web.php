@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function() {
             Route::match(['get', 'post'], 'create/{id}/invoice', 'Manager\UsersController@invoice')->name('create_invoice');
             Route::match(['get', 'post'], 'multilink/{user_id}/create', 'Manager\UsersController@create_multilink')->name('create_multilink');
             Route::match(['get', 'post'], 'bots/{user_id}/create', 'Manager\UsersController@create_bot')->name('create_bot');
-            Route::post('/delete-chat/{id}/{user_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');
+            Route::post('/delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');
@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function() {
 });
 // Создание авточата
 Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot');
-Route::get('create-bot-on-exist/{company_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
+Route::get('create-bot-on-exist/{company_id}/{type_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
 Route::get('get-templates', 'Api\ApiController@getTemplates')->name('get_templates');
 
 

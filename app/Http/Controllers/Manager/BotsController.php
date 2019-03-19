@@ -65,7 +65,7 @@ class BotsController extends Controller
             )
             ->whereNull('companies.deleted_at')
             ->where('bots.type', 'bot')
-
+            ->orderBy('companies.id', 'desc')
             ->paginate(30);
 
         return view('manager.bots.index_new', ['bots_new' => $bots_new]);

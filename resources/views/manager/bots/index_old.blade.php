@@ -63,7 +63,8 @@
                                             <button class="dropdown-item" onclick="confirmBot({{ $boto->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить') }}</button>
                                             <button class="dropdown-item" onclick="resetBot({{ $boto->id }})"><i class="fa fa-undo-alt"></i> {{ __('Сбросить') }}</button>
                                         @endif
-                                        <button class="dropdown-item" onclick="createOnExist({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('Создать новый авточат') }}</button>
+                                        <button class="dropdown-item" onclick="createOnExist({{ $boto->id }}, 1)"><i class="fa fa-comments"></i> {{ __('Создать новый авточат') }}</button>
+                                        <button class="dropdown-item" onclick="createOnExist({{ $boto->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
                                         <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $boto->id }}, '{{ $boto->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                         <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $boto->id }})"><i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}</a>
                                     </div>
@@ -271,8 +272,8 @@
         }
 
         /*--------Создание нового авточата по старой ссылке--------*/
-        function createOnExist(id) {
-            $.get("/create-bot-on-exist/" + id,
+        function createOnExist(id, type) {
+            $.get("/create-bot-on-exist/" + id + '/' + type,
                 function(data) {
                     var url = 'https://getchat.me/constructor2/' + data.bot_id;
                     var target = $(this).prop('target');

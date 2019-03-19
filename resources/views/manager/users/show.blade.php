@@ -197,6 +197,8 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $bot->slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
+                                                    <button class="dropdown-item" onclick="createOnExist({{ $bot->id }}, 1)"><i class="fa fa-comments"></i> {{ __('Создать новый авточат') }}</button>
+                                                    <button class="dropdown-item" onclick="createOnExist({{ $bot->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
                                                 <button class="dropdown-item" onclick="changeOwnerButtonClick({{ $bot->id }}, '{{ $bot->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>
                                                 <a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $bot->id }})">
                                                     <i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}
@@ -261,16 +263,19 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $new_bot->Slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
+                                                <button class="dropdown-item" onclick="createOnExist({{ $bot->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
                                                 {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $new_bot->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
                                                 {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
                                                 {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
                                                 {{--</a>--}}
+                                                @if(!is_null($new_bot->BotId))
                                                 <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
                                                     <i class="fa fa-trash"></i> {{ __('Удалить') }}
                                                 </a>
-                                                <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $new_bot->Id, 'user_id' => $user->id]) }}" method="POST" style="display: none;">
+                                                <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $new_bot->Id, 'user_id' => $user->id, 'bot_id' => $new_bot->BotId]) }}" method="POST" style="display: none;">
                                                     @csrf
                                                 </form>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -334,10 +339,11 @@
                                                 {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
                                                     {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
                                                 {{--</a>--}}
+                                                <button class="dropdown-item" onclick="createOnExist({{ $page->Id }}, 1)"><i class="fa fa-comments"></i> {{ __('Создать новый авточат') }}</button>
                                                 <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
                                                     <i class="fa fa-trash"></i> {{ __('Удалить') }}
                                                 </a>
-                                                <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $page->Id, 'user_id' => $user->id]) }}" method="POST" style="display: none;">
+                                                <form id="delete-chat" action="{{ route('manager.users.delete_chat', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">
                                                     @csrf
                                                 </form>
                                             </div>
@@ -430,107 +436,6 @@
             </div>
         </div>
     </div>
-
-    {{--<div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel"--}}
-         {{--aria-hidden="true">--}}
-        {{--<div class="modal-dialog modal-lg" role="document">--}}
-            {{--<div class="modal-content">--}}
-                {{--<div class="modal-header">--}}
-                    {{--<h5 class="modal-title" id="exampleModalLabel">Выставить счет</h5>--}}
-                    {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-                        {{--<span aria-hidden="true">&times;</span>--}}
-                    {{--</button>--}}
-                {{--</div>--}}
-                {{--<div class="modal-body">--}}
-                    {{--<div id="plan_place"></div>--}}
-                    {{--<div id="periodDiv" class="mt-2" style="display: none">--}}
-                        {{--<strong>Период</strong>--}}
-                        {{--<input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">--}}
-                    {{--</div>--}}
-                    {{--<div class="mt-3" id="amount_place">--}}
-                        {{--<strong>Итого: </strong><span id="amount">0</span>--}}
-                    {{--</div>--}}
-                    {{--<textarea id="description" class="form-control mt-2" rows="3" placeholder="Описание(не обязательно)"></textarea>--}}
-                {{--</div>--}}
-                {{--<div class="modal-footer">--}}
-                    {{--<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseForm()">{{ __('Закрыть') }}</button>--}}
-                    {{--<button type="button" class="btn btn-primary" onclick="PostForm()">{{ __('Сохранить') }}</button>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-
-    {{--<div class="modal fade" id="payActivateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">--}}
-        {{--<div class="modal-dialog" role="document">--}}
-            {{--<div class="modal-content">--}}
-                {{--<form action="{{ route('manager.pay.activate') }}" method="post">--}}
-                    {{--@csrf--}}
-                    {{--<input type="hidden" name="user_id" value="{{ $user->id }}">--}}
-                    {{--<div class="modal-header">--}}
-                        {{--<h5 class="modal-title" id="exampleModalLabel">Выберите счет</h5>--}}
-                        {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-                            {{--<span aria-hidden="true">&times;</span>--}}
-                        {{--</button>--}}
-                    {{--</div>--}}
-                    {{--<div class="modal-body">--}}
-                        {{--@forelse($invoices as $invoice)--}}
-                            {{--@if($invoice->paid == 1)--}}
-                            {{--<div class="form-check">--}}
-                                {{--<input class="form-check-input" type="radio" name="invoice_id" id="inv_{{ $invoice->id }}" value="{{ $invoice->id }}">--}}
-                                {{--<label class="form-check-label" for="inv_{{ $invoice->id }}">--}}
-                                    {{--{{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}--}}
-                                {{--</label>--}}
-                            {{--</div>--}}
-                            {{--@endif--}}
-                        {{--@empty--}}
-                            {{--<span>Данные отсутствуют</span>--}}
-                        {{--@endforelse--}}
-                        {{--<input class="form-control mt-3" name="date" type="date">--}}
-                    {{--</div>--}}
-                    {{--<div class="modal-footer">--}}
-                        {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>--}}
-                        {{--<button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>--}}
-                    {{--</div>--}}
-                {{--</form>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-
-    {{--<div class="modal fade" id="subscribeModal" tabindex="-1" role="dialog" aria-labelledby="subscribeModalLabel" aria-hidden="true">--}}
-        {{--<div class="modal-dialog" role="document">--}}
-            {{--<div class="modal-content">--}}
-                {{--<form action="{{ route('manager.pay.activate') }}" method="post">--}}
-                    {{--@csrf--}}
-                    {{--<input type="hidden" name="user_id" value="{{ $user->id }}">--}}
-                    {{--<div class="modal-header">--}}
-                        {{--<h5 class="modal-title" id="exampleModalLabel">{{ __('Продление подписки пользователя') }}</h5>--}}
-                        {{--<button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-                            {{--<span aria-hidden="true">&times;</span>--}}
-                        {{--</button>--}}
-                    {{--</div>--}}
-                    {{--<div class="modal-body">--}}
-                        {{--@forelse($invoices as $invoice)--}}
-                            {{--@if($invoice->type->id == 1 && $invoice->paid == 1)--}}
-                                {{--<div class="form-check">--}}
-                                    {{--<input class="form-check-input" type="radio" name="invoice_id" id="inv{{ $invoice->id }}" value="{{ $invoice->id }}">--}}
-                                    {{--<label class="form-check-label" for="inv{{ $invoice->id }}">--}}
-                                        {{--{{ '#' . $invoice->id . ' Дата оплаты: ' . \Carbon\Carbon::parse($invoice->paid_at)->format('d.m.Y') }}--}}
-                                    {{--</label>--}}
-                                {{--</div>--}}
-                            {{--@endif--}}
-                        {{--@empty--}}
-                            {{--<span>Данные отсутствуют</span>--}}
-                        {{--@endforelse--}}
-                        {{--<input class="form-control mt-3" name="date" type="date">--}}
-                    {{--</div>--}}
-                    {{--<div class="modal-footer">--}}
-                        {{--<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>--}}
-                        {{--<button type="submit" class="btn btn-primary">{{ __('Активировать') }}</button>--}}
-                    {{--</div>--}}
-                {{--</form>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
 
     {{--Изменение ссылки--}}
     <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
@@ -1150,6 +1055,18 @@
                     }
                 }
             });
+        }
+
+        /*--------Создание нового авточата по старой ссылке--------*/
+        function createOnExist(id, type) {
+            var url = 'https://getchat.me/constructor2/';
+            console.log(id + ' ' + type)
+            $.get("/create-bot-on-exist/" + id + '/' + type,
+                function(data) {
+                    var target = $(this).prop('target');
+                    window.open(url + data.bot_id, target);
+                    console.log(url + data.bot_id);
+                });
         }
     </script>
 @endsection

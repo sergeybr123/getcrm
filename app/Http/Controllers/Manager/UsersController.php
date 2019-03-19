@@ -118,7 +118,16 @@ class UsersController extends Controller
 
         $new_bots = Company::where('user_id', $user->id)
             ->join('bots','bots.botable_id','=','companies.id')
-            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->select(
+                'companies.id as Id',
+                'companies.slug as Slug',
+                'companies.created_at as CompanyCreated',
+                'companies.deleted_at as CompanyDeleted',
+                'bots.id as BotId',
+                'bots.type as BotType',
+                'bots.name as BotName',
+                'bots.active as BotActive'
+            )
             ->whereNull('companies.deleted_at')
             ->where('bots.type', 'bot')
 
@@ -434,15 +443,21 @@ class UsersController extends Controller
         }
     }
 
-    public function createBotOnExist($company_id)
+    public function createBotOnExist($company_id, $type_id)
     {
         $company = Company::findOrFail($company_id);
 
         $bot = new Bot();
-        $bot->type = 'bot';
+        if($type_id == 1) {
+            $bot->type = 'bot';
+            $bot->name = $company->name ?? 'Новый авточат';
+        } else if($type_id == 2) {
+            $bot->type = 'multilink';
+            $bot->name = $company->name ?? 'Multilink';
+        }
         $bot->botable_id = $company->id;
         $bot->botable_type = 'App\\Models\\Company';
-        $bot->name = $company->name ?? 'Новый авточат';
+
         $bot->active = 0;
         $bot->save();
 
@@ -456,19 +471,19 @@ class UsersController extends Controller
         return view('manager.users.invoice', ['user' => $user]);
     }
 
-    public function delete_chat($id, $user_id)
+    public function delete_chat($id, $user_id, $bot_id)
     {
 //        dd($user_id);
         $company = Company::find($id);
 //        dd($company);
         if($company) {
-            $bot = Bot::where('botable_id', $company->id)->first();
-//            dd($bot);
+            $bot = Bot::findOrFail($bot_id);
             if($bot) {
-                $bot->delete();
+                $bot->deleted_at = Carbon::now();
+                $bot->save();
             }
-            $company->delete();
-//            return response()->json(['message' => 'Deleted'], 200);
+            $company->deleted_at = Carbon::now();
+            $company->save();
             return redirect()->route('manager.users.show', ['id' => $user_id]);
         } /*else {
             return redirect()->route('manager.users.show', ['id' => $user_id]);
