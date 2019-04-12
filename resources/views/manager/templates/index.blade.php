@@ -20,8 +20,11 @@
                                 <span>https://getchat.me/{{ $page->Slug }}</span>
                             </p>
                             <div class="form-inline">
-                                <a href="https://getchat.me/constructor2/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;">
+                                <a href="https://getchat.me/constructor2/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;" title="Открыть в конструкторе">
                                     <i class="fa fa-wrench"></i>
+                                </a>
+                                <a href="#" target="_blank" onclick="copyTemplate({{ $page->BotId }})" class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;" title="Копировать шаблон">
+                                    <i class="fa fa-copy"></i>
                                 </a>
                             </div>
                         </div>
@@ -37,9 +40,55 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="copyTemplateModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="copyBotForm" method="post" action="{{ route('copy_templates') }}">
+                    @csrf
+                    <input type="hidden" id="template_id" name="template_id">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Копирование авточата') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <strong>{{ __('Ссылка:') }}</strong>
+                        <input id="link" class="form-control" type="text" name="link">
+                    </div>
+                    <div class="modal-body">
+                        <strong>{{ __('Пользователь:') }}</strong>
+                        <input id="user_email" class="form-control" type="text" name="user_email">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Копировать') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
-    <script>
-
+    <script> // onclick="createCopy()"
+        var template_id = null;
+        function copyTemplate(id) {
+            $('#template_id').val(id);
+            $('#copyTemplateModal').modal();
+        }
+        // function createCopy() {
+        //     var url = 'http://getchat/create-new-bot';
+        //     $.ajax({
+        //         type: "GET",
+        //         url: url,
+        //         data: $('#copyBotForm').serialize(),
+        //         success: function(request) {
+        //             $('#copyTemplateModal').modal('hide');
+        //         }
+        //     });
+        // }
     </script>
 @endsection

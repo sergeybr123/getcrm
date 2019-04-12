@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BotAnswer extends Model
+class BotInput extends Model
 {
-    protected $table = 'bot_answers';
+    protected $table = 'bot_inputs';
 
     protected $fillable = [
-        'bot_answer_id',
-        'order',
-        'bot_listener_id',
+        'bot_id',
         'data',
         'type',
     ];

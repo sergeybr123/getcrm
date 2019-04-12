@@ -95,6 +95,7 @@ class InvoicesController extends Controller
                 }
             }
         }
+//        dd($invoices);
 
         return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices, 'filter' => $filter, 'search' => $search]);
 

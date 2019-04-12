@@ -78,9 +78,6 @@ class UsersController extends Controller
                 $user_phone = $item;
             }
         }
-//        dd($user_phone);
-
-
         $password = $this->generatePassword();
         $user = User::create([
             'name' => $request->name,
@@ -137,7 +134,15 @@ class UsersController extends Controller
 
         $pages = Company::where('user_id', $user->id)
             ->join('bots','bots.botable_id','=','companies.id')
-            ->select('companies.id as Id', 'companies.slug as Slug', 'companies.created_at as CompanyCreated', 'companies.deleted_at as CompanyDeleted', 'bots.id as BotId', 'bots.type as BotType', 'bots.name as BotName', 'bots.active as BotActive')
+            ->select(
+                'companies.id as Id',
+                'companies.slug as Slug',
+                'companies.created_at as CompanyCreated',
+                'companies.deleted_at as CompanyDeleted',
+                'bots.id as BotId', 'bots.type as BotType',
+                'bots.name as BotName',
+                'bots.active as BotActive'
+            )
             ->where('bots.type', 'multilink')
             ->whereNull('companies.deleted_at')
             ->get();
@@ -257,12 +262,10 @@ class UsersController extends Controller
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $count = mb_strlen($chars);
-
         for ($i = 0, $result = ''; $i < $length; $i++) {
             $index = rand(0, $count - 1);
             $result .= mb_substr($chars, $index, 1);
         }
-
         return $result;
     }
 
@@ -433,7 +436,23 @@ class UsersController extends Controller
         $user = User::find($user_id);
         if($request->isMethod('POST')) {
 
-//            dd($request);
+
+//            dd($user_id);
+
+            $company = new Company();
+            $company->user_id = $user->id;
+            $company->slug = $request->link;
+            $company->name = $request->name;
+            $company->description = $request->description;
+            $company->save();
+
+            $bot = new Bot();
+            $bot->type = 'bot';
+            $bot->botable_id = $company->id;
+            $bot->botable_type = 'App\\Models\\Company';
+            $bot->name = $request->name;
+            $bot->active = 0;
+            $bot->save();
 
 
 

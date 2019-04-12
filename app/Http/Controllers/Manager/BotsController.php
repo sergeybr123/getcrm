@@ -168,4 +168,12 @@ class BotsController extends Controller
     {
         //
     }
+
+    public function activate($user_id, $bot_id)
+    {
+        $bot = Bot::findOrFail($bot_id);
+        $bot->active = 1;
+        $bot->save();
+        return redirect()->route('manager.users.show', $user_id);
+    }
 }

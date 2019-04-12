@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\BotAnswer;
 
 class BotListener extends Model
 {
@@ -18,4 +19,9 @@ class BotListener extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function answers()
+    {
+        return $this->hasMany(BotAnswer::class)->orderBy('order');
+    }
 }

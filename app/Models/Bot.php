@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\BotListener;
 
 class Bot extends Model
 {
@@ -23,5 +24,13 @@ class Bot extends Model
     {
         $company = $this->hasOne('App\Models\Company', 'id', 'botable_id');
         return $company;
+    }
+
+    public function listeners() {
+        return $this->hasMany(BotListener::class);
+    }
+
+    public function inputs() {
+        return $this->hasMany(BotInput::class);
     }
 }

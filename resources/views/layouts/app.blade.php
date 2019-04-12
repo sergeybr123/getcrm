@@ -32,18 +32,22 @@
 
     </ul>
     <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-            <a class="nav-link nav-link mr-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-user-circle" style="font-size: 34px;"></i>
+        <li class="nav-item pr-3">
+            <a class="nav-link" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                <i class="fa fa-sign-out-alt"></i> Выйти
             </a>
-            <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-header text-center">
-                    <strong>Управление</strong>
-                </div>
+        {{--<li class="nav-item dropdown">--}}
+            {{--<a class="nav-link nav-link mr-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">--}}
+                {{--<i class="far fa-user-circle" style="font-size: 34px;"></i>--}}
+            {{--</a>--}}
+            {{--<div class="dropdown-menu dropdown-menu-right">--}}
+                {{--<div class="dropdown-header text-center">--}}
+                    {{--<strong>Управление</strong>--}}
+                {{--</div>--}}
                 {{--<a class="dropdown-item" href="#"><i class="fa fa-user"></i> Профиль</a>--}}
                 {{--<a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Настройки</a>--}}
-                <a class="dropdown-item" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Выйти</a>
-            </div>
+                {{--<a class="dropdown-item" href="#" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Выйти</a>--}}
+            {{--</div>--}}
         </li>
     </ul>
 </header>

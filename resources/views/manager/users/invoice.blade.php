@@ -27,7 +27,7 @@
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('manager.users.show', $user->id) }}" class="btn btn-secondary">{{ __('Отмена') }}</a>
-                    <button type="button" class="btn btn-primary" onclick="PostForm()">{{ __('Сохранить') }}</button>
+                    <button id="send_invoice" type="button" class="btn btn-primary" onclick="PostForm()" disabled>{{ __('Сохранить') }}</button>
                 </div>
             </div>
         </div>
@@ -35,26 +35,26 @@
 @endsection
 @section('scripts')
 <script>
-    let billing_token = '{{ config('app.billing_token') }}';
-    let billing_url = '{{ config('app.billing_url') }}';
-    let typeId = null;
-    let planId = null;
-    let serviceId = null;
-    let amount = 0;
-    let planAmount = 0;
-    let serviceAmount = 0;
-    let subscribeAmount = 0;
-    let url = '';
-    let strPlan = '';
-    let strService = '';
-    let period = $('#periodMonth').val();
-    let plan_discount = 0;
+    var billing_token = '{{ config('app.billing_token') }}';
+    var billing_url = '{{ config('app.billing_url') }}';
+    var typeId = null;
+    var planId = null;
+    var serviceId = null;
+    var amount = 0;
+    var planAmount = 0;
+    var serviceAmount = 0;
+    var subscribeAmount = 0;
+    var url = '';
+    var strPlan = '';
+    var strService = '';
+    var period = $('#periodMonth').val();
+    var plan_discount = 0;
 
     /*--------Дополнения к подписке--------*/
-    let additional_quantity = 0;
-    let additional_price = 0;
-    let additional_total = 0;
-    let additional_str = '';
+    var additional_quantity = 0;
+    var additional_price = 0;
+    var additional_total = 0;
+    var additional_str = '';
 
     $('#periodMonth').bind('keyup mouseup', function() {
         period = this.value;
@@ -68,7 +68,7 @@
 
     function Load()
     {
-        let str = '';
+        var str = '';
         $('#plan_place').empty();
         $.ajax({
             type: "GET",
@@ -122,14 +122,21 @@
                     //     $('#periodDiv').css('display', 'block');
                     // }
                     // console.log(request.data.id);
-                    let date_now = Date.now();
-                    let date_end = new Date(request.data.end_at);
-                    let millisecondsPerDay = 1000 * 60 * 60 * 24;
+                    var date_now = Date.now();
+                    var date_end = new Date(request.data.end_at);
+                    var millisecondsPerDay = 1000 * 60 * 60 * 24;
 
-                    let millisBetween = date_end.getTime() - date_now;
-                    let days = millisBetween / millisecondsPerDay;
+                    var millisBetween = date_end.getTime() - date_now;
+                    var days = millisBetween / millisecondsPerDay;
 
-                    console.log(Math.floor(days));
+                    // console.log(Math.floor(days));
+                    // console.log(request.data.plan_id);
+                    if(request.data.plan_id === 7) {
+                        alert("Вы не можете поставить продление!!!");
+                        $('#send_invoice').attr("disabled", true);
+                    } else {
+                        $('#send_invoice').removeAttr('disabled');
+                    }
 
                     // if(request.data.additional != null){
                     //     $.ajax({
@@ -193,6 +200,7 @@
                 }
             });
             $('#plan_place').append(strService);
+            $('#send_invoice').removeAttr('disabled');
         }
         if(id === 3) {
             $('#periodMonth').val(1);
@@ -221,6 +229,7 @@
                     strService = '';
                 }
             });
+            $('#send_invoice').removeAttr('disabled');
         }
         Itogo();
     }
@@ -322,12 +331,13 @@
             amount = (subscribeAmount * period) + (planAmount * period) + serviceAmount/* + (additional_total * period)*/;
         }
         $('#amount').text(amount);
+        // $('#send_invoice').removeAttr('disabled');
     }
 
     // Отправка данных на сервер
     function PostForm()
     {
-        let data = null;
+        var data = null;
         if(typeId < 3) {
             period = parseInt($('#periodMonth').val());
             data = {

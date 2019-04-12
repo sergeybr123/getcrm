@@ -57,6 +57,7 @@ Route::middleware('auth')->group(function() {
             Route::get( 'new', 'Manager\BotsController@bot_new')->name('bot_new');
             Route::get('confirm', 'Manager\BotsController@confirm')->name('confirmBot');
             Route::get('reset', 'Manager\BotsController@reset')->name('resetBot');
+            Route::get('activate-bot/{user_id}/{bot_id}', 'Manager\BotsController@activate')->name('activate_bot');
         });
 
         // Работа со счетами
@@ -65,6 +66,11 @@ Route::middleware('auth')->group(function() {
         });
         Route::prefix('subscribes')->name('subscribes.')->group(function(){
             Route::get('', 'Manager\SubscribesController@index')->name('index');
+        });
+
+        Route::prefix('templates')->name('templates.')->group(function(){
+            Route::get( '', 'Manager\TemplateController@index')->name('index');
+            Route::get( '{slug}/{id}/copy', 'Manager\TemplateController@copy_bot')->name('copy_bot');
         });
 
         // Оплатить и активировать
@@ -90,11 +96,10 @@ Route::middleware('auth')->group(function() {
 Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot');
 Route::get('create-bot-on-exist/{company_id}/{type_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
 Route::get('get-templates', 'Api\ApiController@getTemplates')->name('get_templates');
+Route::post('copy-templates', 'Manager\TemplateController@postCopyBot')->name('copy_templates');
 
 
-Route::prefix('templates')->name('templates.')->group(function(){
-    Route::get( '', 'Manager\TemplateController@index')->name('index');
-});
+
 
 
 //Route::get('/home', 'HomeController@index')->name('home');

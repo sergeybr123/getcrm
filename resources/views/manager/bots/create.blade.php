@@ -48,14 +48,14 @@
                                 <input type="text" class="form-control" id="name" name="name">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-sm-9 offset-3">
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="setTemplate">
-                                    <label class="form-check-label" for="setTemplate">Добавть шаблон</label>
-                                </div>
-                            </div>
-                        </div>
+                        {{--<div class="form-group row">--}}
+                            {{--<div class="col-sm-9 offset-3">--}}
+                                {{--<div class="form-group form-check">--}}
+                                    {{--<input type="checkbox" class="form-check-input" id="setTemplate">--}}
+                                    {{--<label class="form-check-label" for="setTemplate">Добавть шаблон</label>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                         <div id="templates"></div>
                         <div class="text-right">
                             <button class="btn btn-outline-blue" type="submit">Сохранить</button>

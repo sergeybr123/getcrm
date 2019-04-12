@@ -34,8 +34,8 @@
                 <tr>
                     <th width="80">#</th>
                     <th>Пользователь</th>
-                    <th width="130">Телефон</th>
-                    <th width="120">Тип платежа</th>
+                    {{--<th width="130">Телефон</th>--}}
+                    <th>Тип платежа</th>
                     <th width="90">Сумма</th>
                     <th width="50">Оплата</th>
                     <th width="130">Дата создания</th>
@@ -67,13 +67,17 @@
                             @endif
                         @endif
                     </td>
+                    {{--<td>--}}
+                        {{--@if($invoice[0]['phone'] != null)--}}
+                            {{--{{ '+' . $invoice[0]['phone']['country_code'] . $invoice[0]['phone']['phone'] }}--}}
+                        {{--@endif--}}
+                    {{--</td>--}}
                     <td>
-                        @if($invoice[0]['phone'] != null)
-                            {{ '+' . $invoice[0]['phone']['country_code'] . $invoice[0]['phone']['phone'] }}
+                        @if($invoice[1]->plan)
+                            <b>{{ $invoice[1]->type->name }}</b> - <i>{{ $invoice[1]->plan->name }}</i>
+                        @else
+                            {{ $invoice[1]->type->name . ' ' . $invoice[1]->service->name }}
                         @endif
-                    </td>
-                    <td class="text-center">
-                        {{ $invoice[1]->type->name }}
                     </td>
                     <td class="text-right">
                         {{ number_format($invoice[1]->amount, 0, '.', '') }} тг.

@@ -60,9 +60,9 @@
                             <i class="fa fa-ellipsis-v"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="margin-top: 5px;">
-                            <a href="#" class="dropdown-item" title="Добавить старый авточат" data-toggle="modal" data-target="#createBotModal">
-                                {{ __('Добавить старый авточат') }}
-                            </a>
+                            {{--<a href="#" class="dropdown-item" title="Добавить старый авточат" data-toggle="modal" data-target="#createBotModal">--}}
+                                {{--{{ __('Добавить старый авточат') }}--}}
+                            {{--</a>--}}
                             <a href="{{ route('manager.users.create_multilink', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить мультилик">
                                 {{ __('Добавить мультилик') }}
                             </a>
@@ -218,6 +218,9 @@
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
+                            @role('admin')
+                            <th width="10"></th>
+                            @endrole
                             <th width="50">#</th>
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
@@ -228,6 +231,15 @@
                         <tbody>
                         @foreach($new_bots as $key => $new_bot)
                             <tr>
+                                @role('admin')
+                                <td>
+                                    @if($new_bot->BotActive == 1)
+                                        <i class="fas fa-circle text-success"></i>
+                                    @else
+                                        <a href="{{ route('manager.bots.activate_bot', [$user->id, $new_bot->BotId]) }}" class="btn btn-link">{{ __('Активировать') }}</a>
+                                    @endif
+                                </td>
+                                @endrole
                                 <td>{{ $new_bot->BotId }}</td>
                                 <td>{{ $new_bot->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
@@ -263,11 +275,11 @@
                                                 <a class="dropdown-item" href="https://getchat.me/{{ $new_bot->Slug }}" target="_blank">
                                                     <i class="far fa-eye"></i> {{ __('buttons.view') }}
                                                 </a>
-                                                <button class="dropdown-item" onclick="createOnExist({{ $new_bot->id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
+                                                <button class="dropdown-item" onclick="createOnExist({{ $new_bot->Id }}, 2)"><i class="fa fa-comments"></i> {{ __('Создать мультилинк') }}</button>
                                                 {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $new_bot->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
-                                                {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
-                                                {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
-                                                {{--</a>--}}
+                                                <a class="dropdown-item" href="#" onclick="copyTemplate({{ $new_bot->BotId }}, '{{ $new_bot->Slug }}')">
+                                                    <i class="fa fa-copy"></i> {{ __('Копировать авточат') }}
+                                                </a>
                                                 @if(!is_null($new_bot->BotId))
                                                 <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat').submit();">
                                                     <i class="fa fa-trash"></i> {{ __('Удалить') }}
@@ -291,6 +303,9 @@
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
+                            @role('admin')
+                            <th width="10"></th>
+                            @endrole
                             <th width="50">#</th>
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
@@ -301,6 +316,15 @@
                         <tbody>
                         @foreach($pages as $key => $page)
                             <tr>
+                                @role('admin')
+                                <td>
+                                    @if($page->BotActive == 1)
+                                        <i class="fas fa-circle text-success"></i>
+                                    @else
+                                        <a href="{{ route('manager.bots.activate_bot', [$user->id, $page->BotId]) }}" class="btn btn-link">{{ __('Активировать') }}</a>
+                                    @endif
+                                </td>
+                                @endrole
                                 <td>{{ $page->BotId }}</td>
                                 <td>{{ $page->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
@@ -510,6 +534,36 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Создание нового авточата--}}
+    <div class="modal fade" id="copyTemplateModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="copyBotForm" method="post" action="{{ route('copy_templates') }}">
+                    @csrf
+                    <input type="hidden" id="template_id" name="template_id">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Копирование авточата') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <strong>{{ __('Ссылка:') }}</strong>
+                        <input id="user_link" class="form-control" type="text" name="link">
+                    </div>
+                    <div class="modal-body">
+                        <strong>{{ __('Пользователь:') }}</strong>
+                        <input id="user_email" class="form-control" type="text" name="user_email" value="{{ $user->email }}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Копировать') }}</button>
                     </div>
                 </form>
             </div>
@@ -1060,7 +1114,7 @@
         /*--------Создание нового авточата по старой ссылке--------*/
         function createOnExist(id, type) {
             var url = 'https://getchat.me/constructor2/';
-            console.log(id + ' ' + type)
+            console.log(id + ' ' + type);
             $.get("/create-bot-on-exist/" + id + '/' + type,
                 function(data) {
                     var target = $(this).prop('target');
@@ -1068,5 +1122,26 @@
                     console.log(url + data.bot_id);
                 });
         }
+
+
+        /*--------Копирование авточата-------*/
+        var template_id = null;
+        function copyTemplate(id, slug) {
+            $('#template_id').val(id);
+            $('#user_link').val(slug);
+            $('#copyTemplateModal').modal();
+            // template_id = id;
+        }
+        // function createCopy() {
+        //     var url = 'http://getchat/create-new-bot';
+        //     $.ajax({
+        //         type: "GET",
+        //         url: url,
+        //         data: $('#copyBotForm').serialize(),
+        //         success: function(request) {
+        //             $('#copyTemplateModal').modal('hide');
+        //         }
+        //     });
+        // }
     </script>
 @endsection
