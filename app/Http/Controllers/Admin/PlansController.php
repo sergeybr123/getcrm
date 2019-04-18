@@ -43,9 +43,14 @@ class PlansController extends Controller
 
     public function update(Request $request, $id)
     {
+        $token = config('app.billing_token');
+        $billing_url = config('app.billing_url');
+        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . $token]]);
+        $URI = $billing_url . '/plans/' . $id;
+
         if($request->isMethod('POST')) {
-            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-            $URI = config('app.billing_url') . '/plans/' . $id;
+//            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+//            $URI = $billing_url . '/plans/' . $id;
             $response = $client->put($URI, [
                 'body' => $request,
                 'headers' => [
@@ -59,11 +64,11 @@ class PlansController extends Controller
                 return redirect()->route('admin::plans::edit', $id);
             }
         } else {
-            $token = config('app.billing_token');
-            $billing_url = config('app.billing_url');
-            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . $token]]);
-            $url = $billing_url.'/plans/' . $id;
-            $response = $client->get($url);
+//            $token = config('app.billing_token');
+//            $billing_url = config('app.billing_url');
+//            $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . $token]]);
+//            $url = $billing_url.'/plans/' . $id;
+            $response = $client->get($URI);
             $plan = json_decode($response->getBody());
             if(!isset($plan->error)){
                 return view('admin.plans.edit', ['plan' => $plan->data]);

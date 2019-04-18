@@ -21,6 +21,7 @@ class BillingPlan extends Model
         'sort_order',
         'on_show',
         'active',
+        'bot_count',
     ];
 
     protected $dates = [

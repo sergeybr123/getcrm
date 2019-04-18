@@ -436,9 +436,6 @@ class UsersController extends Controller
         $user = User::find($user_id);
         if($request->isMethod('POST')) {
 
-
-//            dd($user_id);
-
             $company = new Company();
             $company->user_id = $user->id;
             $company->slug = $request->link;
@@ -453,8 +450,6 @@ class UsersController extends Controller
             $bot->name = $request->name;
             $bot->active = 0;
             $bot->save();
-
-
 
             return redirect()->route('manager.users.show', $user->id);
         } else {
@@ -476,12 +471,10 @@ class UsersController extends Controller
         }
         $bot->botable_id = $company->id;
         $bot->botable_type = 'App\\Models\\Company';
-
         $bot->active = 0;
         $bot->save();
 
         return response()->json(['bot_id' => $bot->id]);
-//        return Redirect::to('https://getchat.me/constructor2/'.$bot->id);
     }
 
     public function invoice($id)
@@ -490,11 +483,9 @@ class UsersController extends Controller
         return view('manager.users.invoice', ['user' => $user]);
     }
 
-    public function delete_chat($id, $user_id, $bot_id)
+    public function delete_full($id, $user_id, $bot_id)
     {
-//        dd($user_id);
         $company = Company::find($id);
-//        dd($company);
         if($company) {
             $bot = Bot::findOrFail($bot_id);
             if($bot) {
@@ -504,8 +495,21 @@ class UsersController extends Controller
             $company->deleted_at = Carbon::now();
             $company->save();
             return redirect()->route('manager.users.show', ['id' => $user_id]);
-        } /*else {
+        }
+    }
+
+    public function delete_chat($id, $user_id, $bot_id)
+    {
+        $company = Company::find($id);
+        if($company) {
+            $bot = Bot::findOrFail($bot_id);
+            if($bot) {
+                $bot->deleted_at = Carbon::now();
+                $bot->save();
+            }
+            $company->deleted_at = Carbon::now();
+            $company->save();
             return redirect()->route('manager.users.show', ['id' => $user_id]);
-        }*/
+        }
     }
 }

@@ -7,7 +7,7 @@
     <link href="{{ asset('js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
     <link href="{{ asset('js/jquery-ui/jquery-ui.theme.min.css') }}" rel="stylesheet">
     <style>
-        #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper {
+        #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper, .DataTables_Table_3_wrapper {
             padding: 0;
         }
         .list-group-item, .list-group-item:first-child, .list-group-item:last-child {

@@ -51,6 +51,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="bot_count" class="col-sm-3 col-form-label">{{ __('Количество авточатов') }}</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control{{ $errors->has('bot_count') ? ' is-invalid' : '' }}" id="bot_count" name="bot_count" value="{{ old('bot_count') }}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="interval" class="col-sm-3 col-form-label">{{ __('Интервал') }}</label>
                             <div class="col-sm-9">
                                 <select id="interval" name="interval" class="form-control{{ $errors->has('discount') ? ' is-invalid' : '' }}">
