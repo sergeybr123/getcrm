@@ -6,8 +6,9 @@
     <link href="{{ asset('vendors/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
     <link href="{{ asset('js/jquery-ui/jquery-ui.theme.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
     <style>
-        #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper, .DataTables_Table_3_wrapper {
+        #DataTables_Table_0_wrapper, #DataTables_Table_1_wrapper, #DataTables_Table_2_wrapper, #DataTables_Table_3_wrapper {
             padding: 0;
         }
         .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
@@ -165,7 +166,8 @@
                             <tr>
                                 <td>{{ $bot->name }}</td>
                                 <td>
-                                    <span id="page_slug_{{ $bot->id }}">https://getchat.me/{{ $bot->slug }}</span>
+                                    <span>{{ $bot->slug }}</span>
+                                    <span id="page_slug_{{ $bot->id }}" style="display: none">https://getchat.me/{{ $bot->slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $bot->id }})" style="border-radius:50%;">
@@ -218,38 +220,41 @@
                     <table class="table table-bordered table-striped dataTable">
                         <thead>
                         <tr>
-                            @role('admin')
-                            <th width="10"></th>
-                            @endrole
+{{--                            @role('admin')--}}
+{{--                            <th width="10"></th>--}}
+{{--                            @endrole--}}
                             <th width="50">#</th>
                             <th width="120">Наименование</th>
                             <th class="d-none d-md-table-cell">Ссылка</th>
+                            <th width="60">Активный</th>
                             <th width="100">Дата создания</th>
-                            <th width="90"></th>
+                            <th width="54"></th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($new_bots as $key => $new_bot)
                             <tr>
-                                @role('admin')
-                                <td>
-                                    @if($new_bot->BotActive == 1)
-                                        <i class="fas fa-circle text-success"></i>
-                                    @else
-                                        <a href="{{ route('manager.bots.activate_bot', [$user->id, $new_bot->BotId]) }}" class="btn btn-link">{{ __('Активировать') }}</a>
-                                    @endif
-                                </td>
-                                @endrole
+{{--                                @role('admin')--}}
+{{--                                <td>--}}
+{{--                                    @if($new_bot->BotActive == 1)--}}
+{{--                                        <i class="fas fa-circle text-success"></i>--}}
+{{--                                    @else--}}
+{{--                                        <a href="{{ route('manager.bots.activate_bot', [$user->id, $new_bot->BotId]) }}" class="btn btn-link">{{ __('Активировать') }}</a>--}}
+{{--                                    @endif--}}
+{{--                                </td>--}}
+{{--                                @endrole--}}
                                 <td>{{ $new_bot->BotId }}</td>
                                 <td>{{ $new_bot->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
-                                    <span id="page_slug_{{ $key }}">https://getchat.me/{{ $new_bot->Slug }}</span>
+                                    <span>{{ $new_bot->Slug }}</span>
+                                    <span id="page_slug_{{ $key }}" style="display: none">https://getchat.me/{{ $new_bot->Slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
                                         <i class="fa fa-copy"></i>
                                     </button>
                                 </td>
+                                <td class="text-center"><input type="checkbox" {{ $new_bot->BotActive == 1 ? 'checked' : '' }} data-toggle="toggle" data-onstyle="success" data-size="xs"></td>
                                 <td class="text-center">{{ \Carbon\Carbon::parse($new_bot->CompanyCreated)->format('d.m.Y') ?? '' }}</td>
                                 <td>
 
@@ -328,7 +333,8 @@
                                 <td>{{ $page->BotId }}</td>
                                 <td>{{ $page->BotName }}</td>
                                 <td class="d-none d-md-table-cell">
-                                    <span id="page_slug_{{ $key }}">https://getchat.me/{{ $page->Slug }}</span>
+                                    <span>{{ $page->Slug }}</span>
+                                    <span id="page_slug_{{ $key }}" style="display: none">https://getchat.me/{{ $page->Slug }}</span>
                                     <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
                                             title="Копировать ссылку"
                                             onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
@@ -574,6 +580,7 @@
     <script src="{{ asset('vendors/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendors/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
     <script>
         /*-------------------Копирование ссылок---------------------*/
         function copyPageToClipboard(key) {
