@@ -24,24 +24,27 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#">
-                    <i><i class="fa fa-database"></i></i> @lang('sidebar.dictionary')
-                </a>
-                <ul class="nav-dropdown-items">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i><i class="fa fa-minus"></i></i> @lang('sidebar.activity')
-                        </a>
-                    </li>
-                </ul>
-            </li>
+{{--            <li class="nav-item nav-dropdown">--}}
+{{--                <a class="nav-link nav-dropdown-toggle" href="#">--}}
+{{--                    <i><i class="fa fa-database"></i></i> @lang('sidebar.dictionary')--}}
+{{--                </a>--}}
+{{--                <ul class="nav-dropdown-items">--}}
+{{--                    <li class="nav-item">--}}
+{{--                        <a class="nav-link" href="#">--}}
+{{--                            <i><i class="fa fa-minus"></i></i> @lang('sidebar.activity')--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                </ul>--}}
+{{--            </li>--}}
             @endrole
             @role('admin|manager')
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('manager.mywork.index') }}">
-                    <i><i class="fa fa-archive"></i></i> {{ __('Мои страницы') }}
+                <a class="nav-link" href="{{ route('manager.users.show', ['id' => \Auth::user()->id]) }}">
+                    <i><i class="fa fa-file"></i></i> {{ __('Моя страница') }}
                 </a>
+{{--                <a class="nav-link" href="{{ route('manager.mywork.index') }}">--}}
+{{--                    <i><i class="fa fa-archive"></i></i> {{ __('Мои страницы') }}--}}
+{{--                </a>--}}
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.users.index') }}">
@@ -53,23 +56,28 @@
                     <i><i class="fa fa-copy"></i></i> {{ __('MultiLink') }}
                 </a>
             </li>
-            <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#">
-                    <i><i class="fa fa-comments"></i></i> {{ __('sidebar.bots') }}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url('manager/bots/new') }}">
+                    <i><i class="far fa-comments"></i></i> {{ __('sidebar.bots') }}
                 </a>
-                <ul class="nav-dropdown-items">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/bots/old') }}">
-                            <i><i class="far fa-circle"></i></i> {{ __('Старые') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('manager/bots/new') }}">
-                            <i><i class="far fa-circle"></i></i> {{ __('Новые') }}
-                        </a>
-                    </li>
-                </ul>
             </li>
+            {{--<li class="nav-item nav-dropdown">--}}
+                {{--<a class="nav-link nav-dropdown-toggle" href="#">--}}
+                    {{--<i><i class="fa fa-comments"></i></i> {{ __('sidebar.bots') }}--}}
+                {{--</a>--}}
+                {{--<ul class="nav-dropdown-items">--}}
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="{{ url('manager/bots/old') }}">--}}
+                            {{--<i><i class="far fa-circle"></i></i> {{ __('Старые') }}--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="{{ url('manager/bots/new') }}">--}}
+                            {{--<i><i class="far fa-circle"></i></i> {{ __('Новые') }}--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
+                {{--</ul>--}}
+            {{--</li>--}}
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.templates.index') }}">
                     <i><i class="fa fa-copy"></i></i> {{ __('Шаблоны') }}

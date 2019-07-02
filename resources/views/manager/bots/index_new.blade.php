@@ -3,7 +3,7 @@
 @section('title', __('Новые автоЧаты'))
 
 @section('content')
-    <h1>{{ __('Авточаты новые') }} ({{ $bots_new->total() }})</h1>
+    <h1>{{ __('Авточаты') }} ({{ $bots_new->total() }})</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="px-3">

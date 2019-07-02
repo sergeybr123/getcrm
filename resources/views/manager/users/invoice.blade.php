@@ -6,8 +6,8 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-6 col-sm-12">
+    <div class="row mt-5">
+        <div class="col-md-6 col-sm-12 offset-md-3">
             <div class="card card-accent-primary mt-3">
                 <p class="h3 card-title pt-3 pl-3">{{ __('Пользователь:') }} <strong>{{ $user->email }}</strong></p>
                 <div class="card-body">

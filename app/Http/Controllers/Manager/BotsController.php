@@ -7,6 +7,7 @@ use App\Models\Bot;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Throwable;
 
 class BotsController extends Controller
 {
@@ -172,8 +173,39 @@ class BotsController extends Controller
     public function activate($user_id, $bot_id)
     {
         $bot = Bot::findOrFail($bot_id);
-        $bot->active = 1;
-        $bot->save();
-        return redirect()->route('manager.users.show', $user_id);
+
+        $count = Bot::where('id', '!=', $bot_id)->where('botable_id', $bot->botable_id)->where('type', 'bot')->where('active', 1)->count();
+
+        if($count < 1) {
+            try{
+                if($bot->active == 1) {
+                    $bot->active = 0;
+                } else {
+                    $bot->active = 1;
+                }
+                $bot->save();
+                return response()->json(['error' => 0]); //redirect()->route('manager.users.show', $user_id);
+            } catch (Exception $e) {
+                return response()->json(['error' => 1, 'message' => $e->getMessage()]);
+            }
+
+        } else {
+            return response()->json(['error' => 2]);
+        }
+    }
+
+    /*Смена владельца авточата*/
+    public function change_owner(Request $request, $user_id, $id)
+    {
+        $bot = Company::findOrFail($id);
+        $old_owner = User::findOrFail($user_id);
+        if($request->isMethod('POST')) {
+            $owner = User::where('email', $request->new_owner)->first();
+            $bot->user_id = $owner->id;
+            $bot->save();
+            return redirect()->route('manager.users.show', ['id' => $user_id]);
+        } else {
+            return view('manager.bots.change_owner', ['bot' => $bot, 'old_owner' => $old_owner]);
+        }
     }
 }

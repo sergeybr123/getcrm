@@ -1,17 +1,17 @@
 @extends('layouts.app')
 @section('styles')
 @endsection
-@section('title', __('Добавление нового мультилинка'))
+@section('title', __('Добавление нового авточата'))
 @section('content')
     <div>
         <a href="{{ route('manager.users.show', $user->id) }}" class="btn btn-outline-blue"><i
                 class="fa fa-angle-double-left"></i> {{ __('Назад') }}</a>
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6 offset-3">
             <div class="card card-accent-primary mt-3">
                 <div class="card-body justify-content-center w-100">
-                    <p class="h4 text-center mb-3">{{ __('Добавление нового мультилинка') }}</p>
+                    <p class="h4 text-center mb-3">{{ __('Добавление нового авточата') }}</p>
                     <form method="post">
                         @csrf
                         @if (session('success'))

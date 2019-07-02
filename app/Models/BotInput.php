@@ -14,10 +14,6 @@ class BotInput extends Model
         'type',
     ];
 
-    protected $casts = [
-        'data' => 'array',
-    ];
-
     protected $dates = [
         'created_at',
         'updated_at',

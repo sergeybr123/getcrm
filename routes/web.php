@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function() {
             Route::match(['get', 'post'], 'multilink/{user_id}/create', 'Manager\UsersController@create_multilink')->name('create_multilink');
             Route::match(['get', 'post'], 'bots/{user_id}/create', 'Manager\UsersController@create_bot')->name('create_bot');
             Route::post('/delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');
+            Route::post('/full-delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_full')->name('delete_full');
+            Route::post('/force-delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_force')->name('delete_force');
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');
@@ -58,6 +60,7 @@ Route::middleware('auth')->group(function() {
             Route::get('confirm', 'Manager\BotsController@confirm')->name('confirmBot');
             Route::get('reset', 'Manager\BotsController@reset')->name('resetBot');
             Route::get('activate-bot/{user_id}/{bot_id}', 'Manager\BotsController@activate')->name('activate_bot');
+            Route::match(['get', 'post'],'/change-owner-bot/{user_id}/{id}', 'Manager\BotsController@change_owner')->name('change_owner');
         });
 
         // Работа со счетами

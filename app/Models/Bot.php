@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BotListener;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Bot extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'botable_id',
         'botable_type',

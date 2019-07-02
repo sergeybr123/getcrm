@@ -9,7 +9,7 @@
                     class="fa fa-angle-double-left"></i> {{ __('Назад') }}</a>
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6 offset-3">
             <div class="card card-accent-primary mt-3">
                 <div class="card-header">
                     <p class="h3 text-center">{{ $user->email }}</p>
