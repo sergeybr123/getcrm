@@ -222,7 +222,7 @@ class UsersController extends Controller
         $phone = Phone::where('user_id', $id)->first();
 
         if(($request->email != $user->email) && ($request->phone != $phone->phone)) {
-            $this->validate($request, [
+            $request->validate($request, [
                 'email' => ['required', 'email', 'unique'],
                 'country_code' => ['required'],
                 'phone' => ['required', 'numeric', 'unique']

@@ -42,9 +42,6 @@
                 <a class="nav-link" href="{{ route('manager.users.show', ['id' => \Auth::user()->id]) }}">
                     <i><i class="fa fa-file"></i></i> {{ __('Моя страница') }}
                 </a>
-{{--                <a class="nav-link" href="{{ route('manager.mywork.index') }}">--}}
-{{--                    <i><i class="fa fa-archive"></i></i> {{ __('Мои страницы') }}--}}
-{{--                </a>--}}
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('manager.users.index') }}">
@@ -93,23 +90,6 @@
                     <i><i class="fa fa-file-alt" aria-hidden="true"></i></i> {{ __('Подписки') }}
                 </a>
             </li>
-            @endrole
-            @role('partner+')
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('partner::users::index') }}">
-                    <i><i class="fa fa-users"></i></i> {{ __('Пользователи') }}
-                </a>
-            </li>
-            {{--<li class="nav-item">--}}
-                {{--<a class="nav-link" href="#">--}}
-                    {{--<i><i class="fa fa-comments"></i></i> {{ __('Авточаты') }}--}}
-                {{--</a>--}}
-            {{--</li>--}}
-            {{--<li class="nav-item">--}}
-                {{--<a class="nav-link" href="#">--}}
-                    {{--<i><i class="fa fa-file-invoice"></i></i> {{ __('Счета') }}--}}
-                {{--</a>--}}
-            {{--</li>--}}
             @endrole
             @role('analyst')
             <li class="nav-item nav-dropdown">

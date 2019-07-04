@@ -52,7 +52,12 @@
     </ul>
 </header>
 <div class="app-body">
+    @role('admin|manager')
     @include('layouts.includes.sidebar')
+    @endrole
+    @role('partner+')
+    @include('layouts.includes.partner_sidebar')
+    @endrole
     <main class="main">
         <div class="container-fluid">
             <div class="animated fadeIn">

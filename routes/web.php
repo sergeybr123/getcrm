@@ -81,11 +81,25 @@ Route::middleware('auth')->group(function() {
     });
     // Partner
     Route::prefix('partner')->name('partner::')->group(function(){
-        Route::prefix('users')->name('users::')->group(function(){
-            Route::get('', 'Partner\UserController@index')->name('index');
-            Route::get('{id}/show', 'Partner\UserController@show')->name('show');
-            Route::match(['get', 'post'], 'create-bot/{id?}', 'Partner\UserController@createBot')->name('create-bot');
+        Route::get('', 'Partner\UserController@index')->name('index');
+        Route::prefix('bots')->name('bots::')->group(function(){
+            Route::get('', 'Partner\BotController@index')->name('index');
+            Route::post('add-company', 'Partner\BotController@create_company')->name('add_company');
+            Route::post('edit-slug', 'Partner\BotController@edit_slug')->name('edit_slug');
+            Route::get('{bot_id}/data', 'Partner\BotController@bot_data')->name('data');
+            Route::post('add-bot', 'Partner\BotController@create_bot')->name('add_bot');
+            Route::post('delete-company/{id}', 'Partner\BotController@delete_full')->name('delete_company');
+            Route::post('delete-bot/{id}', 'Partner\BotController@delete_bot')->name('delete_bot');
+            Route::post('copy-templates', 'Partner\BotController@postCopyBot')->name('copy_templates');
         });
+        Route::prefix('invoices')->name('invoices::')->group(function(){
+            Route::get('', 'Partner\InvoicesController@index')->name('index');
+        });
+//        Route::prefix('users')->name('users::')->group(function(){
+//            Route::get('', 'Partner\UserController@index')->name('index');
+//            Route::get('{id}/show', 'Partner\UserController@show')->name('show');
+//            Route::match(['get', 'post'], 'create-bot/{id?}', 'Partner\UserController@createBot')->name('create-bot');
+//        });
     });
 
     // Редактирование ссылки страниц и авточатов
