@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Partner;
 
+use App\Models\Phone;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,6 +26,31 @@ class UserController extends Controller
     }
 
     public function edit(Request $request)
+    {
+        $auth = Auth::user();
+        $user = User::findOrFail($auth->id);
+        $phone = Phone::where('user_id', $auth->id)->get();
+        $profile = Profile::where('user_id', $auth->id)->first();
+
+        if($request->email) {
+            if($request->email != $user->email) {
+                $user->email = $request->email;
+                $user->save();
+            }
+        }
+
+        if($request->phone) {
+            if($request->phone != $phone->phone) {
+                $phone->country_code = $request->country_code;
+                $phone->phone = $request->phone;
+                $phone->save();
+                $user->username = str_replace(['+', '-', '(', ')'. ' '], '', $request->country_code.$request->phone);
+                $user->save();
+            }
+        }
+    }
+
+    public function change_password(Request $request)
     {
 
     }

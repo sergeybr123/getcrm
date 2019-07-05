@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function() {
         });
         Route::prefix('invoices')->name('invoices::')->group(function(){
             Route::get('', 'Partner\InvoicesController@index')->name('index');
+            Route::post('completed/{id}', 'Partner\InvoicesController@completed')->name('completed');
         });
 //        Route::prefix('users')->name('users::')->group(function(){
 //            Route::get('', 'Partner\UserController@index')->name('index');

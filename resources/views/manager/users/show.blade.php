@@ -646,8 +646,8 @@
         /*-------------------Копирование ссылок---------------------*/
         /*-----------------------Выставление счета------------------------------*/
         var user_id = {{ $user->id }};
-        {{--var billing_token = '{{ config('app.billing_token') }}';--}}
-        {{--var billing_url = '{{ config('app.billing_url') }}';--}}
+        var billing_token = '{{ config('app.billing_token') }}';
+        var billing_url = '{{ config('app.billing_url') }}';
         {{--var typeId = null;--}}
         {{--var planId = null;--}}
         {{--var serviceId = null;--}}
