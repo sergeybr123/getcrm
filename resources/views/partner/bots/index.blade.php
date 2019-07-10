@@ -7,9 +7,9 @@
 @endsection
 
 @section('content')
-    @if(count($companies) <= $subscribe->plan->bot_count)
-    <button class="btn btn-sm btn-outline-blue float-right" onclick="newLink()"><i class="fas fa-plus"></i> {{ __('Добавить ссылку') }}</button>
-    @endif
+    {{--@if(count($companies) <= $subscribe->plan->bot_count)--}}
+    <button class="btn btn-sm btn-blue float-right" onclick="newLink()"><i class="fas fa-plus"></i> {{ __('Добавить авточат') }}</button>
+    {{--@endif--}}
     <p class="h3">{{ __('Мои авточаты') }}</p>
     <div class="card card-accent-primary mt-3">
         <div class="card-body p-2 pb-0">
@@ -20,7 +20,7 @@
                         <div class="d-flex w-100 justify-content-between px-1 mb-2">
                             <p class="mb-0"><b>{{ __('Ссылка:') }}</b> <span class="text-blue ml-1" title="{{ __('Ссылка на авточат') }}">{{ $company->slug }}</span></p>
                             <small>
-                                <a href="http://getchat/{{ $company->slug }}" target="_blank" class="text-muted" title="{{ __('Просмотр авточата') }}"><i class="fas fa-eye"></i></a>
+                                <a href="https://getchat.me/{{ $company->slug }}" target="_blank" class="text-muted" title="{{ __('Просмотр авточата') }}"><i class="fas fa-eye"></i></a>
                                 <a href="#" class="ml-1" onclick="EditLink({{ $company->id }}, '{{ $company->slug }}')"><i class="fas fa-pencil-alt" title="{{ __('Редактировать ссылку') }}"></i></a>
                                 <a href="#" class="ml-1" onclick="addBot({{ $company->id }}, '{{ $company->slug }}')"><i class="fas fa-plus" title="{{ __('Добавить авточат к ссылке') }}"></i></a>
                                 <a href="{{ route('partner::bots::data', $company->id) }}" class="ml-1 text-muted"><i class="fas fa-database" title="{{ __('Данные авточата') }}"></i></a>
@@ -48,13 +48,13 @@
                                         <label class="custom-control-label" for="activate_new_bot_{{ $bot->id }}"></label>
                                     </div>
                                 @endif
-                                <a href="http://getchat/constructor2/{{ $bot->id }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
+                                <a href="https://getchat.me/constructor2/{{ $bot->id }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
                                 <div class="dropdown mx-2">
                                     <a class="" href="#" role="button" id="dropdownMenuLink{{ $bot->id }}" title="{{ __('Дополнительные функции') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink{{ $bot->id }}">
-                                        <a class="dropdown-item" href="http://getchat/botpreview/{{ $bot->id }}" target="_blank"><i class="far fa-eye-slash mr-2"></i>{{ __('Предпросмотр') }}</a>
+                                        <a class="dropdown-item" href="https://getchat.me/botpreview/{{ $bot->id }}" target="_blank"><i class="far fa-eye-slash mr-2"></i>{{ __('Предпросмотр') }}</a>
                                         <a class="dropdown-item" href="#" onclick="copyTemplate({{ $bot->id }}, '{{ $company->slug }}', '{{ $bot->name }}')"><i class="far fa-copy mr-2"></i>{{ __('Копировать авточат') }}</a>
                                         <a class="dropdown-item text-red" href="#" onclick="event.preventDefault();document.getElementById('removeBot{{ $bot->id }}').submit();"><i class="far fa-trash-alt mr-2"></i>{{ __('Удалить авточат') }}</a>
                                         <form id="removeBot{{ $bot->id }}" action="{{ route('partner::bots::delete_bot', $bot->id) }}" method="POST" style="display: none;">
@@ -83,15 +83,15 @@
             <div class="modal-content">
                 <form id="newLinkForm">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Добавление новой ссылки') }}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">{{ __('Добавление нового авточата') }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         @csrf
-                        <input class="form-control mb-2" type="text" id="newNameSlug" name="name" placeholder="{{ __('Введите название ссылки') }}">
-                        <input class="form-control" type="text" id="newLinkSlug" name="slug" placeholder="{{ __('Введите ссылку. Например: HI или hello_world') }}">
+                        <input class="form-control mb-2" type="text" id="newNameSlug" name="name" placeholder="{{ __('Введите название авточата') }}">
+                        <input class="form-control" type="text" id="newLinkSlug" name="slug" placeholder="{{ __('Введите название ссылки на авточат') }}">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="newLinkModalClose()" data-dismiss="modal">{{ __('Отмена') }}</button>
@@ -357,7 +357,7 @@
     /*-----Копирование авточата-----*/
     function copyTemplate(id, slug, bot_name) {
         $('#template_id').val(id);
-        $('#copy_slug_link').val(bot_name);
+        $('#copy_slug_link').val("Копия " + bot_name);
         $('#user_link').val(slug);
         $('#copyTemplateModal').modal();
     }

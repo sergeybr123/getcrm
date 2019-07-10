@@ -35,11 +35,20 @@ class BotController extends Controller
     {
         $user = Auth::user();
         $companies = Company::where('user_id', $user->id)->whereHas('bots', function ($query){ $query->where('type', 'bot'); })->with('bots')->orderBy('slug')->get();
-        $subscribe = BillingSubscribe::where('user_id', $user->id)->with('plan')->first();
+//        $subscribe = BillingSubscribe::where('user_id', $user->id)->with('plan')->first();
+        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+        /*-----Получаем подписку-----*/
+        $URI = config('app.billing_url') . '/subscribe/' . $user->id;
+        $response = $client->get($URI);
+        $subscribe = json_decode($response->getBody());
+//        dd($subscribe);
         $plan_bot_count = 0;
         $new_bot_count = 0;
         if($subscribe){
-            $plan_bot_count = $subscribe->plan->bot_count;
+            $plan_bot_count = $subscribe->data->plan->bot_count;
+            foreach ($subscribe->data->additional as $additional) {
+                $plan_bot_count += $additional->quantity;
+            }
             foreach ($companies as $company) {
                 foreach ($company->bots as $new_bot) {
                     if($new_bot->active == 1)
@@ -47,7 +56,7 @@ class BotController extends Controller
                 }
             }
         }
-        return view('partner.bots.index', ['user' => $user, 'subscribe' => $subscribe, 'companies' => $companies, 'plan_bot_count' => $plan_bot_count, 'new_bot_count' => $new_bot_count]);
+        return view('partner.bots.index', ['user' => $user, 'subscribe' => $subscribe->data, 'companies' => $companies, 'plan_bot_count' => $plan_bot_count, 'new_bot_count' => $new_bot_count]);
     }
 
     public function edit_slug(Request $request)

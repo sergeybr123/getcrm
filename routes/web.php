@@ -82,6 +82,10 @@ Route::middleware('auth')->group(function() {
     // Partner
     Route::prefix('partner')->name('partner::')->group(function(){
         Route::get('', 'Partner\UserController@index')->name('index');
+        Route::post('change-email', 'Partner\UserController@change_email')->name('change_email');
+        Route::post('change-phone', 'Partner\UserController@change_phone')->name('change_phone');
+        Route::post('change-profile', 'Partner\UserController@change_profile')->name('change_profile');
+        Route::post('change-password', 'Partner\UserController@change_password')->name('change_password');
         Route::prefix('bots')->name('bots::')->group(function(){
             Route::get('', 'Partner\BotController@index')->name('index');
             Route::post('add-company', 'Partner\BotController@create_company')->name('add_company');
@@ -94,6 +98,7 @@ Route::middleware('auth')->group(function() {
         });
         Route::prefix('invoices')->name('invoices::')->group(function(){
             Route::get('', 'Partner\InvoicesController@index')->name('index');
+            Route::get('create', 'Partner\InvoicesController@create')->name('create'); // создаем счат для партнера
             Route::post('completed/{id}', 'Partner\InvoicesController@completed')->name('completed');
         });
 //        Route::prefix('users')->name('users::')->group(function(){
@@ -115,9 +120,6 @@ Route::post('create-bot', 'Manager\UsersController@createBot')->name('create_bot
 Route::get('create-bot-on-exist/{company_id}/{type_id}', 'Manager\UsersController@createBotOnExist')->name('create_bot_on_exist');
 Route::get('get-templates', 'Api\ApiController@getTemplates')->name('get_templates');
 Route::post('copy-templates', 'Manager\TemplateController@postCopyBot')->name('copy_templates');
-
-
-
 
 
 //Route::get('/home', 'HomeController@index')->name('home');

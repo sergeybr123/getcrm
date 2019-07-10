@@ -3,7 +3,7 @@
 @section('title', __('Мои счета'))
 
 @section('content')
-    <button class="btn btn-sm btn-outline-blue float-right"><i class="fas fa-plus"></i> {{ __('Добавить счет') }}</button>
+    {{--<button class="btn btn-sm btn-outline-blue float-right"><i class="fas fa-plus"></i> {{ __('Добавить счет') }}</button>--}}
     <p class="h3">{{ __('Мои счета') }}</p>
     <div id="errorPay"></div>
     <div class="card card-accent-primary mt-3">

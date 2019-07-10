@@ -14,15 +14,29 @@ use App\Models\PartnersCompany;
 use App\User;
 use App\Models\BillingPlan;
 use App\Models\BillingSubscribe;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $subscribe = BillingSubscribe::where('user_id', $user->id)->with('plan')->first();
+//        $subscribe = BillingSubscribe::where('user_id', $user->id)->with(['plan', 'additionals'])->first();
+        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+        $URI = config('app.billing_url') . '/subscribe/' . $user->id;
+        $response = $client->get($URI);
+        $subscribe = json_decode($response->getBody());
+//        dd($subscribe->data);
         $profile = Profile::where('user_id', $user->id)->first();
-        return view('partner.index', ['user' => $user, 'subscribe' => $subscribe, 'profile' => $profile]);
+        if(!$profile) {
+            $profile = new Profile();
+            $profile->user_id = $user->id;
+            $profile->save();
+        }
+        $user_phone = Phone::where('user_id', $user->id)->first();
+        $path = 'js/phone.json';
+        $phones = json_decode(file_get_contents($path), true);
+        return view('partner.index', ['user' => $user, 'subscribe' => $subscribe->data, 'profile' => $profile, 'user_phone' => $user_phone, 'phones' => $phones]);
     }
 
     public function edit(Request $request)
@@ -50,9 +64,103 @@ class UserController extends Controller
         }
     }
 
-    public function change_password(Request $request)
+    public function change_email(Request $request)
     {
 
+        $user = User::findOrFail(Auth::user()->id);
+        $dbl_email = User::where('email', $request->email)->first();
+        if(!$dbl_email) {
+            if($user->email != $request->email) {
+                $user->email = $request->email;
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+            } else {
+                return response()->json(['error' => 0, 'message' => 'Данные не изменены']);
+            }
+        } else {
+            if($dbl_email->id == $user->id) {
+                return response()->json(['error' => 1, 'message' => 'Данный email уже существует']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Данный email принадлежит другому пользователю']);
+            }
+        }
+
+    }
+
+    public function change_phone(Request $request)
+    {
+        $phone_number = str_replace(['+', '-', '(', ')'. ' ', '_'], '', $request->phone);
+        $user = User::findOrFail(Auth::user()->id);
+        $phone = Phone::where('user_id', $user->id)->first();
+        $dbl_phone = Phone::where('phone', $phone_number)->first();
+        if(!$dbl_phone) {
+            if($phone) {
+//                return response()->json(['phone' => $phone->phone]);
+                if($request->phone != $phone->phone) {
+                    $phone->country_code = $request->country_code;
+                    $phone->phone = $phone_number;
+                    $phone->save();
+                    //изменяем username - там записан номер телефона без +, пробелов и прочего
+                    $user->username = str_replace(['+', '-', '(', ')'. ' '], '', $request->country_code.$request->phone);
+                    $user->save();
+                    return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+                }
+            } else {
+                $phone = new Phone();
+                $phone->country_code = $request->country_code;
+                $phone->phone = $phone_number;
+                $phone->save();
+                //изменяем username - там записан номер телефона без +, пробелов и прочего
+                $user->username = str_replace(['+', '-', '(', ')'. ' '], '', $request->country_code.$request->phone);
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Данные успешно добавлены']);
+            }
+        } else {
+            if($dbl_phone->user_id == $user->id) {
+                return response()->json(['error' => 1, 'message' => 'Данный номер уже существует']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Данный номер принадлежит другому пользователю']);
+            }
+        }
+    }
+
+    public function change_profile(Request $request)
+    {
+        $profile = Profile::where('user_id', Auth::user()->id)->first();
+        if($profile) {
+            $profile->first_name = $request->first_name;
+            $profile->last_name = $request->last_name;
+            $profile->company = $request->company;
+            $profile->location = $request->location;
+            $profile->save();
+            return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+        } else {
+            $profile = new Profile();
+            $profile->first_name = $request->first_name;
+            $profile->last_name = $request->last_name;
+            $profile->company = $request->company;
+            $profile->location = $request->location;
+            $profile->save();
+            return response()->json(['error' => 0, 'message' => 'Данные успешно добавлены']);
+        }
+    }
+
+    public function change_password(Request $request)
+    {
+        $user = User::findOrFail(Auth::user()->id);
+
+        if($request->password == $request->confirm_password) {
+
+            if(strlen($request->password) > 6) {
+                $user->password = Hash::make($request->password);
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Пароль успешно изменен']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Пароль слишком короткий']);
+            }
+        } else {
+            return response()->json(['error' => 1, 'message' => 'Значения в полях не совпадают']);
+        }
     }
 
 //    public function show($id)
