@@ -24,7 +24,7 @@
                     </select>
                 </div>
             </div>
-            <table class="table table-bordered table-striped table-responsive">
+            <table class="table table-bordered table-striped table-responsive-sm">
                 <thead>
                 <tr>
                     <th>#</th>

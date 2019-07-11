@@ -218,7 +218,7 @@
 
 
                 <div class="tab-pane fade active show" id="new-bot-tab-content" role="tabpanel" aria-labelledby="new-bot-tab">
-                    <table class="table table-bordered table-striped table-responsive dataTable">
+                    <table class="table table-bordered table-striped table-responsive-sm dataTable">
                         <thead>
                         <tr>
 {{--                            @role('admin')--}}
@@ -341,7 +341,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="page-tab-content" role="tabpanel" aria-labelledby="page-tab">
-                    <table class="table table-bordered table-striped table-responsive dataTable">
+                    <table class="table table-bordered table-striped table-responsive-sm dataTable">
                         <thead>
                         <tr>
                             @role('admin')
@@ -438,7 +438,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="invoice-tab-content" role="tabpanel" aria-labelledby="invoice-tab">
-                    <table class="table table-bordered table-striped table-responsive dataTable">
+                    <table class="table table-bordered table-striped table-responsive-sm dataTable">
                         <thead>
                         <tr>
                             <th width="70">#</th>
