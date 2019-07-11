@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Models\Company;
 use App\Models\Bot;
 use App\User;
+use http\Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Throwable;
@@ -184,7 +185,12 @@ class BotsController extends Controller
                     $bot->active = 1;
                 }
                 $bot->save();
-                return response()->json(['error' => 0]); //redirect()->route('manager.users.show', $user_id);
+                if($bot->active == 0) {
+                    return response()->json(['error' => 0, 'message' => 'Авточат деактивирован']);
+                } else {
+                    return response()->json(['error' => 0, 'message' => 'Авточат активирован']);
+                }
+                 //redirect()->route('manager.users.show', $user_id);
             } catch (Exception $e) {
                 return response()->json(['error' => 1, 'message' => $e->getMessage()]);
             }

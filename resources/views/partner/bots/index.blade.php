@@ -224,25 +224,13 @@
             $.get(url,
                 function(data) {
                     if(data.error === 0) {
-                        toastr.success('Данные сохранены!', 'Ok', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.success(data.message, 'Ok');
                     } else if(data.error === 2) {
                         $('#activate_new_bot_' + id).prop('checked', false);
-                        toastr.warning('На данную ссылку уже активирован авточат!', 'Внимание!', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.warning('На данную ссылку уже активирован авточат!', 'Внимание!');
                     } else {
                         $('#activate_new_bot_' + id).prop('checked', false);
-                        toastr.error('Произошла ошибка!', 'Внимание!', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.error('Произошла ошибка!', 'Внимание!');
                     }
                 }
             );
@@ -251,19 +239,11 @@
                 function(data) {
                     // console.log(data);
                     if(data.error === 0) {
-                        toastr.success('Данные сохранены!', 'Ok', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.success(data.message, 'Ok');
                         if(plan_bot_count > 0) {
-                            if(active_count_bot >= plan_bot_count) {
+                            if(active_count_bot >= plan_bot_count && plan_bot_count !== 0) {
                                 $('.activate_new_bot:not(:checked)').prop('disabled', true);
-                                toastr.warning('Достигнуто максимальное количество!', 'Внимание!', {
-                                    "positionClass": "toast-top-right",
-                                    "hideDuration": "200",
-                                    "closeDuration": "200",
-                                });
+                                toastr.warning('Достигнуто максимальное количество!', 'Внимание!');
                             } /*else {
                                 $('.activate_new_bot:not(:checked)').prop('disabled', false);
                                 toastr.warning('Доступно активирование!', 'Внимание!', {
@@ -275,18 +255,10 @@
                         }
                     } else if(data.error === 2) {
                         $('#activate_new_bot_' + id).prop('checked', false);
-                        toastr.warning('На данную ссылку уже активирован авточат!', 'Внимание!', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.warning('На данную ссылку уже активирован авточат!', 'Внимание!');
                     } else {
                         $('#activate_new_bot_' + id).prop('checked', false);
-                        toastr.error('Произошла ошибка!', 'Внимание!', {
-                            "positionClass": "toast-top-right",
-                            "hideDuration": "200",
-                            "closeDuration": "200",
-                        });
+                        toastr.error('Произошла ошибка!', 'Внимание!');
                     }
                 }
             );
