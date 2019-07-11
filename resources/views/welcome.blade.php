@@ -69,7 +69,12 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
+                        @role('admin|manager')
                         <a href="{{ url('/dashboard') }}">Dashboard</a>
+                        @endrole
+                        @role('partner+')
+                        <a href="{{ route('partner::index') }}">Кабинет</a>
+                        @endrole
                     @else
                         <a href="{{ route('login') }}">Login</a>
                     @endauth
