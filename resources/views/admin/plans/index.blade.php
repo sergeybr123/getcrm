@@ -8,7 +8,7 @@
         <div class="card-body">
             {{--<div class="px-3">--}}
             {{--</div>--}}
-            <table class="table table-bordered table-condensed">
+            <table class="table table-bordered table-condensed table-responsive">
                 <thead>
                 <tr>
                     <th width="30">#</th>

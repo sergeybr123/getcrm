@@ -104,7 +104,7 @@
             </ul>
             <div class="tab-content" id="myTab1Content">
                 <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <table class="table table-bordered table-striped dataTable">
+                    <table class="table table-bordered table-striped table-responsive dataTable">
                         <thead>
                         <tr>
                             <th width="120">Наименование</th>
@@ -160,7 +160,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <table class="table table-bordered table-striped dataTable">
+                    <table class="table table-bordered table-striped table-responsive dataTable">
                         <thead>
                         <tr>
                             <th width="120">Наименование</th>
@@ -213,7 +213,7 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                    <table class="table table-bordered table-striped dataTable">
+                    <table class="table table-bordered table-striped table-responsive dataTable">
                         <thead>
                         <tr>
                             <th width="70">#</th>

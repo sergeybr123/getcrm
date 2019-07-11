@@ -20,7 +20,7 @@
                     {{ $message }}
                 </div>
             @else
-                <table class="table table-bordered table-striped table-sm mb-0">
+                <table class="table table-bordered table-striped table-responsive table-sm mb-0">
                     @forelse($data as $item)
                         <tr>
                             <td>{!! $item['data']['product'] !!}</td>

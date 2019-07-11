@@ -9,7 +9,7 @@
             <div class="px-3">
                 Подписки
             </div>
-            <table class="table table-sm table-bordered table-striped">
+            <table class="table table-sm table-bordered table-striped table-responsive">
                 <thead>
                 <tr>
                     <th>#</th>

@@ -10,7 +10,7 @@
 
 
 
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-responsive">
                 <thead>
                 <tr>
                     <th width="120">Наименование</th>
