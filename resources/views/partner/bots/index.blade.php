@@ -329,7 +329,7 @@
     /*-----Копирование авточата-----*/
     function copyTemplate(id, slug, bot_name) {
         $('#template_id').val(id);
-        $('#copy_slug_link').val("Копия " + bot_name);
+        $('#copy_slug_link').val(bot_name);
         $('#user_link').val(slug);
         $('#copyTemplateModal').modal();
     }
