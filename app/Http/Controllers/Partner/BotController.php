@@ -175,10 +175,10 @@ class BotController extends Controller
             ];
             $response = $client->get($url, $params);
             $data = json_decode($response->getBody());
-            dd($data);
-            return response()->json(['error' => 0]);
+//            dd($data);
+            return response()->json(['error' => 0, 'message' => 'Копирование завершено!']);
         } else {
-            return response()->json(['error' => 1]);
+            return response()->json(['error' => 1, 'message' => 'Вы не можете копировать на данную ссылку!']);
         }
     }
 

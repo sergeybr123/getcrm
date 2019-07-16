@@ -4,6 +4,7 @@
 
 @section('styles')
     <link href="{{ asset('vendors/css/toastr.min.css') }}" rel="stylesheet">
+{{--    <link href="{{ asset('vendors/css/ladda-themeless.min.css') }}" rel="stylesheet">--}}
 @endsection
 
 @section('content')
@@ -178,7 +179,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="copyTemplateModalClose()">{{ __('Закрыть') }}</button>
-                        <button type="submit" class="btn btn-primary">{{ __('Копировать') }}</button>
+                        <button type="submit" id="copyButton" class="btn btn-primary">{{ __('Копировать') }}</button>
+                        {{--<button class="btn btn-danger btn-ladda ladda-button" data-style="zoom-out"><span class="ladda-label">Submit</span><span class="ladda-spinner"></span></button>--}}
                     </div>
                 </form>
             </div>
@@ -186,6 +188,9 @@
     </div>
 @endsection
 @section('scripts')
+    {{--<script src="{{ asset('vendors/js/spin.min.js') }}"></script>--}}
+    {{--<script src="{{ asset('vendors/js/ladda.min.js') }}"></script>--}}
+    {{--<script src="{{ asset('js/views/loading-buttons.js') }}"></script>--}}
 <script>
     /*-----Добавление новой ссылки-----*/
     function newLink() {
@@ -210,6 +215,7 @@
     function newLinkModalClose() {
         $('#newNameSlug').val('');
         $('#newLinkSlug').val('');
+        $('#newLinkSlug').removeClass('is-invalid');
         $('#newLinkModal').modal('hide');
     }
     /*----------Активация нового авточата----------*/
@@ -284,6 +290,7 @@
                     location.reload();
                 } else {
                     $('#link_slug').addClass('is-invalid');
+                    toastr.error('Произошла ошибка!', 'Внимание!');
                 }
             }
         });
@@ -291,6 +298,7 @@
     function editLinkCloseForm() {
         $('#id').val('');
         $('#slug').val('');
+        $('#link_slug').removeClass('is-invalid');
         $('#editLinkModal').modal('hide');
     }
     /*-----Добавление авточата к ссылке-----*/
@@ -302,7 +310,7 @@
     $('#addBotForm').on('submit', function (e) {
         e.preventDefault();
         if($('#addBotName').val() !== '') {
-            console.log($('#addBotName').val());
+            // console.log($('#addBotName').val());
             $.ajax({
                 type: 'post',
                 url: '{{ route('partner::bots::add_bot') }}',
@@ -316,6 +324,7 @@
             });
         } else {
             $('#addBotName').addClass('is-invalid');
+            toastr.error('Произошла ошибка!', 'Внимание!');
         }
 
     });
@@ -323,29 +332,34 @@
         $('#addBotId').val('');
         $('#addBotName').val('');
         $('#addBotSlug').text('');
+        $('#addBotName').removeClass('is-invalid');
         $('#addBotModal').modal('hide');
     }
 
     /*-----Копирование авточата-----*/
     function copyTemplate(id, slug, bot_name) {
         $('#template_id').val(id);
-        $('#copy_slug_link').val(bot_name);
+        $('#copy_slug_link').val('Копия ' + bot_name);
         $('#user_link').val(slug);
         $('#copyTemplateModal').modal();
     }
     $('#copyBotForm').on('submit', function (e) {
         e.preventDefault();
+        $('#copyButton').attr('disabled', 'disabled');
         $.ajax({
             type: 'post',
             url: '{{ route('partner::bots::copy_templates') }}',
             data: $('#copyBotForm').serialize(),
             success: function (request) {
-                console.log(request);
+                // console.log(request);
                 if (request.error === 0) {
                     copyTemplateModalClose();
-                    location.reload();
+                    toastr.success(request.message, 'Ok');
+                    setTimeout(reLoad, 1000);
                 } else {
                     $('#user_link').addClass('is-invalid');
+                    $('#copyButton').removeAttr('disabled');
+                    toastr.error(request.message, 'Внимание!');
                 }
             }
         });
@@ -353,8 +367,13 @@
     function copyTemplateModalClose() {
         $('#template_id').val('');
         $('#copy_slug_link').val('');
-        $('#user_link').val('');
+        $('#user_link').val('').removeClass('is-invalid');
+        $('#copyButton').removeAttr('disabled');
         $('#copyTemplateModal').modal('hide');
+    }
+    /*-----Перезагрузка страницы-----*/
+    var reLoad = function() {
+        location.reload();
     }
 </script>
 @endsection
