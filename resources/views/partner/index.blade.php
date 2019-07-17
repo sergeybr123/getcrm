@@ -44,8 +44,8 @@
                             <i class="fas fa-cog"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editEmailModal">{{ __('Редактировать email') }}</a>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editPhoneModal">{{ __('Редактировать телефон') }}</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editEmailModal">{{ __('Изменить email') }}</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editPhoneModal">{{ __('Изменить телефон') }}</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editProfileModal">{{ __('Редактировать профиль') }}</a>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editPasswordModal">{{ __('Изменить пароль') }}</a>
                         </div>

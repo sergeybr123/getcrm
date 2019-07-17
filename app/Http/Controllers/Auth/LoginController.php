@@ -27,6 +27,20 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/dashboard';
 
+    /*-----Попробовать-----*/
+//    public function redirectTo() {
+//        $user = Auth::user();
+//        switch(true) {
+//            case $user->isInstructor():
+//                return '/instructor';
+//            case $user->isAdmin():
+//            case $user->isSuperAdmin():
+//                return '/admin';
+//            default:
+//                return '/account';
+//        }
+//    }
+
     /**
      * Create a new controller instance.
      *
