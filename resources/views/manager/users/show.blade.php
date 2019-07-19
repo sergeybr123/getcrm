@@ -49,10 +49,21 @@
                     </div>
                 </div>
                 <div class="form-inline" style="align-items: normal;">
-                    <a href="{{ route('manager.users.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-blue" style="border-radius:50%;width:30px;height:30px;"
-                       title="{{ __('Редактировать') }}">
-                        <i class="fa fa-pencil-alt"></i>
-                    </a>
+                    {{--<a href="{{ route('manager.users.edit', ['id' => $user->id]) }}" class="btn btn-sm btn-outline-blue" style="border-radius:50%;width:30px;height:30px;"--}}
+                       {{--title="{{ __('Редактировать') }}">--}}
+                        {{--<i class="fa fa-pencil-alt"></i>--}}
+                    {{--</a>--}}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-blue" title="{{ __('Редактировать данные') }}" style="border-radius:50%;width:30px;height:30px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editEmailModal">{{ __('Изменить email') }}</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editPhoneModal">{{ __('Изменить телефон') }}</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editProfileModal">{{ __('Редактировать профиль') }}</a>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editPasswordModal">{{ __('Изменить пароль') }}</a>
+                        </div>
+                    </div>
                     <a href="{{ route('manager.users.create_invoice', $user->id) }}" class="btn btn-sm btn-outline-blue ml-1"
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
@@ -622,6 +633,181 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Закрыть') }}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Копировать') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Редактировать email--}}
+    <div class="modal fade" id="editEmailModal" tabindex="-1" role="dialog" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editEmailForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editEmailModalLabel">{{ __('Редактрование email') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {{--<div class="row">--}}
+                        {{--<div class="col-4 col-md-3">--}}
+                        {{--{{ __('Ваш email:') }}--}}
+                        {{--</div>--}}
+                        {{--<div class="col-8 col-md-9">--}}
+                        {{--{{ $user->email }}--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
+                        <div class="row">
+                            <div class="col-2 col-md-1">
+                                {{ __('Email:') }}
+                            </div>
+                            <div class="col-10 col-md-11">
+                                <input type="email" class="form-control" id="editEmailInput" name="email" value="{{ $user->email }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditEmailModal()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Редактировать email--}}
+    <div class="modal fade" id="editPhoneModal" tabindex="-1" role="dialog" aria-labelledby="editPhoneModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editPhoneForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPhoneModalLabel">{{ __('Редактирование номера телефона') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4 col-md-3">
+                                {{ __('Код страны:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <select id="select2-1" class="form-control select2-single" name="country_code">
+                                    @foreach($phones as $phone)
+                                        <option value="{{ str_replace('+', '', $phone['dial_code']) }}" {{ str_replace('+', '', $phone['dial_code']) == $user_phone->country_code ? 'selected' : '' }}>{{ $phone['name'] . ' ' . $phone['dial_code'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 col-md-3">
+                                {{ __('Телефон:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="text" class="form-control" id="editPhoneInput" name="phone" value="{{ $user_phone->phone }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditPhoneModal()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{--Редактировать профиль пользователя--}}
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editProfileForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">{{ __('Редактрование профиля пользователя') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4 col-md-3">
+                                {{ __('Фамилия:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="text" class="form-control" id="editLastNameInput" name="last_name" value="{{ $profile->last_name }}" autofocus>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 col-md-3">
+                                {{ __('Имя:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="text" class="form-control" id="editFirstNameInput" name="first_name" value="{{ $profile->first_name }}">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 col-md-3">
+                                {{ __('Организация:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="text" class="form-control" id="editCompanyInput" name="company" value="{{ $profile->company }}">
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 col-md-3">
+                                {{ __('Расположение:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="text" class="form-control" id="editLocationInput" name="location" value="{{ $profile->location }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditProfileModal()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--Редактировать профиль пользователя--}}
+    <div class="modal fade" id="editPasswordModal" tabindex="-1" role="dialog" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editPasswordForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPasswordModalLabel">{{ __('Изменение пароля пользователя') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4 col-md-3">
+                                {{ __('Пароль:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="password" class="form-control" id="passwordInput" name="password" autofocus>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-4 col-md-3">
+                                {{ __('Повторить:') }}
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <input type="password" class="form-control" id="confirmInput" name="confirm_password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditPasswordModal()">{{ __('Закрыть') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
                     </div>
                 </form>
             </div>
@@ -1252,6 +1438,106 @@
         }
 
 
+
+
+
+        {{--Редактировать email--}}
+        $('#editEmailForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: "{{ route('manager.users.change_email', $user->id) }}",
+                data: $('#editEmailForm').serialize(),
+                success: function (request) {
+                    if (request.error === 0) {
+                        toastr.success(request.message, 'Ok');
+                        closeEditEmailModal();
+                        setTimeout(reLoad, 1000);
+                    } else {
+                        toastr.error(request.message, 'Внимание!');
+                        $('#editEmailInput').addClass('is-invalid');
+                    }
+                }
+            });
+        });
+        function closeEditEmailModal() {
+            // $('#editEmailInput').val('');
+            $("#editEmailModal").modal('hide');
+        }
+
+        {{--Редактирование телефона--}}
+        $('#editPhoneForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: "{{ route('manager.users.change_phone', $user->id) }}",
+                data: $('#editPhoneForm').serialize(),
+                success: function (request) {
+                    // console.log(request);
+                    if (request.error === 0) {
+                        toastr.success(request.message, 'Ok');
+                        closeEditPhoneModal();
+                        setTimeout(reLoad, 1000);
+                    } else {
+                        toastr.error(request.message, 'Внимание!');
+                        $('#editPhoneInput').addClass('is-invalid');
+                    }
+                }
+            });
+        });
+        var closeEditPhoneModal = function () {
+            $("#editPhoneModal").modal('hide');
+        };
+
+        {{--Редактирование профиля--}}
+        $('#editProfileForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: "{{ route('manager.users.change_profile', $user->id) }}",
+                data: $('#editProfileForm').serialize(),
+                success: function (request) {
+                    // console.log(request.message);
+                    if (request.error === 0) {
+                        toastr.success(request.message, 'Ok');
+                        closeEditProfileModal();
+                        setTimeout(reLoad, 1000);
+                    } else {
+                        toastr.error(request.message, 'Внимание!');
+                        // $('#editEmailInput').addClass('is-invalid');
+                    }
+                }
+            });
+        });
+        var closeEditProfileModal = function() {
+            $("#editProfileModal").modal('hide');
+        };
+        /*-----Редактирование пароля-----*/
+        $('#editPasswordForm').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'post',
+                url: "{{ route('manager.users.change_password', $user->id) }}",
+                data: $('#editPasswordForm').serialize(),
+                success: function (request) {
+                    if (request.error === 0) {
+                        toastr.success(request.message, 'Ok');
+                        closeEditPasswordModal();
+                    } else {
+                        toastr.error(request.message, 'Внимание!');
+                        $('#passwordInput').addClass('is-invalid');
+                        $('#confirmInput').addClass('is-invalid');
+                    }
+                }
+            });
+        });
+        var closeEditPasswordModal = function() {
+            $("#editPasswordModal").modal('hide');
+        };
+        /*-----Перезагрузка страницы-----*/
+        var reLoad = function() {
+            location.reload();
+        }
 
         // function createCopy() {activate_new_bot_33949
         //     var url = 'http://getchat/create-new-bot';

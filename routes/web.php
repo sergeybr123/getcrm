@@ -50,6 +50,10 @@ Route::middleware('auth')->group(function() {
             Route::post('/delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');
             Route::post('/full-delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_full')->name('delete_full');
             Route::post('/force-delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_force')->name('delete_force');
+            Route::post('change-email/{user_id}', 'Manager\UsersController@change_email')->name('change_email');
+            Route::post('change-phone/{user_id}', 'Manager\UsersController@change_phone')->name('change_phone');
+            Route::post('change-profile/{user_id}', 'Manager\UsersController@change_profile')->name('change_profile');
+            Route::post('change-password/{user_id}', 'Manager\UsersController@change_password')->name('change_password');
         });
         Route::prefix('pages')->name('pages.')->group(function(){
             Route::get( '', 'Manager\PagesController@index')->name('index');

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
@@ -186,11 +187,32 @@ class UsersController extends Controller
             }
         }
 
+        $profile = Profile::where('user_id', $user->id)->first();
+        if(!$profile) {
+            $profile = new Profile();
+            $profile->user_id = $user->id;
+            $profile->save();
+        }
+        $user_phone = Phone::where('user_id', $user->id)->first();
+        $path = 'js/phone.json';
+        $phones = json_decode(file_get_contents($path), true);
+
 //        dd($plan_bot_count);
 
 //        dd($invoices);
 
-        return view('manager.users.show', ['user' => $user, /*'bots' => $bots, */'new_bots' => $new_bots, 'pages' => $pages, 'subscribe' => $subscribe, 'plans' => $plans, 'invoices' => $invoices, 'plan_bot_count' => $plan_bot_count, 'new_bot_count' => $new_bot_count]);
+        return view('manager.users.show', ['user' => $user, /*'bots' => $bots, */
+            'new_bots' => $new_bots,
+            'pages' => $pages,
+            'subscribe' => $subscribe,
+            'plans' => $plans,
+            'invoices' => $invoices,
+            'plan_bot_count' => $plan_bot_count,
+            'new_bot_count' => $new_bot_count,
+            'profile' => $profile,
+            'user_phone' => $user_phone,
+            'phones' => $phones
+        ]);
     }
 
     /**
@@ -571,5 +593,103 @@ class UsersController extends Controller
         }
     }
 
+    public function change_email(Request $request, $user_id)
+    {
+
+        $user = User::findOrFail($user_id);
+        $dbl_email = User::where('email', $request->email)->first();
+        if(!$dbl_email) {
+            if($user->email != $request->email) {
+                $user->email = $request->email;
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+            } else {
+                return response()->json(['error' => 0, 'message' => 'Данные не изменены']);
+            }
+        } else {
+            if($dbl_email->id == $user->id) {
+                return response()->json(['error' => 1, 'message' => 'Данный email уже существует']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Данный email принадлежит другому пользователю']);
+            }
+        }
+
+    }
+
+    public function change_phone(Request $request, $user_id)
+    {
+        $phone_number = str_replace(['+', '-', '(', ')'. ' ', '_'], '', $request->phone);
+        $user = User::findOrFail($user_id);
+        $phone = Phone::where('user_id', $user_id)->first();
+        $dbl_phone = Phone::where('phone', $phone_number)->first();
+        if(!$dbl_phone) {
+            if($phone) {
+//                return response()->json(['phone' => $phone->phone]);
+                if($request->phone != $phone->phone) {
+                    $phone->country_code = $request->country_code;
+                    $phone->phone = $phone_number;
+                    $phone->save();
+                    //изменяем username - там записан номер телефона без +, пробелов и прочего
+                    $user->username = str_replace(['+', '-', '(', ')'. ' '], '', $request->country_code.$request->phone);
+                    $user->save();
+                    return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+                }
+            } else {
+                $phone = new Phone();
+                $phone->country_code = $request->country_code;
+                $phone->phone = $phone_number;
+                $phone->save();
+                //изменяем username - там записан номер телефона без +, пробелов и прочего
+                $user->username = str_replace(['+', '-', '(', ')'. ' '], '', $request->country_code.$request->phone);
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Данные успешно добавлены']);
+            }
+        } else {
+            if($dbl_phone->user_id == $user->id) {
+                return response()->json(['error' => 1, 'message' => 'Данный номер уже существует']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Данный номер принадлежит другому пользователю']);
+            }
+        }
+    }
+
+    public function change_profile(Request $request, $user_id)
+    {
+        $profile = Profile::where('user_id', $user_id)->first();
+        if($profile) {
+            $profile->first_name = $request->first_name;
+            $profile->last_name = $request->last_name;
+            $profile->company = $request->company;
+            $profile->location = $request->location;
+            $profile->save();
+            return response()->json(['error' => 0, 'message' => 'Данные успешно сохранены']);
+        } else {
+            $profile = new Profile();
+            $profile->first_name = $request->first_name;
+            $profile->last_name = $request->last_name;
+            $profile->company = $request->company;
+            $profile->location = $request->location;
+            $profile->save();
+            return response()->json(['error' => 0, 'message' => 'Данные успешно добавлены']);
+        }
+    }
+
+    public function change_password(Request $request, $user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        if($request->password == $request->confirm_password) {
+
+            if(strlen($request->password) > 6) {
+                $user->password = Hash::make($request->password);
+                $user->save();
+                return response()->json(['error' => 0, 'message' => 'Пароль успешно изменен']);
+            } else {
+                return response()->json(['error' => 1, 'message' => 'Пароль слишком короткий']);
+            }
+        } else {
+            return response()->json(['error' => 1, 'message' => 'Значения в полях не совпадают']);
+        }
+    }
 
 }
