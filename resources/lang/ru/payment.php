@@ -1,0 +1,48 @@
+<?php
+
+return [
+    'tariff' => 'Тарифный план',
+    'payment' => 'Оплата',
+    'invoice' => 'Счет',
+    'invoices' => 'Счета',
+    'invoice_id' => 'Номер счета',
+    'payment_desc' => 'Стоимость оплаты',
+    'my_payments' => 'Мои оплаты',
+    'my_invoice' => 'Мой счет',
+    'no_paid_invoices' => 'У вас нет оплаченных счетов',
+    'no_invoices_to_pay' => 'У вас нет счетов для оплаты',
+    'your_invoice' => 'Ваш заказ',
+    'service_description' => 'Описание услуги',
+    'price' => 'Цена',
+    'bot' => 'Авточат',
+    'monthly' => 'Помесячный',
+    'annual' => 'Ежегодный',
+    'testbot' => 'Тестовый',
+    'nds12' => 'НДС 12%',
+    'total' => 'Итого',
+    'policy_name' => 'Нажимая на <b>Оплатить</b>, <br />Вы принимаете условия <br /><a href=":link">пользовательского соглашения</a>',
+    'pay' => 'Оплатить',
+    'buy' => 'Купить',
+    'refresh_status' => 'Обновить статус',
+    'amount' => 'Сумма',
+    'date' => 'Дата оплаты',
+    'created_date' => 'Дата',
+    'payment_status' => 'Статус платежа',
+    'paid' => 'Оплачено',
+    'unpaid' => 'Не оплачено',
+    'to_pay' => 'На оплату',
+    'status' => 'Статус',
+    'transaction_id' => 'Номер транзакции',
+
+
+    /* Subscriptions */
+
+    'subscription' => 'Подписка',
+    'subscription_status' => 'Статус подписки',
+    'subscription_start' => 'Начало подписки',
+    'subscription_end' => 'Срок подписки',
+    'remains' => 'Осталось',
+    'expired' => 'Истек',
+    'expired_to_pay' => 'Истек срок оплаты счета',
+    'create_invoice' => 'Создать счет',
+];

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Mail;
 use Laratrust\Traits\LaratrustUserTrait;
 use App\Models\Profile;
 use App\Models\Phone;
@@ -66,4 +67,9 @@ class User extends Authenticatable
 
         return $result;
     }
+
+//    public function sendPasswordResetNotification($token)
+//    {
+//        $this->notify(new ResetPasswordNotification($token));
+//    }
 }

@@ -68,9 +68,11 @@
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
+                    @if(count($new_bots) < 10)
                     <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
                         <i class="fa fa-comments"></i>
                     </a>
+                    @endif
                     {{--<div class="dropdown">--}}
                         {{--<button class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
                             {{--<i class="fa fa-ellipsis-v"></i>--}}

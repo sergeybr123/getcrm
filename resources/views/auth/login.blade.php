@@ -41,7 +41,7 @@
                                             <button type="submit" class="btn btn-primary px-4">{{ __('auth.sign_in') }}</button>
                                         </div>
                                         <div class="col-6 text-right">
-                                            {{--<a href="{{ route('password.request') }}" class="btn btn-link px-0">{{ __('auth.forgot_password') }}</a>--}}
+                                            <a href="{{ route('password.request') }}" class="btn btn-link px-0">{{ __('Забыли пароль?') }}</a>
                                         </div>
                                     </div>
                                 </form>

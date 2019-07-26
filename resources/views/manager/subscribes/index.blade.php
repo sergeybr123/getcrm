@@ -51,7 +51,11 @@
                             @endif
                         </td>
                         <td class="text-center">{{ \Carbon\Carbon::parse($subscription->Start)->format('d.m.Y') }}</td>
-                        <td class="text-center">{{ \Carbon\Carbon::parse($subscription->End)->format('d.m.Y') }}</td>
+                        <td class="text-center">
+                            @if($subscription->End)
+                                {{ \Carbon\Carbon::parse($subscription->End)->format('d.m.Y') }}
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Models\BotInput;
+use App\Notifications\UserRegistered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
@@ -94,6 +95,7 @@ class UsersController extends Controller
             'cca2' => $user_phone['code'],
             'phone' => $request->phone
         ]));
+        $user->notify(new UserRegistered($user, $password));
         return redirect()->route('manager.users.show', $user);
     }
 
@@ -498,7 +500,7 @@ class UsersController extends Controller
                 ['data' => '{"built_in": true, "desc":"Имя", "name":"name", "text":["Укажите Ваше имя"], "error":["Кажется введено некорректное имя."], "rules":["string"], "success":["☑ Записала. Очень приятно."]}'],
                 ['data' => '{"built_in": true, "desc":"Фамилия", "name":"surname", "text":["Укажите Вашу фамилию"], "error":["Не пугайтесь, но Вы неверно заполнили Фамилию. Попробуйте еще раз."], "rules":["string"], "success":["☑ Спасибо, записала."]}'],
                 ['data' => '{"built_in": true, "desc":"Email", "name":"email", "text":["Укажите Ваш email 📧"], "error":["Ошибка. Попробуйте еще раз, введите email."], "rules":["email"], "success":["☑ Принято."]}'],
-                ['data' => '{"built_in": true, "desc":"Телефон", "name":"Phone", "text":["Укажите Ваш контактный номер 📱 телефона для связи с Вами"], "error":["Хм.. проверьте, пожалуйста, правильность указанного номера"], "rules":["string"], "success":["☑ Спасибо)"]}'],
+                ['data' => '{"built_in": true, "desc":"Телефон", "name":"phone", "text":["Укажите Ваш контактный номер 📱 телефона для связи с Вами"], "error":["Хм.. проверьте, пожалуйста, правильность указанного номера"], "rules":["string"], "success":["☑ Спасибо)"]}'],
                 ['data' => '{"built_in": true, "desc":"Дата рождения", "name":"birthday", "text":["Укажите дату Вашу рождения"], "error":["Произошла ошибка. Проверьте правильность указанной даты и введите еще раз."], "rules":["string"], "success":["☑ Записала"]}'],
                 ['data' => '{"built_in": true, "desc":"Адрес", "name":"address", "text":["Укажите адрес"], "error":["Вы допустили ошибку. Проверьте адрес."], "rules":["string"], "success":["☑ Спасибо)"]}'],
                 ['data' => '{"built_in": true, "desc":"Город", "name":"city", "text":["Укажите город"], "error":["Вы неверно указали город. Попробуйте еще раз."], "rules":["string"], "success":["☑ Записала)"]}'],
@@ -683,12 +685,31 @@ class UsersController extends Controller
             if(strlen($request->password) > 6) {
                 $user->password = Hash::make($request->password);
                 $user->save();
+//                $user->notify(new UserRegistered($user, $user->password));
                 return response()->json(['error' => 0, 'message' => 'Пароль успешно изменен']);
             } else {
                 return response()->json(['error' => 1, 'message' => 'Пароль слишком короткий']);
             }
         } else {
             return response()->json(['error' => 1, 'message' => 'Значения в полях не совпадают']);
+        }
+    }
+
+    public function addFreePlansAll()
+    {
+        $users = User::all();
+        $plan = BillingPlan::where('code', 'free')->first();
+        foreach ($users as $user) {
+            $subscribe = BillingSubscribe::where('user_id', $user->id)->first();
+            if(is_null($subscribe)) {
+                $ns = new BillingSubscribe();
+                $ns->user_id = $user->id;
+                $ns->plan_id = $plan->id;
+                $ns->interval = $plan->interval;
+                $ns->start_at = Carbon::now();
+                $ns->active = 1;
+                $ns->save();
+            }
         }
     }
 

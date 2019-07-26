@@ -9,6 +9,13 @@ Route::get('/', function () {
 
 
 Auth::routes();
+
+Route::get('auth/token/{token}', 'Auth\LoginController@authenticate');
+
+Route::resource('password-change', 'Auth\ChangePasswordController', ['only' => [
+    'index', 'store'
+]]);
+
 Route::middleware('auth')->group(function() {
 
     Route::get('exchange-multilink', 'Admin\MultiLinkController@change_multilink')->name('change_multilink');
