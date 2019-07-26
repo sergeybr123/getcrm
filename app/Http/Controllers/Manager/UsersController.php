@@ -136,22 +136,22 @@ class UsersController extends Controller
 
 //        dd($new_bots);
 
-        $pages = Company::where('user_id', $user->id)
-            ->join('bots','bots.botable_id','=','companies.id')
-            ->select(
-                'companies.id as Id',
-                'companies.slug as Slug',
-                'companies.created_at as CompanyCreated',
-                'companies.deleted_at as CompanyDeleted',
-                'bots.id as BotId',
-                'bots.type as BotType',
-                'bots.name as BotName',
-                'bots.active as BotActive',
-                'bots.deleted_at as BotDelete'
-            )
-            ->where('bots.type', 'multilink')
-            ->whereNull('companies.deleted_at')
-            ->get();
+//        $pages = Company::where('user_id', $user->id)
+//            ->join('bots','bots.botable_id','=','companies.id')
+//            ->select(
+//                'companies.id as Id',
+//                'companies.slug as Slug',
+//                'companies.created_at as CompanyCreated',
+//                'companies.deleted_at as CompanyDeleted',
+//                'bots.id as BotId',
+//                'bots.type as BotType',
+//                'bots.name as BotName',
+//                'bots.active as BotActive',
+//                'bots.deleted_at as BotDelete'
+//            )
+//            ->where('bots.type', 'multilink')
+//            ->whereNull('companies.deleted_at')
+//            ->get();
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
 
@@ -167,7 +167,7 @@ class UsersController extends Controller
 //        $url_plans = config('app.billing_url') . '/plan/all';
 //        $resp_plans = $client->get($url_plans);
 //        $plans = json_decode($resp_plans->getBody());
-        $plans = BillingPlan::all();
+//        $plans = BillingPlan::all();
 //        dd($subscribe->plan->bot_count);
 
         // Получаем все счета пользователя
@@ -203,9 +203,9 @@ class UsersController extends Controller
 
         return view('manager.users.show', ['user' => $user, /*'bots' => $bots, */
             'new_bots' => $new_bots,
-            'pages' => $pages,
+//            'pages' => $pages,
             'subscribe' => $subscribe,
-            'plans' => $plans,
+//            'plans' => $plans,
             'invoices' => $invoices,
             'plan_bot_count' => $plan_bot_count,
             'new_bot_count' => $new_bot_count,

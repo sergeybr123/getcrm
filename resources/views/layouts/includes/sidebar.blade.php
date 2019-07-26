@@ -48,11 +48,11 @@
                     <i><i class="fa fa-users"></i></i> @lang('sidebar.users')
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('manager.pages.index') }}">
-                    <i><i class="fa fa-copy"></i></i> {{ __('MultiLink') }}
-                </a>
-            </li>
+            {{--<li class="nav-item">--}}
+                {{--<a class="nav-link" href="{{ route('manager.pages.index') }}">--}}
+                    {{--<i><i class="fa fa-copy"></i></i> {{ __('MultiLink') }}--}}
+                {{--</a>--}}
+            {{--</li>--}}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('manager/bots/new') }}">
                     <i><i class="far fa-comments"></i></i> {{ __('sidebar.bots') }}

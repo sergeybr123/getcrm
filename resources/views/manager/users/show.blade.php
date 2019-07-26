@@ -68,22 +68,25 @@
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-ellipsis-v"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="margin-top: 5px;">
+                    <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
+                        <i class="fa fa-comments"></i>
+                    </a>
+                    {{--<div class="dropdown">--}}
+                        {{--<button class="btn btn-sm btn-outline-blue ml-1" style="border-radius:50%;width:30px;height:30px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
+                            {{--<i class="fa fa-ellipsis-v"></i>--}}
+                        {{--</button>--}}
+                        {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="margin-top: 5px;">--}}
                             {{--<a href="#" class="dropdown-item" title="Добавить старый авточат" data-toggle="modal" data-target="#createBotModal">--}}
                                 {{--{{ __('Добавить старый авточат') }}--}}
                             {{--</a>--}}
-                            <a href="{{ route('manager.users.create_multilink', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить мультилик">
-                                {{ __('Добавить мультилик') }}
-                            </a>
-                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить новый авточат">
-                                {{ __('Добавить новый авточат') }}
-                            </a>
-                        </div>
-                    </div>
+                            {{--<a href="{{ route('manager.users.create_multilink', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить мультилик">--}}
+                                {{--{{ __('Добавить мультилик') }}--}}
+                            {{--</a>--}}
+                            {{--<a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" class="dropdown-item" title="Добавить новый авточат">--}}
+                                {{--{{ __('Добавить новый авточат') }}--}}
+                            {{--</a>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
                 </div>
             </div>
@@ -159,7 +162,7 @@
             <ul class="nav nav-tabs" id="myTab1" role="tablist">
                 {{--<li class="nav-item"><a class="nav-link active show" id="bot-tab" data-toggle="tab" href="#bot-tab-content" role="tab" aria-controls="home" aria-selected="true">Авточаты</a></li>--}}
                 <li class="nav-item"><a class="nav-link active show" id="new-bot-tab" data-toggle="tab" href="#new-bot-tab-content" role="tab" aria-controls="new-bot" aria-selected="true">Авточаты</a></li>
-                <li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Мультилинки</a></li>
+                {{--<li class="nav-item"><a class="nav-link" id="page-tab" data-toggle="tab" href="#page-tab-content" role="tab" aria-controls="profile" aria-selected="false">Мультилинки</a></li>--}}
                 <li class="nav-item"><a class="nav-link" id="invoice-tab" data-toggle="tab" href="#invoice-tab-content" role="tab" aria-controls="contact" aria-selected="false">Счета</a></li>
             </ul>
             <div class="tab-content" id="myTab1Content">
@@ -351,103 +354,103 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="page-tab-content" role="tabpanel" aria-labelledby="page-tab">
-                    <table class="table table-bordered table-striped table-responsive-sm dataTable">
-                        <thead>
-                        <tr>
-                            @role('admin')
-                            <th width="10"></th>
-                            @endrole
-                            <th width="50">#</th>
-                            <th width="120">Наименование</th>
-                            <th class="d-none d-md-table-cell">Ссылка</th>
-                            <th width="100">Дата создания</th>
-                            <th width="90"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($pages as $key => $page)
-                            @if(is_null($page->BotDelete))
-                            <tr>
-                                @role('admin')
-                                <td>
-                                    @if($page->BotActive == 1)
-                                        <i class="fas fa-circle text-success"></i>
-                                    @else
-                                        <a href="#" class="btn btn-link" onclick="activate_new_bot({{ $page->BotId }})">{{ __('Активировать') }}</a>
-                                    @endif
-                                </td>
-                                @endrole
-                                <td>{{ $page->BotId }}</td>
-                                <td>{{ $page->BotName }}</td>
-                                <td class="d-none d-md-table-cell">
-                                    <span>{{ $page->Slug }}</span>
-                                    <span id="page_slug_{{ $key }}" style="display: none">https://getchat.me/{{ $page->Slug }}</span>
-                                    <button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"
-                                            title="Копировать ссылку"
-                                            onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">
-                                        <i class="fa fa-copy"></i>
-                                    </button>
-                                </td>
-                                <td class="text-center">{{ \Carbon\Carbon::parse($page->CompanyCreated)->format('d.m.Y') ?? '' }}</td>
-                                <td>
-                                    <div class="form-inline">
-                                        <a href="https://getchat.me/constructor2/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
-                                            <i class="fa fa-wrench"></i>
-                                        </a>
+                {{--<div class="tab-pane fade" id="page-tab-content" role="tabpanel" aria-labelledby="page-tab">--}}
+                    {{--<table class="table table-bordered table-striped table-responsive-sm dataTable">--}}
+                        {{--<thead>--}}
+                        {{--<tr>--}}
+                            {{--@role('admin')--}}
+                            {{--<th width="10"></th>--}}
+                            {{--@endrole--}}
+                            {{--<th width="50">#</th>--}}
+                            {{--<th width="120">Наименование</th>--}}
+                            {{--<th class="d-none d-md-table-cell">Ссылка</th>--}}
+                            {{--<th width="100">Дата создания</th>--}}
+                            {{--<th width="90"></th>--}}
+                        {{--</tr>--}}
+                        {{--</thead>--}}
+                        {{--<tbody>--}}
+                        {{--@foreach($pages as $key => $page)--}}
+                            {{--@if(is_null($page->BotDelete))--}}
+                            {{--<tr>--}}
+                                {{--@role('admin')--}}
+                                {{--<td>--}}
+                                    {{--@if($page->BotActive == 1)--}}
+                                        {{--<i class="fas fa-circle text-success"></i>--}}
+                                    {{--@else--}}
+                                        {{--<a href="#" class="btn btn-link" onclick="activate_new_bot({{ $page->BotId }})">{{ __('Активировать') }}</a>--}}
+                                    {{--@endif--}}
+                                {{--</td>--}}
+                                {{--@endrole--}}
+                                {{--<td>{{ $page->BotId }}</td>--}}
+                                {{--<td>{{ $page->BotName }}</td>--}}
+                                {{--<td class="d-none d-md-table-cell">--}}
+                                    {{--<span>{{ $page->Slug }}</span>--}}
+                                    {{--<span id="page_slug_{{ $key }}" style="display: none">https://getchat.me/{{ $page->Slug }}</span>--}}
+                                    {{--<button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"--}}
+                                            {{--title="Копировать ссылку"--}}
+                                            {{--onclick="copyPageToClipboard({{ $key }})" style="border-radius:50%;">--}}
+                                        {{--<i class="fa fa-copy"></i>--}}
+                                    {{--</button>--}}
+                                {{--</td>--}}
+                                {{--<td class="text-center">{{ \Carbon\Carbon::parse($page->CompanyCreated)->format('d.m.Y') ?? '' }}</td>--}}
+                                {{--<td>--}}
+                                    {{--<div class="form-inline">--}}
+                                        {{--<a href="https://getchat.me/constructor2/{{ $page->BotId }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">--}}
+                                            {{--<i class="fa fa-wrench"></i>--}}
+                                        {{--</a>--}}
                                         {{--<a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $page->id }}, '{{ $page->slug }}')" title="{{ __('Редактирование ссылки') }}">--}}
                                             {{--<i class="fa fa-pencil-alt"></i>--}}
                                         {{--</a>--}}
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-blue ml-1" type="button"
-                                                    id="dropdownMenuButton"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                                    style="border-radius:50%;width:30px;height:30px;">
-                                                <i class="fa fa-ellipsis-v"></i>
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                        {{--<div class="dropdown">--}}
+                                            {{--<button class="btn btn-sm btn-outline-blue ml-1" type="button"--}}
+                                                    {{--id="dropdownMenuButton"--}}
+                                                    {{--data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"--}}
+                                                    {{--style="border-radius:50%;width:30px;height:30px;">--}}
+                                                {{--<i class="fa fa-ellipsis-v"></i>--}}
+                                            {{--</button>--}}
+                                            {{--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">--}}
                                                 {{--@if($page->temp_bot != null)--}}
                                                     {{--<button class="dropdown-item" onclick="botConfirm({{ $page->id }})"><i class="fa fa-check"></i> {{ __('Подтвердить')  }}</button>--}}
                                                     {{--<button class="dropdown-item" onclick="botReset({{ $page->id }})"><i class="fa fa-times"></i> {{ __('Сбросить')  }}</button>--}}
                                                 {{--@endif--}}
-                                                <a class="dropdown-item" href="https://getchat.me/{{ $page->Slug }}" target="_blank">
-                                                    <i class="far fa-eye"></i> {{ __('buttons.view') }}
-                                                </a>
+                                                {{--<a class="dropdown-item" href="https://getchat.me/{{ $page->Slug }}" target="_blank">--}}
+                                                    {{--<i class="far fa-eye"></i> {{ __('buttons.view') }}--}}
+                                                {{--</a>--}}
                                                 {{--<button class="dropdown-item" onclick="changeOwnerButtonClick({{ $page->id }}, '{{ $page->slug }}')" data-toggle="modal" data-target="#changeOwnerModal"><i class="fa fa-user"></i> {{ __('Изменить владельца') }}</button>--}}
                                                 {{--<a class="dropdown-item" href="#" onclick="copyPageToClipboard({{ $key }})">--}}
                                                     {{--<i class="fa fa-copy"></i> {{ __('buttons.copy_link') }}--}}
                                                 {{--</a>--}}
-                                                <button class="dropdown-item" onclick="createOnExist({{ $page->Id }}, 1)"><i class="fa fa-comments"></i> {{ __('Создать новый авточат') }}</button>
-                                                <a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat-{{$page->BotId}}').submit();">
-                                                    <i class="fa fa-trash"></i> {{ __('Удалить') }}
-                                                </a>
-                                                <form id="delete-chat-{{$page->BotId}}" action="{{ route('manager.users.delete_chat', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                                <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault();document.getElementById('delete-full-{{$page->BotId}}').submit();">
-                                                    <i class="fa fa-trash"></i> {{ __('Удалить полностью') }}
-                                                </a>
-                                                <form id="delete-full-{{$page->BotId}}" action="{{ route('manager.users.delete_full', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                                @role('admin')
-                                                <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault();document.getElementById('delete-force-{{$page->BotId}}').submit();">
-                                                    <i class="fa fa-trash"></i> {{ __('Удалить без возврата') }}
-                                                </a>
-                                                <form id="delete-force-{{$page->BotId}}" action="{{ route('manager.users.delete_force', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                                @endrole
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                                {{--<button class="dropdown-item" onclick="createOnExist({{ $page->Id }}, 1)"><i class="fa fa-comments"></i> {{ __('Создать новый авточат') }}</button>--}}
+                                                {{--<a class="dropdown-item text-danger" href="#"  onclick="event.preventDefault();document.getElementById('delete-chat-{{$page->BotId}}').submit();">--}}
+                                                    {{--<i class="fa fa-trash"></i> {{ __('Удалить') }}--}}
+                                                {{--</a>--}}
+                                                {{--<form id="delete-chat-{{$page->BotId}}" action="{{ route('manager.users.delete_chat', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">--}}
+                                                    {{--@csrf--}}
+                                                {{--</form>--}}
+                                                {{--<a class="dropdown-item text-danger" href="#" onclick="event.preventDefault();document.getElementById('delete-full-{{$page->BotId}}').submit();">--}}
+                                                    {{--<i class="fa fa-trash"></i> {{ __('Удалить полностью') }}--}}
+                                                {{--</a>--}}
+                                                {{--<form id="delete-full-{{$page->BotId}}" action="{{ route('manager.users.delete_full', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">--}}
+                                                    {{--@csrf--}}
+                                                {{--</form>--}}
+                                                {{--@role('admin')--}}
+                                                {{--<a class="dropdown-item text-danger" href="#" onclick="event.preventDefault();document.getElementById('delete-force-{{$page->BotId}}').submit();">--}}
+                                                    {{--<i class="fa fa-trash"></i> {{ __('Удалить без возврата') }}--}}
+                                                {{--</a>--}}
+                                                {{--<form id="delete-force-{{$page->BotId}}" action="{{ route('manager.users.delete_force', ['id' => $page->Id, 'user_id' => $user->id, 'bot_id' => $page->BotId ]) }}" method="POST" style="display: none;">--}}
+                                                    {{--@csrf--}}
+                                                {{--</form>--}}
+                                                {{--@endrole--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                {{--</td>--}}
+                            {{--</tr>--}}
+                            {{--@endif--}}
+                        {{--@endforeach--}}
+                        {{--</tbody>--}}
+                    {{--</table>--}}
+                {{--</div>--}}
                 <div class="tab-pane fade" id="invoice-tab-content" role="tabpanel" aria-labelledby="invoice-tab">
                     <table class="table table-bordered table-striped table-responsive-sm dataTable">
                         <thead>
