@@ -8,9 +8,9 @@
 @endsection
 
 @section('content')
-    {{--@if(count($companies) <= $subscribe->plan->bot_count)--}}
+    @if(count($companies) <= 10)
     <button class="btn btn-sm btn-blue float-right" onclick="newLink()"><i class="fas fa-plus"></i> {{ __('Добавить авточат') }}</button>
-    {{--@endif--}}
+    @endif
     <p class="h3">{{ __('Мои авточаты') }}</p>
     <div class="card card-accent-primary mt-3">
         <div class="card-body p-2 pb-0">
@@ -23,7 +23,7 @@
                             <small>
                                 <a href="https://getchat.me/{{ $company->slug }}" target="_blank" class="text-muted" title="{{ __('Просмотр авточата') }}"><i class="fas fa-eye"></i></a>
                                 <a href="#" class="ml-1" onclick="EditLink({{ $company->id }}, '{{ $company->slug }}')"><i class="fas fa-pencil-alt" title="{{ __('Редактировать ссылку') }}"></i></a>
-                                <a href="#" class="ml-1" onclick="addBot({{ $company->id }}, '{{ $company->slug }}')"><i class="fas fa-plus" title="{{ __('Добавить авточат к ссылке') }}"></i></a>
+                                <a href="#" class="ml-1" onclick="addBot({{ $company->id }}, '{{ $company->slug }}')" {{ count($company->bots) == 5 ? 'disabled' : '' }}><i class="fas fa-plus" title="{{ __('Добавить авточат к ссылке') }}"></i></a>
                                 <a href="{{ route('partner::bots::data', $company->id) }}" class="ml-1 text-muted"><i class="fas fa-database" title="{{ __('Данные авточата') }}"></i></a>
                                 <a href="#" class="text-red ml-1" title="{{ __('Удалить ссылку и все авточаты') }}" onclick="event.preventDefault();document.getElementById('removeCompany{{ $company->id }}').submit();"><i class="fas fa-trash-alt"></i></a>
                                 <form id="removeCompany{{ $company->id }}" action="{{ route('partner::bots::delete_company', $company->id) }}" method="POST" style="display: none;">
