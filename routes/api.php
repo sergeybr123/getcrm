@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('get-users', 'Api\ApiController@getUsers');
 Route::post('change-owner', 'Api\ApiController@changeOwner');
+Route::get('create-inputs-if-not-exists', 'Api\ApiController@create_inputs_if_not_exists');

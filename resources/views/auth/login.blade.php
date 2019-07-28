@@ -1,6 +1,6 @@
 @extends('layouts.other')
 
-@section('title', __('auth.login'))
+@section('title', __('Авторизация пользователя'))
 
 @section('content')
     <div class="app flex-row align-items-center">
@@ -12,8 +12,8 @@
                             <div class="card-body">
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf
-                                    <h1>{{ __('auth.login') }}</h1>
-                                    <p class="text-muted">{{ __('auth.sign_in_account') }}</p>
+                                    <h1>{{ __('Авторизация') }}</h1>
+                                    <p class="text-muted">{{ __('Авторизуйтесь для входа в систему') }}</p>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="icon-user"></i></span>
@@ -38,7 +38,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-6">
-                                            <button type="submit" class="btn btn-primary px-4">{{ __('auth.sign_in') }}</button>
+                                            <button type="submit" class="btn btn-primary px-4">{{ __('Войти') }}</button>
                                         </div>
                                         <div class="col-6 text-right">
                                             <a href="{{ route('password.request') }}" class="btn btn-link px-0">{{ __('Забыли пароль?') }}</a>
