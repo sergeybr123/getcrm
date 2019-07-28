@@ -92,7 +92,7 @@
                     <div class="modal-body">
                         @csrf
                         <input class="form-control mb-2" type="text" id="newNameSlug" name="name" placeholder="{{ __('Введите название авточата') }}">
-                        <input class="form-control" type="text" id="newLinkSlug" name="slug" placeholder="{{ __('Введите название ссылки на авточат') }}">
+                        <input class="form-control" type="text" id="newLinkSlug" name="slug" onkeyup="keyPressed()" placeholder="{{ __('Введите название ссылки на авточат') }}">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="newLinkModalClose()" data-dismiss="modal">{{ __('Отмена') }}</button>
@@ -116,7 +116,7 @@
                     <div class="modal-body">
                         @csrf
                         <input type="hidden" id="link_id" name="company_id">
-                        <input class="form-control" type="text" value="{{ old('slug') }}" name="slug" id="link_slug">
+                        <input class="form-control" type="text" value="{{ old('slug') }}" name="slug" onkeyup="keyPressed()" id="link_slug">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="editLinkCloseForm()" data-dismiss="modal">{{ __('Отмена') }}</button>
@@ -171,11 +171,11 @@
                     </div>
                     <div class="modal-body">
                         <strong>{{ __('Наименование:') }}</strong>
-                        <input id="copy_slug_link" class="form-control" type="text" disabled>
+                        <input id="copy_slug_link" class="form-control" type="text" name="name_bot" disabled>
                     </div>
                     <div class="modal-body">
                         <strong>{{ __('Ссылка:') }}</strong>
-                        <input id="user_link" class="form-control" type="text" name="link">
+                        <input id="user_link" class="form-control" type="text" onkeyup="keyPressed()" name="link">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" onclick="copyTemplateModalClose()">{{ __('Закрыть') }}</button>
@@ -192,6 +192,33 @@
     {{--<script src="{{ asset('vendors/js/ladda.min.js') }}"></script>--}}
     {{--<script src="{{ asset('js/views/loading-buttons.js') }}"></script>--}}
 <script>
+    /*-----Запрет воода спец символов-----*/
+    function keyPressed(){
+        var presslId = $(event.target)[0].id;
+        // console.log(presslId);
+        ChangeSymbol(presslId);
+    }
+    function ChangeSymbol(id) {
+        var text = document.getElementById(id).value;
+        // console.log(text);
+        var transl = new Array();
+        transl[' ']='_';    transl['!']='_';
+        transl['%']='_';    transl['^']='_';
+        transl['&']='_';    transl['*']='_';
+        transl['@']='_';    transl['#']='_';
+        transl['$']='_';    transl['&']='_';
+
+        var result='';
+        for(i=0;i<text.length;i++) {
+            if(transl[text[i]] !== undefined) {
+                result += transl[text[i]];
+            }
+            else {
+                result += text[i];
+            }
+        }
+        document.getElementById(id).value=result;
+    };
     /*-----Добавление новой ссылки-----*/
     function newLink() {
         $('#newLinkModal').modal('show');

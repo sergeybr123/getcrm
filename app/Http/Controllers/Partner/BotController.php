@@ -158,12 +158,32 @@ class BotController extends Controller
     public function postCopyBot(Request $request)
     {
         $user = Auth::user();
-        $email = $request->user_email;
+        $email = $user->email;
         $link = $request->link;
         $template_id = $request->template_id;
 
         $get_link = Company::where('slug', $link)->first();
         if($get_link != null && $get_link->user_id == $user->id) {
+            $client = new Client();
+            $url = 'https://getchat.me/create-new-bot';
+            $params = [
+                'query' => [
+                    'link' => $link,
+                    'user_email' => $email,
+                    'template_id' => $template_id,
+                ]
+            ];
+            $response = $client->get($url, $params);
+            $data = json_decode($response->getBody());
+//            dd($data);
+            return response()->json(['error' => 0, 'message' => 'Копирование завершено!']);
+        } elseif(is_null($get_link)) {
+            $company = new Company();
+            $company->user_id = $user->id;
+            $company->slug = $link;
+            $company->name = $request->name_bot;
+            $company->save();
+
             $client = new Client();
             $url = 'https://getchat.me/create-new-bot';
             $params = [
