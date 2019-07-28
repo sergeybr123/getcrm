@@ -207,6 +207,7 @@
         transl['&']='_';    transl['*']='_';
         transl['@']='_';    transl['#']='_';
         transl['$']='_';    transl['&']='_';
+        transl['/']='_';
 
         var result='';
         for(i=0;i<text.length;i++) {
