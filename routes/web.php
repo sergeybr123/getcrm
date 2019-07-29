@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function() {
         Route::prefix('subscribes')->name('subscribes::')->group(function(){
             Route::get('', 'Admin\SubscribeController@index')->name('index');
         });
+        Route::get('set-all-users-free', 'Admin\SubscribeController@setAllFree')->name('set_all_free'); // Всем кто не имеет подписки поставить бесплатную подписку
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {

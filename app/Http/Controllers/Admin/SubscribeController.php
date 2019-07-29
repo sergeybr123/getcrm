@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\BillingPlan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -28,5 +30,24 @@ class SubscribeController extends Controller
             orderBy('subscribes.id', 'desc')->
             paginate(30);
         return view('admin.subscribes.index', ['subscriptions' => $subscriptions]);
+    }
+
+    /**/
+    public function setAllFree()
+    {
+        $plan = BillingPlan::where('code', 'free')->first();
+        $users = User::all();
+        foreach ($users as $user) {
+            $subsc = BillingSubscribe::where('user_id', $user->id)->first();
+            if(is_null($subsc)) {
+                $subscribe = new BillingSubscribe();
+                $subscribe->user_id = $user->id;
+                $subscribe->plan_id = $plan->id;
+                $subscribe->interval = $plan->interval;
+                $subscribe->start_at = Carbon::now();
+                $subscribe->active = 1;
+                $subscribe->save();
+            }
+        }
     }
 }
