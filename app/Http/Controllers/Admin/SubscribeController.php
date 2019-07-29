@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\BillingPlan;
+use App\Models\Bot;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -37,6 +38,7 @@ class SubscribeController extends Controller
     {
         $plan = BillingPlan::where('code', 'free')->first();
         $users = User::all();
+        $count = 0;
         foreach ($users as $user) {
             $subsc = BillingSubscribe::where('user_id', $user->id)->first();
             if(is_null($subsc)) {
@@ -47,7 +49,22 @@ class SubscribeController extends Controller
                 $subscribe->start_at = Carbon::now();
                 $subscribe->active = 1;
                 $subscribe->save();
+                $count++;
             }
         }
+        return response()->json(['error' => 0, 'count' => $count]);
+    }
+
+    /**/
+    public function changeMultiOnBot()
+    {
+        $count = 0;
+        $bots = Bot::all();
+        foreach ($bots as $bot) {
+            $bot->type = 'bot';
+            $bot->save();
+            $count++;
+        }
+        return response()->json(['error' => 0, 'count' => $count]);
     }
 }

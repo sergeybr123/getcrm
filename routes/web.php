@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function() {
             Route::get('', 'Admin\SubscribeController@index')->name('index');
         });
         Route::get('set-all-users-free', 'Admin\SubscribeController@setAllFree')->name('set_all_free'); // Всем кто не имеет подписки поставить бесплатную подписку
+        Route::get('change-multilink-on-bot', 'Admin\SubscribeController@changeMultiOnBot')->name('change_multi_on_bot'); // Изменяем все мультилинки на ботов
     });
     // Manager
     Route::prefix('manager')->name('manager.')->group(function() {
