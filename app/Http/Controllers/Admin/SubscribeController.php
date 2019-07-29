@@ -33,7 +33,7 @@ class SubscribeController extends Controller
         return view('admin.subscribes.index', ['subscriptions' => $subscriptions]);
     }
 
-    /**/
+    /*-----Всем кто не имеет подписки поставить бесплатную подписку-----*/
     public function setAllFree()
     {
         $plan = BillingPlan::where('code', 'free')->first();
@@ -55,11 +55,11 @@ class SubscribeController extends Controller
         return response()->json(['error' => 0, 'count' => $count]);
     }
 
-    /**/
+    /*-----Изменяем все мультилинки на ботов-----*/
     public function changeMultiOnBot()
     {
         $count = 0;
-        $bots = Bot::all();
+        $bots = Bot::where('type', 'multilink')->get();
         foreach ($bots as $bot) {
             $bot->type = 'bot';
             $bot->save();
