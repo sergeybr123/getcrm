@@ -13,7 +13,7 @@ class SubscribesController extends Controller
         $active = $request->active;
 
 //        if($active == null) {
-            $subscriptions = BillingSubscribe::whereNotIn('plan_id', [1])->
+            $subscriptions = BillingSubscribe::whereNotIn('plan_id', [1, 8])->
             join('billing.plans', 'subscribes.plan_id', '=', 'plans.id')->
             join('getchat.users', 'subscribes.user_id', '=', 'users.id')->
             join('getchat.phones', 'subscribes.user_id', '=', 'phones.user_id')->
