@@ -17,11 +17,23 @@ class BotsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $bots_old = Company::whereNotNull('bot')->whereNull('deleted_at')->orderBy('id', 'desc')->get();
-//        $bots_new = Bot::whereNull('deleted_at')->orderBy('id', 'desc')->get();
-        return view('manager.bots.index_old', ['bots_old' => $bots_old/*, 'bots_new' => $bots_new*/]);
+        $type = $request->type;
+        $text = $request->text;
+
+        $link = false;
+
+        if($type == 1 && $text != null) {
+            $bots = Bot::with(['company', 'company.owner'])->whereHas('company', function ($q) use ($text){ $q->where('slug', 'LIKE', '%' . $text . '%'); })->orderBy('id', 'desc')->get();
+        } elseif($type == 2 && $text != null) {
+            $bots = Bot::with(['company', 'company.owner'])->whereHas('company.owner', function ($q) use ($text){ $q->where('email', 'LIKE', '%' . $text . '%'); })->orderBy('id', 'desc')->get();
+        } else {
+            $bots = Bot::with(['company', 'company.owner'])->orderBy('id', 'desc')->paginate(30);
+            $link = true;
+        }
+
+        return view('manager.bots.index', ['bots' => $bots, 'link' => $link, 'type' => $type, 'text' => $text]);
     }
 
     public function bot_old(Request $request)
@@ -47,30 +59,9 @@ class BotsController extends Controller
     }
     public function bot_new()
     {
-//        $bots_new = Bot::whereNull('deleted_at')->orderBy('id', 'desc')->paginate(30);
+        $bots = Bot::with(['company', 'company.owner'])->orderBy('id', 'desc')->paginate(30);
 
-        $bots_new = Company::/*where('user_id', $user->id)
-            ->*/
-        join('bots','bots.botable_id','=','companies.id')
-            ->join('users', 'users.id', '=', 'companies.user_id')
-            ->select(
-                'companies.id as Id',
-                'users.id as UserId',
-                'users.email as UserEmail',
-                'companies.slug as Slug',
-                'companies.created_at as CompanyCreated',
-                'companies.deleted_at as CompanyDeleted',
-                'bots.id as BotId',
-                'bots.type as BotType',
-                'bots.name as BotName',
-                'bots.active as BotActive'
-            )
-            ->whereNull('companies.deleted_at')
-            ->where('bots.type', 'bot')
-            ->orderBy('companies.id', 'desc')
-            ->paginate(30);
-
-        return view('manager.bots.index_new', ['bots_new' => $bots_new]);
+        return view('manager.bots.index_new', ['bots' => $bots]);
     }
 
 

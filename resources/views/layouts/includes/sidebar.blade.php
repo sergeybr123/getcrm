@@ -54,7 +54,7 @@
                 {{--</a>--}}
             {{--</li>--}}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url('manager/bots/new') }}">
+                <a class="nav-link" href="{{ route('manager.bots.bot') }}">
                     <i><i class="far fa-comments"></i></i> {{ __('sidebar.bots') }}
                 </a>
             </li>

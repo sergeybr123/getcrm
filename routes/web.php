@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function() {
             Route::get( '', 'Manager\PagesController@index')->name('index');
         });
         Route::prefix('bots')->name('bots.')->group(function(){
-            Route::get( 'old', 'Manager\BotsController@bot_old')->name('bot_old');
+            Route::get( '', 'Manager\BotsController@index')->name('bot');
             Route::get( 'new', 'Manager\BotsController@bot_new')->name('bot_new');
             Route::get('confirm', 'Manager\BotsController@confirm')->name('confirmBot');
             Route::get('reset', 'Manager\BotsController@reset')->name('resetBot');
