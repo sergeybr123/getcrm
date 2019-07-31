@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\User;
 use Illuminate\Http\Request;
 use App\Models\Bot;
 use App\Models\BotListener;
@@ -125,19 +126,63 @@ class TemplateController extends Controller
         $email = $request->user_email;
         $link = $request->link;
         $template_id = $request->template_id;
+        $user = User::where('email', $email)->first();
 
-        $client = new Client();
-        $url = 'https://getchat.me/create-new-bot';
-        $params = [
-            'query' => [
-                'link' => $link,
-                'user_email' => $email,
-                'template_id' => $template_id,
-            ]
-        ];
-        $response = $client->get($url, $params);
-        $data = json_decode($response->getBody());
-        return redirect()->route('manager.users.show', $data->user_id);
-//        dd($data);
+
+
+        $get_link = Company::where('slug', $link)->first();
+        if($get_link != null) {
+            $client = new Client();
+            $url = 'https://getchat.me/create-new-bot';
+            $params = [
+                'query' => [
+                    'link' => $link,
+                    'user_email' => $email,
+                    'template_id' => $template_id,
+                ]
+            ];
+            $response = $client->get($url, $params);
+            $data = json_decode($response->getBody());
+//            dd($data);
+            return response()->json(['error' => 0, 'message' => 'Копирование завершено!']);
+        } else {
+            $company = new Company();
+            $company->user_id = $user->id;
+            $company->slug = $link;
+            $company->name = $request->name_bot;
+            $company->save();
+
+            $client = new Client();
+            $url = 'https://getchat.me/create-new-bot';
+            $params = [
+                'query' => [
+                    'link' => $link,
+                    'user_email' => $email,
+                    'template_id' => $template_id,
+                ]
+            ];
+            $response = $client->get($url, $params);
+            $data = json_decode($response->getBody());
+//            dd($data);
+            return response()->json(['error' => 0, 'message' => 'Копирование завершено!']);
+        }/* else {
+            return response()->json(['error' => 1, 'message' => 'Вы не можете копировать на данную ссылку!']);
+        }*/
+
+
+
+//        $client = new Client();
+//        $url = 'https://getchat.me/create-new-bot';
+//        $params = [
+//            'query' => [
+//                'link' => $link,
+//                'user_email' => $email,
+//                'template_id' => $template_id,
+//            ]
+//        ];
+//        $response = $client->get($url, $params);
+//        $data = json_decode($response->getBody());
+//        return redirect()->route('manager.users.show', $data->user_id);
+////        dd($data);
     }
 }

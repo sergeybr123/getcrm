@@ -27,6 +27,22 @@ use App\Models\BillingSubscribe;
 
 class UsersController extends Controller
 {
+    /*-----Возвращаем массив данных для заполнения BotInputs-----*/
+    public function get_bi_array()
+    {
+        return $bi_array = [
+            ['data' => '{"built_in": true, "desc":"Имя", "name":"name", "text":["Укажите Ваше имя"], "error":["Кажется введено некорректное имя."], "rules":["string"], "success":["☑ Записала. Очень приятно."]}'],
+            ['data' => '{"built_in": true, "desc":"Фамилия", "name":"surname", "text":["Укажите Вашу фамилию"], "error":["Не пугайтесь, но Вы неверно заполнили Фамилию. Попробуйте еще раз."], "rules":["string"], "success":["☑ Спасибо, записала."]}'],
+            ['data' => '{"built_in": true, "desc":"Email", "name":"email", "text":["Укажите Ваш email 📧"], "error":["Ошибка. Попробуйте еще раз, введите email."], "rules":["email"], "success":["☑ Принято."]}'],
+            ['data' => '{"built_in": true, "desc":"Телефон", "name":"phone", "text":["Укажите Ваш контактный номер 📱 телефона для связи с Вами"], "error":["Хм.. проверьте, пожалуйста, правильность указанного номера"], "rules":["string"], "success":["☑ Спасибо)"]}'],
+            ['data' => '{"built_in": true, "desc":"Дата рождения", "name":"birthday", "text":["Укажите дату Вашу рождения"], "error":["Произошла ошибка. Проверьте правильность указанной даты и введите еще раз."], "rules":["string"], "success":["☑ Записала"]}'],
+            ['data' => '{"built_in": true, "desc":"Адрес", "name":"address", "text":["Укажите адрес"], "error":["Вы допустили ошибку. Проверьте адрес."], "rules":["string"], "success":["☑ Спасибо)"]}'],
+            ['data' => '{"built_in": true, "desc":"Город", "name":"city", "text":["Укажите город"], "error":["Вы неверно указали город. Попробуйте еще раз."], "rules":["string"], "success":["☑ Записала)"]}'],
+            ['data' => '{"built_in": true, "desc":"Ссылка на Instagram", "name":"url_to_instagram", "text":["Добавьте ссылку на Ваш аккаунт в Instagram"], "error":["Ваша ссылка не соответствует формату. Скопируйте ссылку и вставьте в поле ее раз."], "rules":["string"], "success":["☑ Записала, будем изучать ваш Instagram)"]}'],
+            ['data' => '{"built_in": true, "desc":"Цифры", "name":"numbers", "text":["Укажите число"], "error":["Введенные данные не соответствуют формату цифр. Введите только цифры."], "rules":["string"], "success":["☑ Записала"]}'],
+            ['data' => '{"built_in": true, "desc":"Комментарий", "name":"comments", "text":["Оставьте Ваш комментарий"], "error":["Что-то пошло не так! Введите текст еще раз!"], "rules":["string"], "success":["☑ Спасибо)"]}']
+        ];
+    }
     /**
      * Display a listing of the resource.
      *
@@ -108,52 +124,8 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-//        $bots = Company::where('user_id', $id)
-//            ->whereNull('deleted_at')
-//            ->where(function($result) {
-//                $result->whereNotNull('bot')
-//                    ->orWhere('temp_bot', '!=', null);
-//            })->get();
-
-
-        //->whereNotNull('bot')->orWhere('temp_bot', '!=', null)->whereNull('deleted_at')->get();
-//        $pages = Company::where('user_id', $id)->whereNull('bot')->whereNull('deleted_at')->get();
-
-        $new_bots = Company::where('user_id', $user->id)
-            ->join('bots','bots.botable_id','=','companies.id')
-            ->select(
-                'companies.id as Id',
-                'companies.slug as Slug',
-                'companies.created_at as CompanyCreated',
-                'companies.deleted_at as CompanyDeleted',
-                'bots.id as BotId',
-                'bots.type as BotType',
-                'bots.name as BotName',
-                'bots.active as BotActive',
-                'bots.deleted_at as BotDelete'
-            )
-            ->whereNull('companies.deleted_at')
-            ->where('bots.type', 'bot')
-            ->get();
-
-//        dd($new_bots);
-
-//        $pages = Company::where('user_id', $user->id)
-//            ->join('bots','bots.botable_id','=','companies.id')
-//            ->select(
-//                'companies.id as Id',
-//                'companies.slug as Slug',
-//                'companies.created_at as CompanyCreated',
-//                'companies.deleted_at as CompanyDeleted',
-//                'bots.id as BotId',
-//                'bots.type as BotType',
-//                'bots.name as BotName',
-//                'bots.active as BotActive',
-//                'bots.deleted_at as BotDelete'
-//            )
-//            ->where('bots.type', 'multilink')
-//            ->whereNull('companies.deleted_at')
-//            ->get();
+        $bots = Company::where('user_id', $id)->whereHas('bots')->with('bots')->orderBy('slug')->get();
+//        dd($bots);
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
 
@@ -182,11 +154,7 @@ class UsersController extends Controller
         $new_bot_count = 0;
         if($subscribe){
             $plan_bot_count = $subscribe->plan->bot_count;
-
-            foreach ($new_bots as $new_bot) {
-                if($new_bot->BotActive == 1)
-                    $new_bot_count++;
-            }
+            $new_bot_count = count($bots);
         }
 
         $profile = Profile::where('user_id', $user->id)->first();
@@ -199,15 +167,10 @@ class UsersController extends Controller
         $path = 'js/phone.json';
         $phones = json_decode(file_get_contents($path), true);
 
-//        dd($plan_bot_count);
-
-//        dd($invoices);
-
-        return view('manager.users.show', ['user' => $user, /*'bots' => $bots, */
-            'new_bots' => $new_bots,
-//            'pages' => $pages,
+        return view('manager.users.show', [
+            'user' => $user,
+            'bots' => $bots,
             'subscribe' => $subscribe,
-//            'plans' => $plans,
             'invoices' => $invoices,
             'plan_bot_count' => $plan_bot_count,
             'new_bot_count' => $new_bot_count,
@@ -496,18 +459,7 @@ class UsersController extends Controller
             $bot->active = 0;
             $bot->save();
 
-            $bi_array = [
-                ['data' => '{"built_in": true, "desc":"Имя", "name":"name", "text":["Укажите Ваше имя"], "error":["Кажется введено некорректное имя."], "rules":["string"], "success":["☑ Записала. Очень приятно."]}'],
-                ['data' => '{"built_in": true, "desc":"Фамилия", "name":"surname", "text":["Укажите Вашу фамилию"], "error":["Не пугайтесь, но Вы неверно заполнили Фамилию. Попробуйте еще раз."], "rules":["string"], "success":["☑ Спасибо, записала."]}'],
-                ['data' => '{"built_in": true, "desc":"Email", "name":"email", "text":["Укажите Ваш email 📧"], "error":["Ошибка. Попробуйте еще раз, введите email."], "rules":["email"], "success":["☑ Принято."]}'],
-                ['data' => '{"built_in": true, "desc":"Телефон", "name":"phone", "text":["Укажите Ваш контактный номер 📱 телефона для связи с Вами"], "error":["Хм.. проверьте, пожалуйста, правильность указанного номера"], "rules":["string"], "success":["☑ Спасибо)"]}'],
-                ['data' => '{"built_in": true, "desc":"Дата рождения", "name":"birthday", "text":["Укажите дату Вашу рождения"], "error":["Произошла ошибка. Проверьте правильность указанной даты и введите еще раз."], "rules":["string"], "success":["☑ Записала"]}'],
-                ['data' => '{"built_in": true, "desc":"Адрес", "name":"address", "text":["Укажите адрес"], "error":["Вы допустили ошибку. Проверьте адрес."], "rules":["string"], "success":["☑ Спасибо)"]}'],
-                ['data' => '{"built_in": true, "desc":"Город", "name":"city", "text":["Укажите город"], "error":["Вы неверно указали город. Попробуйте еще раз."], "rules":["string"], "success":["☑ Записала)"]}'],
-                ['data' => '{"built_in": true, "desc":"Ссылка на Instagram", "name":"url_to_instagram", "text":["Добавьте ссылку на Ваш аккаунт в Instagram"], "error":["Ваша ссылка не соответствует формату. Скопируйте ссылку и вставьте в поле ее раз."], "rules":["string"], "success":["☑ Записала, будем изучать ваш Instagram)"]}'],
-                ['data' => '{"built_in": true, "desc":"Цифры", "name":"numbers", "text":["Укажите число"], "error":["Введенные данные не соответствуют формату цифр. Введите только цифры."], "rules":["string"], "success":["☑ Записала"]}'],
-                ['data' => '{"built_in": true, "desc":"Комментарий", "name":"comments", "text":["Оставьте Ваш комментарий"], "error":["Что-то пошло не так! Введите текст еще раз!"], "rules":["string"], "success":["☑ Спасибо)"]}']
-            ];
+            $bi_array = $this->get_bi_array();
 
             foreach ($bi_array as $i => $k) {
                 $bot_input = new BotInput();
@@ -540,6 +492,16 @@ class UsersController extends Controller
         $bot->botable_id = $company->id;
         $bot->botable_type = 'App\\Models\\Company';
         $bot->save();
+
+        $bi_array = $this->get_bi_array();
+
+        foreach ($bi_array as $i => $k) {
+            $bot_input = new BotInput();
+            $bot_input->bot_id = $bot->id;
+            $bot_input->data = $k["data"];
+            $bot_input->type = "GurmanAlexander\\TheBot\\Models\\Inputs\\RegularInput";
+            $bot_input->save();
+        }
 
         return response()->json(['bot_id' => $bot->id]);
     }
