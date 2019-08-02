@@ -119,6 +119,13 @@
                                             <p class="mb-0"><b>{{ __('Ссылка:') }}</b> <span class="text-blue ml-1" title="{{ __('Ссылка на авточат') }}">{{ $company->slug }}</span></p>
                                             <small>
                                                 <a href="https://getchat.me/{{ $company->slug }}" target="_blank" class="text-muted" title="{{ __('Просмотр авточата') }}"><i class="fas fa-eye"></i></a>
+                                                <span id="page_slug_{{ $company->id }}" style="display: none">https://getchat.me/{{ $company->slug }}</span>
+                                                {{--<button class="btn float-right btn-sm btn-outline-blue ml-2" type="button"--}}
+                                                        {{--title="Копировать ссылку"--}}
+                                                        {{--onclick="copyPageToClipboard({{ $company->id }})" style="border-radius:50%;">--}}
+                                                    {{--<i class="fa fa-copy"></i>--}}
+                                                {{--</button>--}}
+                                                <a href="#" class="ml-1" onclick="copyPageToClipboard({{ $company->id }})"><i class="fas fa-copy" title="{{ __('Копировать ссылку') }}"></i></a>
                                                 <a href="#" class="ml-1" onclick="EditLink({{ $company->id }}, '{{ $company->slug }}')"><i class="fas fa-pencil-alt" title="{{ __('Редактировать ссылку') }}"></i></a>
                                                 <a href="#" class="ml-1" onclick="addBot({{ $company->id }}, '{{ $company->slug }}')" {{ count($company->bots) == 5 ? 'disabled' : '' }}><i class="fas fa-plus" title="{{ __('Добавить авточат к ссылке') }}"></i></a>
 {{--                                                <a href="{{ route('partner::bots::data', $company->id) }}" class="ml-1 text-muted"><i class="fas fa-database" title="{{ __('Данные авточата') }}"></i></a>--}}
@@ -352,7 +359,36 @@
             </div>
         </div>
     </div>
-
+    {{--Добавление авточата к ссылке--}}
+    <div class="modal fade" id="addBotModal" tabindex="-1" role="dialog" aria-labelledby="addBotModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="addBotForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ __('Добавление нового авточата') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <div class="mb-2">
+                            <input type="hidden" id="addBotId" name="company_id">
+                            <span>{{ __('Ссылка:') }} <span id="addBotSlug"></span></span>
+                            {{--<input class="form-control readonly" type="text" value="{{ old('slug') }}" name="slug" id="link_slug">--}}
+                        </div>
+                        <div>
+                            <input class="form-control" type="text" id="addBotName" name="name" placeholder="{{ __('Введите наименование авточата') }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="addBotModalClose()" data-dismiss="modal">{{ __('Отмена') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Сохранить') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     {{--Изменение ссылки--}}
     <div class="modal fade" id="editLinkModal" tabindex="-1" role="dialog" aria-labelledby="editLinkModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -973,6 +1009,40 @@
         var closeEditPasswordModal = function() {
             $("#editPasswordModal").modal('hide');
         };
+        /*-----Добавление авточата к ссылке-----*/
+        function addBot(company_id, company_slug) {
+            $('#addBotId').val(company_id);
+            $('#addBotSlug').text(company_slug);
+            $('#addBotModal').modal('show');
+        }
+        $('#addBotForm').on('submit', function (e) {
+            e.preventDefault();
+            if($('#addBotName').val() !== '') {
+                // console.log($('#addBotName').val());
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('partner::bots::add_bot') }}',
+                    data: $('#addBotForm').serialize(),
+                    success: function (request) {
+                        if (request.error === 0) {
+                            addBotModalClose();
+                            setTimeout(reLoad, 1000);
+                        }
+                    }
+                });
+            } else {
+                $('#addBotName').addClass('is-invalid');
+                toastr.error('Произошла ошибка!', 'Внимание!');
+            }
+
+        });
+        function addBotModalClose() {
+            $('#addBotId').val('');
+            $('#addBotName').val('');
+            $('#addBotSlug').text('');
+            $('#addBotName').removeClass('is-invalid');
+            $('#addBotModal').modal('hide');
+        }
         /*-----Перезагрузка страницы-----*/
         var reLoad = function() {
             location.reload();
