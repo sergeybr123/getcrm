@@ -124,7 +124,7 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $bots = Company::where('user_id', $id)->whereHas('bots')->with('bots')->orderBy('slug')->get();
+        $bots = Company::where('user_id', $id)->whereHas('bots')->orderBy('slug')->get();
 //        dd($bots);
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -149,6 +149,8 @@ class UsersController extends Controller
         $resp_inv = $client->get($url_inv);
         $invoices_resp = json_decode($resp_inv->getBody());
         $invoices = $invoices_resp->data;
+
+//        dd($invoices);
 
         $plan_bot_count = 0;
         $new_bot_count = 0;

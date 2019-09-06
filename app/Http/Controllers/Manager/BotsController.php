@@ -29,7 +29,7 @@ class BotsController extends Controller
         } elseif($type == 2 && $text != null) {
             $bots = Bot::with(['company', 'company.owner'])->whereHas('company.owner', function ($q) use ($text){ $q->where('email', 'LIKE', '%' . $text . '%'); })->orderBy('id', 'desc')->get();
         } else {
-            $bots = Bot::with(['company', 'company.owner'])->orderBy('id', 'desc')->paginate(30);
+            $bots = Bot::with(['company', 'company.owner'])->whereHas('company')->orderBy('id', 'desc')->paginate(30);
             $link = true;
         }
 

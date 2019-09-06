@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingPlan extends Model
 {
-    protected $connection = 'billing';
-
     protected $table = 'plans';
 
     protected $fillable = [

@@ -16,9 +16,9 @@ return [
     'name' => env('APP_NAME', 'Laravel'),
 //    'log' => 'daily',
 
-    'billing_url' => 'https://billing.getchat.me/api',
+    'billing_url' => env('BILLING_URL', 'https://billing.getchat.me/api'),
 //    'billing_url' => 'http://billing.getchat/api',
-    'billing_token' => 'Yi5zZXJnZXlAZ2V0Y2hhdC5tZTpTZXJnZXlA',
+    'billing_token' => env('BILLING_TOKEN', 'Yi5zZXJnZXlAZ2V0Y2hhdC5tZTpTZXJnZXlAMTIz'),
     'data_base' => env('DB_DATABASE'),
     /*
     |--------------------------------------------------------------------------

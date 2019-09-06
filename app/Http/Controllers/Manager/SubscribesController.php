@@ -14,7 +14,7 @@ class SubscribesController extends Controller
 
 //        if($active == null) {
             $subscriptions = BillingSubscribe::whereNotIn('plan_id', [1, 8])->
-            join('billing.plans', 'subscribes.plan_id', '=', 'plans.id')->
+            join(config('app.data_base').'.plans', 'subscribes.plan_id', '=', 'plans.id')->
             join(config('app.data_base').'.users', 'subscribes.user_id', '=', 'users.id')->
             join(config('app.data_base').'.phones', 'subscribes.user_id', '=', 'phones.user_id')->
             select('subscribes.id as SubscribeId',

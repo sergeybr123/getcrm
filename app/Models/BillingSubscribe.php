@@ -7,8 +7,6 @@ use App\Models\BillingPlan;
 
 class BillingSubscribe extends Model
 {
-    protected $connection = 'billing';
-
     protected $table = 'subscribes';
 
     protected $fillable = [
