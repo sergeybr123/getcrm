@@ -153,7 +153,7 @@
                                                             <label class="custom-control-label" for="activate_new_bot_{{ $bot->id }}"></label>
                                                         </div>
                                                     @endif
-                                                    <a href="https://getchat.me/constructor2/{{ $bot->id }}?account={{ $user->email }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
+                                                    <a href="{{ config('app.constructor').$bot->id }}?account={{ $user->email }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
                                                     <div class="dropdown mx-2">
                                                         <a class="" href="#" role="button" id="dropdownMenuLink{{ $bot->id }}" title="{{ __('Дополнительные функции') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="fas fa-ellipsis-v"></i>

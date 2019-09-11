@@ -128,7 +128,7 @@
                                 <td class="text-center">{{ \Carbon\Carbon::parse($bot->created_at)->format('d.m.Y') ?? '' }}</td>
                                 <td>
                                     <div class="form-inline">
-                                        <a href="http://getchat.me/constructor/{{ $bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
+                                        <a href="{{ config('app.constructor').$bot->id }}" target="_blank" class="btn btn-sm btn-outline-blue mr-1" style="border-radius:50%;">
                                             <i class="fa fa-wrench"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-outline-blue" style="border-radius:50%;" data-toggle="modal" data-target="#editLinkModal" onclick="EditLink({{ $bot->id }}, '{{ $bot->slug }}')" title="{{ __('Редактирование ссылки') }}">

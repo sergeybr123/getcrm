@@ -20,6 +20,7 @@ return [
 //    'billing_url' => 'http://billing.getchat/api',
     'billing_token' => env('BILLING_TOKEN', 'Yi5zZXJnZXlAZ2V0Y2hhdC5tZTpTZXJnZXlAMTIz'),
     'data_base' => env('DB_DATABASE'),
+    'constructor' => env('CONSTRUCTOR'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

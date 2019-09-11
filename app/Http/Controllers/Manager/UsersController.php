@@ -448,7 +448,7 @@ class UsersController extends Controller
 
             $company = new Company();
             $company->user_id = $user->id;
-            $company->slug = $request->link;
+            $company->slug = $request->slug;
             $company->name = $request->name;
             $company->description = $request->description;
             $company->save();
