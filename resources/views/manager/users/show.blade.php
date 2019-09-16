@@ -64,10 +64,16 @@
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
-                    @if(count($bots) <= 10)
-                    <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
-                        <i class="fa fa-comments"></i>
-                    </a>
+                    @if($subscribe->plan->code == 'unlimited')
+                        <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
+                            <i class="fa fa-comments"></i>
+                        </a>
+                    @else
+                        @if(count($bots) <= 10)
+                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
+                                <i class="fa fa-comments"></i>
+                            </a>
+                        @endif
                     @endif
                 </div>
             </div>

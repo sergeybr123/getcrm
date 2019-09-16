@@ -25,6 +25,11 @@ class BillingSubscribe extends Model
         'deleted_at',
     ];
 
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
+
     public function plan()
     {
         return $this->hasOne('App\Models\BillingPlan', 'id', 'plan_id');

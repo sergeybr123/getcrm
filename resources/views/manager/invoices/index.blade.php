@@ -9,7 +9,7 @@
 
 @section('content')
 
-    <h1>{{ __('Счета и платежи') }} (@isset($all){{ $all }}@endisset)</h1>
+    <h1>{{ __('Счета и платежи') }}</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <form>
@@ -35,7 +35,7 @@
                     <th width="80">#</th>
                     <th>Пользователь</th>
                     {{--<th width="130">Телефон</th>--}}
-                    <th>Тип платежа</th>
+                    <th width="120">Тип платежа</th>
                     <th width="90">Сумма</th>
                     <th width="50">Оплата</th>
                     <th width="130">Дата создания</th>
@@ -72,10 +72,10 @@
                             {{--{{ '+' . $invoice[0]['phone']['country_code'] . $invoice[0]['phone']['phone'] }}--}}
                         {{--@endif--}}
                     {{--</td>--}}
-                    <td>
-                        @if($invoice[1]->plan)
+                    <td class="text-center">
+                        @if($invoice[1]->type)
                             {{-- $invoice[1] --}}
-                            {{--<b>{{ $invoice[1]->type->name }}</b> - <i>{{ $invoice[1]->plan->name }}</i>--}}
+                            <b>{{ $invoice[1]->type->name }}</b>
                         {{--@else--}}
                             {{--{{ $invoice[1]->type->name . ' ' . $invoice[1]->service->name }}--}}
                         @endif

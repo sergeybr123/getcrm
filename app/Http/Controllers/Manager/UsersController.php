@@ -510,6 +510,8 @@ class UsersController extends Controller
 
     public function invoice($id)
     {
+//        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+
         $user = User::findOrFail($id);
         return view('manager.users.invoice', ['user' => $user]);
     }

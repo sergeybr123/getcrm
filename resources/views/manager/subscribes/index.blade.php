@@ -39,10 +39,23 @@
                 <tbody>
                 @forelse($subscriptions as $key => $subscription)
                     <tr>
-                        <td>{{ $subscription->SubscribeId }}</td>
-                        <td><a href="{{ route('manager.users.show', ['id' => $subscription->UserId]) }}">{{ $subscription->email }}</a></td>
-                        <td>+{{ $subscription->country_code.$subscription->phone }}</td>
-                        <td class="text-center">{{ $subscription->PlanName }}</td>
+                        <td>{{ $subscription->id }}</td>
+                        <td>
+                            @if($subscription->user)
+                                <a href="{{ route('manager.users.show', ['id' => $subscription->user_id]) }}">{{ $subscription->user->email }}</a>
+                            @else
+                                Неизвестно
+                            @endif
+                        </td>
+
+                        <td>
+                            @if($subscription->user->phone)
+                                +{{ $subscription->user->phone->country_code.$subscription->user->phone->phone }}
+                            @else
+                                Не указан
+                            @endif
+                        </td>
+                        <td class="text-center">{{ $subscription->plan->name }}</td>
                         <td class="text-center">
                             @if($subscription->active == 1)
                                 <span class="badge badge-success">Активна</span>
@@ -50,10 +63,10 @@
                                 <span class="badge badge-danger">Не активна</span>
                             @endif
                         </td>
-                        <td class="text-center">{{ \Carbon\Carbon::parse($subscription->Start)->format('d.m.Y') }}</td>
+                        <td class="text-center">{{ \Carbon\Carbon::parse($subscription->start_at)->format('d.m.Y') }}</td>
                         <td class="text-center">
                             @if($subscription->End)
-                                {{ \Carbon\Carbon::parse($subscription->End)->format('d.m.Y') }}
+                                {{ \Carbon\Carbon::parse($subscription->end_at)->format('d.m.Y') }}
                             @endif
                         </td>
                     </tr>
