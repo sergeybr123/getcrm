@@ -177,7 +177,7 @@
                     strPlan += '<strong>Тарифный план:</strong>';
                     $.each(request.data, function (key, value) {
                         // console.log(value)
-                        if(value.id > 3 && value.id < 7){
+                        if(value.on_show === 1){
                             strPlan += '<div class="custom-control custom-radio">';
                             strPlan += '    <input class="custom-control-input" type="radio" name="plan_id" onclick="ChoisePlan('+value.id+', \''+value.code+'\', '+value.price+', ' +value.discount+ ')" id="plansRadios' + key + '" value="' + value.id + '">';
                             strPlan += '    <label class="custom-control-label" for="plansRadios' + key + '">' + value.name + '</label>';

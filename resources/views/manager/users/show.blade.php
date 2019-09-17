@@ -290,7 +290,7 @@
                         <tr>
                             <th width="70">#</th>
                             <th width="120">Вид</th>
-                            <th>Наименование</th>
+                            {{--<th>Наименование</th>--}}
                             <th width="70">Сумма</th>
                             <th width="70">Статус</th>
                             <th width="100">Дата создания</th>
@@ -306,15 +306,15 @@
                             <tr>
                                 <td>{{ $invoice->id }}</td>
                                 <td>{{ $invoice->type->name }}</td>
-                                <td>
-                                    @if($invoice->plan != null)
-                                        {{ $invoice->plan->name }}
-                                    @else
-                                        @if($invoice->service != null)
-                                            {{ $invoice->service->name }}
-                                        @endif
-                                    @endif
-                                </td>
+                                {{--<td>--}}
+                                    {{--@if($invoice->plan != null)--}}
+                                        {{--{{ $invoice->plan->name }}--}}
+                                    {{--@else--}}
+                                        {{--@if($invoice->service != null)--}}
+                                            {{--{{ $invoice->service->name }}--}}
+                                        {{--@endif--}}
+                                    {{--@endif--}}
+                                {{--</td>--}}
                                 <td class="text-right">{{ number_format($invoice->amount, 0, '', ' ') }} тг.</td>
                                 <td class="text-center">
                                     @if($invoice->status == 'active')
