@@ -49,7 +49,7 @@
                         </td>
 
                         <td>
-                            @if($subscription->user->phone)
+                            @if(!is_null($subscription->user->phone))
                                 +{{ $subscription->user->phone->country_code.$subscription->user->phone->phone }}
                             @else
                                 Не указан
