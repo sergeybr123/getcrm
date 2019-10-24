@@ -73,9 +73,9 @@
                         {{--@endif--}}
                     {{--</td>--}}
                     <td class="text-center">
-                        @if($invoice[1]->type)
+                        @if($invoice[1]->types)
                             {{-- $invoice[1] --}}
-                            <b>{{ $invoice[1]->type->name }}</b>
+                            <b>{{ $invoice[1]->types->name }}</b>
                         {{--@else--}}
                             {{--{{ $invoice[1]->type->name . ' ' . $invoice[1]->service->name }}--}}
                         @endif

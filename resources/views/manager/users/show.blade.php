@@ -305,7 +305,7 @@
                         @foreach($invoices as $invoice)
                             <tr>
                                 <td>{{ $invoice->id }}</td>
-                                <td>{{ $invoice->type->name }}</td>
+                                <td>{{ $invoice->types->name }}</td>
                                 {{--<td>--}}
                                     {{--@if($invoice->plan != null)--}}
                                         {{--{{ $invoice->plan->name }}--}}
