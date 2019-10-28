@@ -13,10 +13,13 @@ class BillingSubscribe extends Model
         'user_id',
         'plan_id',
         'interval',
+        'term',
+        'bot_count',
         'trial_ends_at',
         'start_at',
         'end_at',
         'active',
+        'last_invoice',
     ];
 
     protected $dates = [

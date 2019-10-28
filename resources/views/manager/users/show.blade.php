@@ -64,17 +64,17 @@
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
-                    @if($subscribe->plan->code == 'unlimited')
+{{--                    @if($subscribe->plan->code == 'unlimited')--}}
                         <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
                             <i class="fa fa-comments"></i>
                         </a>
-                    @else
-                        @if(count($bots) <= 10)
-                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
-                                <i class="fa fa-comments"></i>
-                            </a>
-                        @endif
-                    @endif
+{{--                    @else--}}
+{{--                        @if(count($bots) <= 10)--}}
+{{--                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">--}}
+{{--                                <i class="fa fa-comments"></i>--}}
+{{--                            </a>--}}
+{{--                        @endif--}}
+{{--                    @endif--}}
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
-                @if($subscribe != null)
+                @if($subscribe)
                     <div>
                         <p class="h4">{{ __("Тарифный план: ") . $subscribe->plan->name ?? __('Free') }}</p>
                         <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at)->format('d.m.Y') ?? '' }}</span><br>

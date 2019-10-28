@@ -134,7 +134,7 @@ class UsersController extends Controller
 //        $response = $client->get($URI);
 //        $subscribe_resp = json_decode($response->getBody());
 //        $subscribe = $subscribe_resp->data;
-        $subscribe = BillingSubscribe::where('user_id', $id)->first();
+        $subscribe = BillingSubscribe::where('user_id', $user->id)/*->with('plan')*/->first();
 
 
         // Позже переделать
@@ -142,7 +142,7 @@ class UsersController extends Controller
 //        $resp_plans = $client->get($url_plans);
 //        $plans = json_decode($resp_plans->getBody());
 //        $plans = BillingPlan::all();
-//        dd($subscribe->plan->bot_count);
+//        dd($subscribe);
 
         // Получаем все счета пользователя
         $url_inv = config('app.billing_url') . '/user-invoice/' . $user->id;

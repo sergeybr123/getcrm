@@ -15,6 +15,7 @@ class BillingPlan extends Model
         'description',
         'price',
         'interval',
+        'period',
         'trial_period_days',
         'sort_order',
         'on_show',
