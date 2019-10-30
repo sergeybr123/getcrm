@@ -37,4 +37,9 @@ class BillingSubscribe extends Model
     {
         return $this->hasOne('App\Models\BillingPlan', 'id', 'plan_id');
     }
+
+    public function last_inv()
+    {
+        return $this->hasOne('App\Models\BillingInvoice', 'id', 'last_invoice');
+    }
 }

@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(Phone::class);
     }
 
+    public function subscribe()
+    {
+        return $this->hasOne('App\Models\BillingSubscribe', 'user_id', 'id');
+    }
+
     public function partnerCompanies()
     {
         return $this->belongsToMany(Company::class, 'partners_companies')

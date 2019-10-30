@@ -85,7 +85,7 @@
                 @if($subscribe)
                     <div>
                         <p class="h4">{{ __("Тарифный план: ") . $subscribe->plan->name ?? __('Free') }}</p>
-                        <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at)->format('d.m.Y') ?? '' }}</span><br>
+{{--                        <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at)->format('d.m.Y') ?? '' }}</span><br>--}}
                         <strong>Подписка с:</strong> {{ \Carbon\Carbon::parse($subscribe->start_at)->format('d.m.Y') ?? '' }}
                         <strong>по:</strong>
                         @if($subscribe->end_at != null)
