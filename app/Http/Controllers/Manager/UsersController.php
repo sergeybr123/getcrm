@@ -515,21 +515,13 @@ class UsersController extends Controller
     public function invoice($id)
     {
         $manager = Auth::id();
-//        dd($manager);
-        $invoice_type = BillingInvoiceType::all();
-//        dd($invoice_type);
         $user = User::where('id', $id)->with(['subscribe'])->first();
-//        dd($user->subscribe->last_inv);
         $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
-//        dd($plans);
-        $services_bot = BillingService::findOrFail(1);
-        $services_bot = BillingService::findOrFail(1);
-        $services_bot = BillingService::findOrFail(1);
-//        dd($services);
-//        $last_inv = BillingInvoice::findOrFail($user->subscribe->last_invoice);
+        $services_service = BillingService::findOrFail(1);
+        $services_bot = BillingService::findOrFail(2);
+        $services_bonus = BillingService::findOrFail(3);
 
         $arr = ['manager_id' => $manager, 'user_id' => $user->id];
-
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
         $URI = config('app.billing_url') . '/ref/create-ref';
         $response = $client->post($URI, [
@@ -541,7 +533,7 @@ class UsersController extends Controller
 //        $response = $client->post($URI);
         $ref = json_decode($response->getBody());
 //        dd($ref->data);
-        return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_bot' => $services_bot, 'ref' => $ref]);
+        return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_service' => $services_service, 'services_bot' => $services_bot, 'services_bonus' => $services_bonus, 'ref' => $ref]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/

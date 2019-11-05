@@ -11,10 +11,10 @@
             <div class="card card-accent-primary mt-3">
                 <p class="h3 card-title pt-3 pl-3">{{ __('Пользователь:') }} <strong>{{ $user->email }}</strong></p>
                 <div class="card-body">
-                    <div id="types_invoice_block">
+                    <div id="block_plan">
                         @foreach($plans as $item)
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="type_id" id="typeRadios + {{ $item->id }}" value="{{ $item->id }}">
+                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="type_id" id="typeRadios + {{ $item->id }}" value="{{ $item->id }}" {{ ($item->id == $user->subscribe->plan_id) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="typeRadios + {{ $item->id }}">{{ $item->name }}</label>
                             </div>
                         @endforeach
@@ -22,8 +22,33 @@
                             <input class="form-control" type="number" min="1" max="12" value="1">
                             <hr>
                     </div>
-                    <div id="plan_block"></div>
-                    <div id="services_block"></div>
+                    <div id="block_service">
+                        @if($services_service)
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" id="serviceCheck_{{ $services_service->id }}" onclick="ChoiseService({{ $services_service->id }})">
+                                <label class="custom-control-label" for="serviceCheck_{{ $services_service->id }}">{{ $services_service->name }}</label>
+                            </div>
+                            <hr>
+                        @endif
+                    </div>
+                    <div id="block_bot">
+                        @if($services_bot)
+                            <div class="form-inline">
+                                <label class="mr-2">{{ __('Дополнительный авточат') }}</label>
+                                <input class="form-control" type="number" id="bot_service" onclick="ChoiseBot()" min="{{ $user->subscribe->plan->bot_count }}" value="{{ $user->subscribe->bot_count }}">
+                            </div>
+                            <hr>
+                        @endif
+                    </div>
+                    <div id="block_bonus">
+                        @if($services_bonus)
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" id="bonusCheck_{{ $services_bonus->id }}" onclick="ChoiseBonus()">
+                                <label class="custom-control-label" for="bonusCheck_{{ $services_bonus->id }}">{{ $services_bonus->name }}</label>
+                            </div>
+                            <hr>
+                        @endif
+                    </div>
 
                     <div id="plan_place"></div>
                     {{--<div id="planPlace"></div>--}}
@@ -56,74 +81,74 @@
         // Load();
     });
 
-    function Load() {
-        var ref = {!! json_encode($ref->data) !!};
-        var types = {!! $invoice_types !!} {{--{!! $invoice_types !!}--}};
-        var plans = {!! $plans !!};
-        var services = {!! $services !!};
-        var user = {!! $user !!};
-        var subscribe = {!! $user->subscribe !!};
-        var sub_plan = {!! $user->subscribe->plan !!};
-        {{--var last_inv = {!! $user->subscribe->last_inv->ref_invoice !!};--}}
-        // console.log(ref);
-        var t_str = '';
-        var p_str = '';
-        var s_str = '';
-        var plan_arr = [];
-        // $.each(types, function (key, value) {
-        //     t_str += '<div class="custom-control custom-radio">';
-        //     t_str += '    <input class="custom-control-input" type="radio" onclick="ChoiseType(' + value.id + ')" name="type_id" id="typeRadios' + key + '" value="' + value.id + '">';
-        //     t_str += '    <label class="custom-control-label" for="typeRadios' + key + '">' + value.name + '</label>';
-        //     t_str += '</div>';
-        // });
-        // $('#types_invoice_block').append(t_str + '<hr>');
-        // t_str = '';
-        p_str += '<p class="mb-0">Тарифный план</p>';
-        $.each(plans, function (key, value) {
-            plan_arr.push(value.id);
-            // console.log(value);
-            p_str += '  <div class="custom-control custom-radio custom-control-inline">';
-            p_str += '    <input class="custom-control-input" type="radio" onclick="ChoisePlan(' + value.id + ')" name="plan_id" id="planRadios' + key + '" value="' + value.id + '">';
-            p_str += '    <label class="custom-control-label" for="planRadios' + key + '">' + value.name + '</label>';
-            p_str += '  </div>';
-            // p_str += '</div>';
-        });
-        p_str += '<p class="mb-0">Период</p>';
-        p_str += '<input class="form-control" type="number" min="1" max="12" value="1">';
-        $('#plan_block').append(p_str + '<hr>');
-        p_str = '';
-        $.each(services, function (key, value) {
-            // console.log(value);
-            if(value.type === 'service') {
-                s_str += '<div class="custom-control custom-checkbox">';
-                s_str += '  <input class="custom-control-input" type="checkbox" id="serviceCheck' + key + '" onclick="ChoiseService(' + value.id + ')">';
-                s_str += '  <label class="custom-control-label" for="serviceCheck' + key + '">' + value.name + '</label>';
-                s_str += '</div><hr>'
-            } else if(value.type === 'bot') {
-                s_str += '<div class="custom-control custom-checkbox">';
-                s_str += '  <input class="custom-control-input" type="checkbox" onclick="ChoiseServiceBonus(' + value.id + ')" name="plan_id" id="serviceRadios' + key + '" value="' + value.id + '" {{ $user->subscribe->active == 0 ? "disabled" : "" }}>';
-                s_str += '  <label class="custom-control-label" for="serviceRadios' + key + '">' + value.name + '</label>';
-                s_str += '</div><hr>';
-            } else if(value.type === 'bonus') {
-                s_str += '<div class="custom-control custom-checkbox">';
-                s_str += '    <input class="custom-control-input" type="checkbox" onclick="ChoiseServiceBonus(' + value.id + ')" name="plan_id" id="serviceRadios' + key + '" value="' + value.id + '" {{ $user->subscribe->active == 0 ? "disabled" : "" }}>';
-                s_str += '    <label class="custom-control-label" for="serviceRadios' + key + '">' + value.name + '</label>';
-                s_str += '</div><hr>';
-            }
-        });
-        $('#services_block').append(s_str);
-        s_str = '';
-    }
+    // function Load() {
+{{--        var ref = {!! json_encode($ref->data) !!};--}}
+{{--        --}}{{--var types = {!! $invoice_types !!} --}}{{----}}{{--{!! $invoice_types !!}--}}{{----}}{{--;--}}
+{{--        var plans = {!! $plans !!};--}}
+{{--        var services = {!! $services !!};--}}
+{{--        var user = {!! $user !!};--}}
+{{--        var subscribe = {!! $user->subscribe !!};--}}
+{{--        var sub_plan = {!! $user->subscribe->plan !!};--}}
+{{--        --}}{{--var last_inv = {!! $user->subscribe->last_inv->ref_invoice !!};--}}
+{{--        // console.log(ref);--}}
+{{--        var t_str = '';--}}
+{{--        var p_str = '';--}}
+{{--        var s_str = '';--}}
+{{--        var plan_arr = [];--}}
+{{--        // $.each(types, function (key, value) {--}}
+{{--        //     t_str += '<div class="custom-control custom-radio">';--}}
+{{--        //     t_str += '    <input class="custom-control-input" type="radio" onclick="ChoiseType(' + value.id + ')" name="type_id" id="typeRadios' + key + '" value="' + value.id + '">';--}}
+{{--        //     t_str += '    <label class="custom-control-label" for="typeRadios' + key + '">' + value.name + '</label>';--}}
+{{--        //     t_str += '</div>';--}}
+{{--        // });--}}
+{{--        // $('#types_invoice_block').append(t_str + '<hr>');--}}
+{{--        // t_str = '';--}}
+{{--        p_str += '<p class="mb-0">Тарифный план</p>';--}}
+{{--        $.each(plans, function (key, value) {--}}
+{{--            plan_arr.push(value.id);--}}
+{{--            // console.log(value);--}}
+{{--            p_str += '  <div class="custom-control custom-radio custom-control-inline">';--}}
+{{--            p_str += '    <input class="custom-control-input" type="radio" onclick="ChoisePlan(' + value.id + ')" name="plan_id" id="planRadios' + key + '" value="' + value.id + '">';--}}
+{{--            p_str += '    <label class="custom-control-label" for="planRadios' + key + '">' + value.name + '</label>';--}}
+{{--            p_str += '  </div>';--}}
+{{--            // p_str += '</div>';--}}
+{{--        });--}}
+{{--        p_str += '<p class="mb-0">Период</p>';--}}
+{{--        p_str += '<input class="form-control" type="number" min="1" max="12" value="1">';--}}
+{{--        $('#plan_block').append(p_str + '<hr>');--}}
+{{--        p_str = '';--}}
+{{--        $.each(services, function (key, value) {--}}
+{{--            // console.log(value);--}}
+{{--            if(value.type === 'service') {--}}
+{{--                s_str += '<div class="custom-control custom-checkbox">';--}}
+{{--                s_str += '  <input class="custom-control-input" type="checkbox" id="serviceCheck' + key + '" onclick="ChoiseService(' + value.id + ')">';--}}
+{{--                s_str += '  <label class="custom-control-label" for="serviceCheck' + key + '">' + value.name + '</label>';--}}
+{{--                s_str += '</div><hr>'--}}
+{{--            } else if(value.type === 'bot') {--}}
+{{--                s_str += '<div class="custom-control custom-checkbox">';--}}
+{{--                s_str += '  <input class="custom-control-input" type="checkbox" onclick="ChoiseServiceBonus(' + value.id + ')" name="plan_id" id="serviceRadios' + key + '" value="' + value.id + '" {{ $user->subscribe->active == 0 ? "disabled" : "" }}>';--}}
+{{--                s_str += '  <label class="custom-control-label" for="serviceRadios' + key + '">' + value.name + '</label>';--}}
+{{--                s_str += '</div><hr>';--}}
+{{--            } else if(value.type === 'bonus') {--}}
+{{--                s_str += '<div class="custom-control custom-checkbox">';--}}
+{{--                s_str += '    <input class="custom-control-input" type="checkbox" onclick="ChoiseServiceBonus(' + value.id + ')" name="plan_id" id="serviceRadios' + key + '" value="' + value.id + '" {{ $user->subscribe->active == 0 ? "disabled" : "" }}>';--}}
+{{--                s_str += '    <label class="custom-control-label" for="serviceRadios' + key + '">' + value.name + '</label>';--}}
+{{--                s_str += '</div><hr>';--}}
+{{--            }--}}
+{{--        });--}}
+{{--        $('#services_block').append(s_str);--}}
+{{--        s_str = '';--}}
+{{--    }--}}
 
-    function ChoiseType(id) {
-        if(id === 1) {
+{{--    function ChoiseType(id) {--}}
+{{--        if(id === 1) {--}}
 
-        } else if (id === 2) {
+{{--        } else if (id === 2) {--}}
 
-        } else if (id === 3) {
+{{--        } else if (id === 3) {--}}
 
-        }
-    }
+{{--        }--}}
+{{--    }--}}
 
     {{--var typeId = null;--}}
     {{--var planId = null;--}}
