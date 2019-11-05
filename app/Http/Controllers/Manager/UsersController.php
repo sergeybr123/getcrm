@@ -522,7 +522,9 @@ class UsersController extends Controller
 //        dd($user->subscribe->last_inv);
         $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
 //        dd($plans);
-        $services = BillingService::all();
+        $services_bot = BillingService::findOrFail(1);
+        $services_bot = BillingService::findOrFail(1);
+        $services_bot = BillingService::findOrFail(1);
 //        dd($services);
 //        $last_inv = BillingInvoice::findOrFail($user->subscribe->last_invoice);
 
@@ -539,7 +541,7 @@ class UsersController extends Controller
 //        $response = $client->post($URI);
         $ref = json_decode($response->getBody());
 //        dd($ref->data);
-        return view('manager.users.invoice', ['invoice_types' => $invoice_type, 'user' => $user, 'plans' => $plans, 'services' => $services, 'ref' => $ref]);
+        return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_bot' => $services_bot, 'ref' => $ref]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/

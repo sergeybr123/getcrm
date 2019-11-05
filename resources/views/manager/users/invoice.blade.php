@@ -12,12 +12,15 @@
                 <p class="h3 card-title pt-3 pl-3">{{ __('Пользователь:') }} <strong>{{ $user->email }}</strong></p>
                 <div class="card-body">
                     <div id="types_invoice_block">
-{{--                        @foreach($invoice_types as $item)--}}
-{{--                            <div class="custom-control custom-radio">--}}
-{{--                                <input class="custom-control-input" type="radio" onclick="ChoiseType(' + value.id + ')" name="type_id" id="typeRadios' + key + '" value="' + value.id + '">--}}
-{{--                                <label class="custom-control-label" for="typeRadios' + key + '">' + value.name + '</label>--}}
-{{--                            </div>--}}
-{{--                        @endforeach--}}
+                        @foreach($plans as $item)
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="type_id" id="typeRadios + {{ $item->id }}" value="{{ $item->id }}">
+                                <label class="custom-control-label" for="typeRadios + {{ $item->id }}">{{ $item->name }}</label>
+                            </div>
+                        @endforeach
+                            <p class="mb-0">Период</p>
+                            <input class="form-control" type="number" min="1" max="12" value="1">
+                            <hr>
                     </div>
                     <div id="plan_block"></div>
                     <div id="services_block"></div>
@@ -50,7 +53,7 @@
     var billing_url = '{{ config('app.billing_url') }}';
 
     $(document).ready(function(){
-        Load();
+        // Load();
     });
 
     function Load() {
