@@ -14,8 +14,8 @@
                     <div id="block_plan">
                         @foreach($plans as $item)
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="type_id" id="typeRadios + {{ $item->id }}" value="{{ $item->id }}" {{ ($item->id == $user->subscribe->plan_id) ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="typeRadios + {{ $item->id }}">{{ $item->name }}</label>
+                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="plan" id="planRadios + {{ $item->id }}" value="{{ $item->id }}" {{ ($item->id == $user->subscribe->plan_id) ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="planRadios + {{ $item->id }}">{{ $item->name }}</label>
                             </div>
                         @endforeach
                             <p class="mb-0">Период</p>
@@ -49,8 +49,22 @@
                             <hr>
                         @endif
                     </div>
+                    <div>
+                        <div class="dropdown">
+                            {{--<button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton" data-toggle="dropdown" onclick="selectDateSubscribe()"><i class="fa fa-credit-card"></i></button>--}}
+                            <input class="form-control" type="text" name="start_subscribe" id="datepicker">
+                            <div id="dropdownCalendar" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <div style="height:27px;padding-right:10px;">
+                                    <button type="button" class="close" aria-label="Close" onclick="closeDatapicker()">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="datepicker"></div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div id="plan_place"></div>
+                    {{--<div id="plan_place"></div>--}}
                     {{--<div id="planPlace"></div>--}}
                     {{--<div id="servicePlace"></div>--}}
                     <div id="periodDiv" class="mt-2" style="display: none">
@@ -61,8 +75,6 @@
                         <strong>Итого: </strong><span id="amount">0</span>
                     </div>
                     <textarea id="description" class="form-control mt-2" rows="3" placeholder="Описание(не обязательно)"></textarea>
-
-
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('manager.users.show', $user->id) }}" class="btn btn-secondary">{{ __('Отмена') }}</a>
@@ -80,6 +92,49 @@
     $(document).ready(function(){
         // Load();
     });
+
+    function ChoiseBonus(){
+
+    }
+
+    $( function() {
+        $( "#datepicker" ).datepicker();
+    } );
+
+    // function selectDateSubscribe() {
+    //     $('#dropdownCalendar').show();
+    // }
+    // $( ".datepicker" ).datepicker({
+    //     onSelect: function () {
+    //         datePay = $.datepicker.formatDate("yy-mm-dd", $(this).datepicker('getDate'));
+    //         // console.log(datePay);
+    //         var data = {
+    //             id: invoiceId,
+    //             date: datePay
+    //         };
+    //         // console.log(data);
+    //         $.ajax({
+    //             type: "POST",
+    //             url: billing_url + "/pay-with-day",
+    //             dataType: 'json',
+    //             async: false,
+    //             data: data,
+    //             headers: {
+    //                 "Authorization": "Basic " + billing_token
+    //             },
+    //             success: function (request) {
+    //                 console.log(request);
+    //                 if(request.error === 0) {
+    //                     $('#dropdownCalendar_' + invoiceId).hide();
+    //                     location.reload();
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
+    // function closeDatapicker(id) {
+    //     $('#dropdownCalendar_' + id).hide();
+    // }
 
     // function Load() {
 {{--        var ref = {!! json_encode($ref->data) !!};--}}

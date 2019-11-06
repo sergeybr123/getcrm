@@ -644,7 +644,7 @@
 @section('scripts')
     <script src="{{ asset('vendors/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('vendors/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
+    {{--<script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>--}}
     <script src="{{ asset('js/bootstrap4-toggle.min.js') }}"></script>
     <script>
         /*-------------------Копирование ссылок---------------------*/

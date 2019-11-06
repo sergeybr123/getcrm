@@ -78,6 +78,7 @@
 <script src="{{ asset('vendors/js/toastr.min.js') }}"></script>
 <script src="{{ asset('vendors/js/gauge.min.js') }}"></script>
 <script src="{{ asset('vendors/js/moment.min.js') }}"></script>
+<script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
 {{--<script src="js/views/main.js"></script>--}}
 <script>
     $(function () {
