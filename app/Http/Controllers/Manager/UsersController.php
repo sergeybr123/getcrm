@@ -518,14 +518,9 @@ class UsersController extends Controller
 
         $user = User::where('id', $id)->with(['subscribe'])->first();
         $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
-//        dd($manager);
         $services_service = BillingService::findOrFail(1);
-//        dd($services_service);
         $services_bot = BillingService::findOrFail(2);
-//        dd($manager);
         $services_bonus = BillingService::findOrFail(3);
-
-//        dd($manager);
 
         $arr = ['manager_id' => $manager, 'user_id' => $user->id];
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -539,7 +534,12 @@ class UsersController extends Controller
         $response = $client->post($URI);
         $ref = json_decode($response->getBody());
 //        dd($ref->data);
-        return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_service' => $services_service, 'services_bot' => $services_bot, 'services_bonus' => $services_bonus, 'ref' => $ref]);
+        if($ref) {
+            return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_service' => $services_service, 'services_bot' => $services_bot, 'services_bonus' => $services_bonus, 'ref' => $ref]);
+        } else {
+
+        }
+
     }
 
     /*пометка на удаление ссылки и всех авточатов*/
