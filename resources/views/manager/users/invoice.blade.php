@@ -3,6 +3,8 @@
 @section('title', __('Выставление счета'))
 
 @section('styles')
+    <link href="{{ asset('js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('js/jquery-ui/jquery-ui.theme.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -19,14 +21,14 @@
                             </div>
                         @endforeach
                             <p class="mb-0">Период</p>
-                            <input class="form-control" type="number" min="1" max="12" value="1">
+                            <input class="form-control" type="number" min="0" max="12" value="0">
                             <hr>
                     </div>
                     <div id="block_service">
                         @if($services_service)
                             <div class="custom-control custom-checkbox">
-                                <input class="custom-control-input" type="checkbox" id="serviceCheck_{{ $services_service->id }}" onclick="ChoiseService({{ $services_service->id }})">
-                                <label class="custom-control-label" for="serviceCheck_{{ $services_service->id }}">{{ $services_service->name }}</label>
+                                <input class="custom-control-input" type="checkbox" id="serviceCheck" onclick="alert('click')">
+                                <label class="custom-control-label" for="serviceCheck">{{ $services_service->name }}</label>
                             </div>
                             <hr>
                         @endif
@@ -34,8 +36,8 @@
                     <div id="block_bot">
                         @if($services_bot)
                             <div class="form-inline">
-                                <label class="mr-2">{{ __('Дополнительный авточат') }}</label>
-                                <input class="form-control" type="number" id="bot_service" onclick="ChoiseBot()" min="{{ $user->subscribe->plan->bot_count }}" value="{{ $user->subscribe->bot_count }}">
+                                <label for="bot_service" class="mr-2">{{ __('Дополнительный авточат') }}</label>
+                                <input class="form-control" type="number" id="bot_service" onchange="GetRef()" min="{{ $user->subscribe->plan->bot_count }}" value="{{ $user->subscribe->bot_count }}">
                             </div>
                             <hr>
                         @endif
@@ -100,6 +102,33 @@
     $( function() {
         $( "#datepicker" ).datepicker();
     } );
+
+    var ref = {!! json_encode($ref->data) !!};
+
+    function GetRef() {
+        var data = {
+            ref_id: ref,
+            date: datePay
+        };
+
+        $.ajax({
+            type: "POST",
+            url: billing_url + "/pay-with-day",
+            dataType: 'json',
+            async: false,
+            data: data,
+            headers: {
+                "Authorization": "Basic " + billing_token
+            },
+            success: function (request) {
+                console.log(request);
+                if(request.error === 0) {
+                    $('#dropdownCalendar_' + invoiceId).hide();
+                    location.reload();
+                }
+            }
+        });
+    }
 
     // function selectDateSubscribe() {
     //     $('#dropdownCalendar').show();
