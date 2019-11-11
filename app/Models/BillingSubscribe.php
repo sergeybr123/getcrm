@@ -7,19 +7,18 @@ use App\Models\BillingPlan;
 
 class BillingSubscribe extends Model
 {
+    protected $connection = 'billing';
+
     protected $table = 'subscribes';
 
     protected $fillable = [
         'user_id',
         'plan_id',
         'interval',
-        'term',
-        'bot_count',
         'trial_ends_at',
         'start_at',
         'end_at',
         'active',
-        'last_invoice',
     ];
 
     protected $dates = [
@@ -28,18 +27,8 @@ class BillingSubscribe extends Model
         'deleted_at',
     ];
 
-    public function user()
-    {
-        return $this->hasOne('App\User', 'id', 'user_id');
-    }
-
     public function plan()
     {
         return $this->hasOne('App\Models\BillingPlan', 'id', 'plan_id');
-    }
-
-    public function last_inv()
-    {
-        return $this->hasOne('App\Models\BillingInvoice', 'id', 'last_invoice');
     }
 }

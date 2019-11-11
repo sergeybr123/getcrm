@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Manager;
 
-use App\Models\BillingInvoice;
-use App\Models\BillingInvoiceType;
-use App\Models\BillingService;
 use App\Models\BotInput;
 use App\Notifications\UserRegistered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -514,32 +510,10 @@ class UsersController extends Controller
 
     public function invoice($id)
     {
-        $manager = Auth::id();
-//        dd($manager);
-        $invoice_type = BillingInvoiceType::all();
-//        dd($invoice_type);
-        $user = User::where('id', $id)->with(['subscribe'])->first();
-//        dd($user->subscribe->last_inv);
-        $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
-//        dd($plans);
-        $services = BillingService::all();
-//        dd($services);
-//        $last_inv = BillingInvoice::findOrFail($user->subscribe->last_invoice);
+//        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
 
-        $arr = ['manager_id' => $manager, 'user_id' => $user->id];
-
-        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-        $URI = config('app.billing_url') . '/ref/create-ref';
-        $response = $client->post($URI, [
-            'form_params' => $arr,
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ]
-        ]);
-//        $response = $client->post($URI);
-        $ref = json_decode($response->getBody());
-//        dd($ref->data);
-        return view('manager.users.invoice', ['invoice_types' => $invoice_type, 'user' => $user, 'plans' => $plans, 'services' => $services, 'ref' => $ref]);
+        $user = User::findOrFail($id);
+        return view('manager.users.invoice', ['user' => $user]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/

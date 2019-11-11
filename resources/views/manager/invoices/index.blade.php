@@ -9,7 +9,7 @@
 
 @section('content')
 
-    <h1>{{ __('Счета и платежи') }}</h1>
+    <h1>{{ __('Счета и платежи') }} (@isset($all->meta){{ $all->meta->total }}@endisset)</h1>
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <form>
@@ -35,7 +35,7 @@
                     <th width="80">#</th>
                     <th>Пользователь</th>
                     {{--<th width="130">Телефон</th>--}}
-                    <th width="120">Тип платежа</th>
+                    <th>Тип платежа</th>
                     <th width="90">Сумма</th>
                     <th width="50">Оплата</th>
                     <th width="130">Дата создания</th>
@@ -52,7 +52,7 @@
                         {{ $invoice[1]->id }}
                     </td>
                     <td>
-                        <span id="link_{{ $invoice[1]->id }}" style="display:none;">{{ config('app.url') }}/order/pay/{{ $invoice[1]->id }}</span>
+                        <span id="link_{{ $invoice[1]->id }}" style="display:none;">https://getchat.me/order/pay/{{ $invoice[1]->id }}</span>
                         @if($invoice[1]->status == 'active')
                             <button class="float-right btn btn-outline-blue btn-sm" title="{{ __('Скопировать ссылку на оплату') }}"
                                     onclick="copyPageToClipboard({{ $invoice[1]->id }})" type="button"><i class="fa fa-copy"></i>
@@ -72,12 +72,11 @@
                             {{--{{ '+' . $invoice[0]['phone']['country_code'] . $invoice[0]['phone']['phone'] }}--}}
                         {{--@endif--}}
                     {{--</td>--}}
-                    <td class="text-center">
-                        @if($invoice[1]->types)
-                            {{-- $invoice[1] --}}
-                            <b>{{ $invoice[1]->types->name }}</b>
-                        {{--@else--}}
-                            {{--{{ $invoice[1]->type->name . ' ' . $invoice[1]->service->name }}--}}
+                    <td>
+                        @if($invoice[1]->plan)
+                            <b>{{ $invoice[1]->type->name }}</b> - <i>{{ $invoice[1]->plan->name }}</i>
+                        @else
+                            {{ $invoice[1]->type->name . ' ' . $invoice[1]->service->name }}
                         @endif
                     </td>
                     <td class="text-right">

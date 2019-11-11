@@ -36,20 +36,13 @@ class InvoicesController extends Controller
             $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')];
             $response = $client->get($URI, $params, ['stream' => true]);
             $invoices = json_decode($response->getBody());
-//            dd($invoices);
-//            foreach ($invoices->data as $item) {
-//                if(in_array($item->type->id, [1, 2])) {
-//                    dd($item);
-//                }
-//            }
             if($invoices != null) {
                 foreach ($invoices->data as $invoice) {
                     $user = User::where('id', $invoice->user_id)->with('phone')->first();
                     array_push($users, [$user, $invoice]);
                 }
-//                dd($users);
             } else {
-//                dd($invoices);
+                dd($invoices);
             }
         } else {
             // Если поиск по номеру счета
@@ -66,7 +59,7 @@ class InvoicesController extends Controller
                     }
 //                    return view('manager.invoices.index', ['invoices' => $users, 'all' => $invoices]);
                 } else {
-//                    dd($invoices);
+                    dd($invoices);
                 }
 
             } else {
@@ -80,7 +73,7 @@ class InvoicesController extends Controller
                     $user = Phone::where('phone', $phone)->first();
                 }
 
-                if($user) {
+                if($user != '') {
 //                    dd($user);
                     $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
                     $URI = config('app.billing_url') . '/user-invoice/' . $user->id;

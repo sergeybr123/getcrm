@@ -39,7 +39,7 @@
                         <div class="form-group row">
                             <label for="link" class="col-sm-3 col-form-label">Ссылка</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="link" name="slug">
+                                <input type="text" class="form-control" id="link" name="link">
                             </div>
                         </div>
                         <div class="form-group row">

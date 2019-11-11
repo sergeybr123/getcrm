@@ -64,17 +64,11 @@
                        style="border-radius:50%;width:30px;height:30px;" title="Выставить счет">
                         <i class="fa fa-file-invoice"></i>
                     </a>
-{{--                    @if($subscribe->plan->code == 'unlimited')--}}
-                        <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
-                            <i class="fa fa-comments"></i>
-                        </a>
-{{--                    @else--}}
-{{--                        @if(count($bots) <= 10)--}}
-{{--                            <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">--}}
-{{--                                <i class="fa fa-comments"></i>--}}
-{{--                            </a>--}}
-{{--                        @endif--}}
-{{--                    @endif--}}
+                    @if(count($bots) <= 10)
+                    <a href="{{ route('manager.users.create_bot', ['user_id' => $user->id]) }}" style="border-radius:50%;width:30px;height:30px;" class="btn btn-sm btn-outline-blue ml-1" title="Добавить новый авточат">
+                        <i class="fa fa-comments"></i>
+                    </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -82,10 +76,10 @@
     <div class="card card-accent-primary mt-3">
         <div class="card-body">
             <div class="d-flex w-100 justify-content-between">
-                @if($subscribe)
+                @if($subscribe != null)
                     <div>
                         <p class="h4">{{ __("Тарифный план: ") . $subscribe->plan->name ?? __('Free') }}</p>
-{{--                        <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at)->format('d.m.Y') ?? '' }}</span><br>--}}
+                        <span>{{ __('Дата регистрации: ') . \Carbon\Carbon::parse($subscribe->created_at)->format('d.m.Y') ?? '' }}</span><br>
                         <strong>Подписка с:</strong> {{ \Carbon\Carbon::parse($subscribe->start_at)->format('d.m.Y') ?? '' }}
                         <strong>по:</strong>
                         @if($subscribe->end_at != null)
@@ -159,7 +153,7 @@
                                                             <label class="custom-control-label" for="activate_new_bot_{{ $bot->id }}"></label>
                                                         </div>
                                                     @endif
-                                                    <a href="{{ config('app.constructor').$bot->id }}?account={{ $user->email }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
+                                                    <a href="https://getchat.me/constructor2/{{ $bot->id }}" target="_blank" title="{{ __('Перейти в конструктор') }}"><i class="fas fa-wrench"></i></a>
                                                     <div class="dropdown mx-2">
                                                         <a class="" href="#" role="button" id="dropdownMenuLink{{ $bot->id }}" title="{{ __('Дополнительные функции') }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                             <i class="fas fa-ellipsis-v"></i>
@@ -290,7 +284,7 @@
                         <tr>
                             <th width="70">#</th>
                             <th width="120">Вид</th>
-                            {{--<th>Наименование</th>--}}
+                            <th>Наименование</th>
                             <th width="70">Сумма</th>
                             <th width="70">Статус</th>
                             <th width="100">Дата создания</th>
@@ -305,16 +299,16 @@
                         @foreach($invoices as $invoice)
                             <tr>
                                 <td>{{ $invoice->id }}</td>
-                                <td>{{ $invoice->types->name }}</td>
-                                {{--<td>--}}
-                                    {{--@if($invoice->plan != null)--}}
-                                        {{--{{ $invoice->plan->name }}--}}
-                                    {{--@else--}}
-                                        {{--@if($invoice->service != null)--}}
-                                            {{--{{ $invoice->service->name }}--}}
-                                        {{--@endif--}}
-                                    {{--@endif--}}
-                                {{--</td>--}}
+                                <td>{{ $invoice->type->name }}</td>
+                                <td>
+                                    @if($invoice->plan != null)
+                                        {{ $invoice->plan->name }}
+                                    @else
+                                        @if($invoice->service != null)
+                                            {{ $invoice->service->name }}
+                                        @endif
+                                    @endif
+                                </td>
                                 <td class="text-right">{{ number_format($invoice->amount, 0, '', ' ') }} тг.</td>
                                 <td class="text-center">
                                     @if($invoice->status == 'active')

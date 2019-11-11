@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingService extends Model
 {
-    protected $table = 'services';
-
     protected $fillable = [
         'plan_id',
         'name',

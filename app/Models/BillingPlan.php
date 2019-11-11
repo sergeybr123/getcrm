@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingPlan extends Model
 {
+    protected $connection = 'billing';
+
     protected $table = 'plans';
 
     protected $fillable = [
@@ -15,7 +17,6 @@ class BillingPlan extends Model
         'description',
         'price',
         'interval',
-        'period',
         'trial_period_days',
         'sort_order',
         'on_show',

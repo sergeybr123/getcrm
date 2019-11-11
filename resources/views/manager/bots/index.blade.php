@@ -113,13 +113,13 @@
             $temp.remove();
             toastr.info('Ссылка скопирована');
         }
-        // function copyPageToClipboard(key) {
-        //     var $temp = $("<input>");
-        //     $("body").append($temp);
-        //     $temp.val($('#page_slug_' + key).text()).select();
-        //     document.execCommand("copy");
-        //     $temp.remove();
-        //     toastr.info('Ссылка скопирована');
-        // }
+        function copyPageToClipboard(key) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($('#page_slug_' + key).text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            toastr.info('Ссылка скопирована');
+        }
     </script>
 @endsection
