@@ -517,29 +517,34 @@ class UsersController extends Controller
         $manager = Auth::id();
 
         $user = User::where('id', $id)->with(['subscribe'])->first();
-        $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
+        $plans = BillingPlan::whereIn('id', [4, 5, 6])->get();
         $services_service = BillingService::findOrFail(1);
         $services_bot = BillingService::findOrFail(2);
         $services_bonus = BillingService::findOrFail(3);
 
-        $arr = ['manager_id' => $manager, 'user_id' => $user->id];
-        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
-        $URI = config('app.billing_url') . '/ref/create-ref';
-        $response = $client->post($URI, [
-            'form_params' => $arr,
-            'headers' => [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ]
-        ]);
-        $response = $client->post($URI);
-        $ref = json_decode($response->getBody());
+//        $arr = ['manager_id' => $manager, 'user_id' => $user->id];
+//        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+//        $URI = config('app.billing_url') . '/ref/get-ref';
+//        $response = $client->post($URI, [
+//            'form_params' => $arr,
+//            'headers' => [
+//                'Content-Type' => 'application/x-www-form-urlencoded',
+//            ]
+//        ]);
+//        $response = $client->post($URI);
+//        $ref = json_decode($response->getBody());
 //        dd($ref->data);
-        if($ref) {
-            return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_service' => $services_service, 'services_bot' => $services_bot, 'services_bonus' => $services_bonus, 'ref' => $ref]);
-        } else {
-
-        }
-
+//        if($ref) {
+//
+//        } else {
+//
+//        }
+        return view('manager.users.invoice', ['manager_id' => $manager,
+                                                    'user' => $user,
+                                                    'plans' => $plans,
+                                                    'services_service' => $services_service,
+                                                    'services_bot' => $services_bot,
+                                                    'services_bonus' => $services_bonus]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/

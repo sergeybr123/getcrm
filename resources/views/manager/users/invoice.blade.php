@@ -16,18 +16,18 @@
                     <div id="block_plan">
                         @foreach($plans as $item)
                             <div class="custom-control custom-radio custom-control-inline">
-                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="plan" id="planRadios + {{ $item->id }}" value="{{ $item->id }}" {{ ($item->id == $user->subscribe->plan_id) ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="planRadios + {{ $item->id }}">{{ $item->name }}</label>
+                                <input class="custom-control-input" type="radio" onclick="ChoiseType({{ $item->id }})" name="plan_id" id="planRadios_{{ $item->id }}" value="{{ $item->id }}" {{ ($item->id == $user->subscribe->plan_id) ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="planRadios_{{ $item->id }}">{{ $item->name }}</label>
                             </div>
                         @endforeach
                             <p class="mb-0">Период</p>
-                            <input class="form-control" type="number" min="0" max="12" value="0">
+                            <input id="plan_quantity" class="form-control" name="plan_quantity" type="number" min="0" max="12" value="0">
                             <hr>
                     </div>
                     <div id="block_service">
                         @if($services_service)
                             <div class="custom-control custom-checkbox">
-                                <input class="custom-control-input" type="checkbox" id="serviceCheck" onclick="alert('click')">
+                                <input class="custom-control-input" type="checkbox" id="serviceCheck" onchange="GetRef()">
                                 <label class="custom-control-label" for="serviceCheck">{{ $services_service->name }}</label>
                             </div>
                             <hr>
@@ -37,7 +37,7 @@
                         @if($services_bot)
                             <div class="form-inline">
                                 <label for="bot_service" class="mr-2">{{ __('Дополнительный авточат') }}</label>
-                                <input class="form-control" type="number" id="bot_service" onchange="GetRef()" min="{{ $user->subscribe->plan->bot_count }}" value="{{ $user->subscribe->bot_count }}">
+                                <input class="form-control" type="number" id="botCheck" onchange="GetRef()" min="{{ $user->subscribe->plan->bot_count }}" value="{{ $user->subscribe->bot_count }}">
                             </div>
                             <hr>
                         @endif
@@ -45,33 +45,20 @@
                     <div id="block_bonus">
                         @if($services_bonus)
                             <div class="custom-control custom-checkbox">
-                                <input class="custom-control-input" type="checkbox" id="bonusCheck_{{ $services_bonus->id }}" onclick="ChoiseBonus()">
-                                <label class="custom-control-label" for="bonusCheck_{{ $services_bonus->id }}">{{ $services_bonus->name }}</label>
+                                <input class="custom-control-input" type="checkbox" id="bonusCheck" onclick="ChoiseBonus()">
+                                <label class="custom-control-label" for="bonusCheck">{{ $services_bonus->name }}</label>
                             </div>
                             <hr>
                         @endif
                     </div>
                     <div>
                         <div class="dropdown">
-                            {{--<button class="btn btn-sm btn-outline-blue" title="Подтвердить оплату" id="dropdownMenuButton" data-toggle="dropdown" onclick="selectDateSubscribe()"><i class="fa fa-credit-card"></i></button>--}}
-                            <input class="form-control" type="text" name="start_subscribe" id="datepicker">
+                            <p class="mb-0">Дата начала подписки</p>
+                            <input class="form-control" type="text" name="start_subscribe" id="datepickerStartSubscribe">
                             <div id="dropdownCalendar" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <div style="height:27px;padding-right:10px;">
-                                    <button type="button" class="close" aria-label="Close" onclick="closeDatapicker()">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
                                 <div class="datepicker"></div>
                             </div>
                         </div>
-                    </div>
-
-                    {{--<div id="plan_place"></div>--}}
-                    {{--<div id="planPlace"></div>--}}
-                    {{--<div id="servicePlace"></div>--}}
-                    <div id="periodDiv" class="mt-2" style="display: none">
-                        <strong>Период</strong>
-                        <input class="form-control" type="number" id="periodMonth" min="1" max="12" value="1">
                     </div>
                     <div class="mt-3" id="amount_place">
                         <strong>Итого: </strong><span id="amount">0</span>
@@ -88,8 +75,13 @@
 @endsection
 @section('scripts')
 <script>
+    var ref = null;
     var billing_token = '{{ config('app.billing_token') }}';
     var billing_url = '{{ config('app.billing_url') }}';
+    var manager_id = {!! $manager_id !!};
+    var user = {!! json_encode($user) !!};
+
+    console.log(manager_id);
 
     $(document).ready(function(){
         // Load();
@@ -100,35 +92,48 @@
     }
 
     $( function() {
-        $( "#datepicker" ).datepicker();
-    } );
+        $( "#datepickerStartSubscribe" ).datepicker({ dateFormat: 'dd.mm.yyyy' });
+    });
 
-    var ref = {!! json_encode($ref->data) !!};
+    {{--var ref = {!! json_encode($ref->data) !!};--}}
 
     function GetRef() {
+        var serviceDevelop = $('#serviceCheck').prop('checked') || null;
+        var botCheck = $("#botCheck").val() || null;
+        var serviceDevelop = $("#bonusCheck").prop("checked") ? 1 : 0;
         var data = {
-            ref_id: ref,
-            date: datePay
+            manager_id: manager_id,
+            plan: $('#period').val(),
+            plan_quantity: plan_quantity,
+            serviceCheck: serviceDevelop,
+            bots: botCheck,
+            start_subscribe: $('#datepickerStartSubscribe').val(),
+            // ref_id: ref.id,
         };
+
+        // if
 
         $.ajax({
             type: "POST",
-            url: billing_url + "/pay-with-day",
+            url: billing_url + "/ref/get-ref-inv",
             dataType: 'json',
             async: false,
             data: data,
+            processData: false,
             headers: {
                 "Authorization": "Basic " + billing_token
             },
             success: function (request) {
                 console.log(request);
-                if(request.error === 0) {
-                    $('#dropdownCalendar_' + invoiceId).hide();
-                    location.reload();
-                }
+                // if(request.error === 0) {
+                //     $('#dropdownCalendar_' + invoiceId).hide();
+                //     location.reload();
+                // }
             }
         });
+        // console.log(data);
     }
+    setTimeout(GetRef, 2000);
 
     // function selectDateSubscribe() {
     //     $('#dropdownCalendar').show();
