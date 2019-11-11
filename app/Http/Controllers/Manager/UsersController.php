@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Manager;
 
+use App\Models\BillingInvoice;
+use App\Models\BillingInvoiceType;
+use App\Models\BillingService;
 use App\Models\BotInput;
 use App\Notifications\UserRegistered;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -124,7 +128,7 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $bots = Company::where('user_id', $id)->whereHas('bots')->with('bots')->orderBy('slug')->get();
+        $bots = Company::where('user_id', $id)->whereHas('bots')->orderBy('slug')->get();
 //        dd($bots);
 
         $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -134,7 +138,7 @@ class UsersController extends Controller
 //        $response = $client->get($URI);
 //        $subscribe_resp = json_decode($response->getBody());
 //        $subscribe = $subscribe_resp->data;
-        $subscribe = BillingSubscribe::where('user_id', $id)->first();
+        $subscribe = BillingSubscribe::where('user_id', $user->id)/*->with('plan')*/->first();
 
 
         // Позже переделать
@@ -142,13 +146,15 @@ class UsersController extends Controller
 //        $resp_plans = $client->get($url_plans);
 //        $plans = json_decode($resp_plans->getBody());
 //        $plans = BillingPlan::all();
-//        dd($subscribe->plan->bot_count);
+//        dd($subscribe);
 
         // Получаем все счета пользователя
         $url_inv = config('app.billing_url') . '/user-invoice/' . $user->id;
         $resp_inv = $client->get($url_inv);
         $invoices_resp = json_decode($resp_inv->getBody());
         $invoices = $invoices_resp->data;
+
+//        dd($invoices);
 
         $plan_bot_count = 0;
         $new_bot_count = 0;
@@ -446,7 +452,7 @@ class UsersController extends Controller
 
             $company = new Company();
             $company->user_id = $user->id;
-            $company->slug = $request->link;
+            $company->slug = $request->slug;
             $company->name = $request->name;
             $company->description = $request->description;
             $company->save();
@@ -508,8 +514,32 @@ class UsersController extends Controller
 
     public function invoice($id)
     {
-        $user = User::findOrFail($id);
-        return view('manager.users.invoice', ['user' => $user]);
+        $manager = Auth::id();
+
+        $user = User::where('id', $id)->with(['subscribe'])->first();
+        $plans = BillingPlan::where('price', '>', 0.00)->where('on_show', 1)->get();
+//        dd($manager);
+        $services_service = BillingService::findOrFail(1);
+//        dd($services_service);
+        $services_bot = BillingService::findOrFail(2);
+//        dd($manager);
+        $services_bonus = BillingService::findOrFail(3);
+
+//        dd($manager);
+
+        $arr = ['manager_id' => $manager, 'user_id' => $user->id];
+        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
+        $URI = config('app.billing_url') . '/ref/create-ref';
+        $response = $client->post($URI, [
+            'form_params' => $arr,
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ]
+        ]);
+        $response = $client->post($URI);
+        $ref = json_decode($response->getBody());
+//        dd($ref->data);
+        return view('manager.users.invoice', ['user' => $user, 'plans' => $plans, 'services_service' => $services_service, 'services_bot' => $services_bot, 'services_bonus' => $services_bonus, 'ref' => $ref]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/
