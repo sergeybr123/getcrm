@@ -133,7 +133,7 @@
         });
         // console.log(data);
     }
-    setTimeout(GetRef, 2000);
+    // setTimeout(GetRef, 2000);
 
     // function selectDateSubscribe() {
     //     $('#dropdownCalendar').show();

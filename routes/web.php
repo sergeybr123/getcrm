@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function() {
             Route::get('{id}', 'Manager\UsersController@show')->name('show');
             Route::get('{id}/edit', 'Manager\UsersController@edit')->name('edit');
             Route::post('{id}/update', 'Manager\UsersController@update')->name('update');
-            Route::match(['get', 'post'], 'create/{id}/invoice', 'Manager\UsersController@invoice')->name('create_invoice');
+            Route::match(['get', 'post'], 'create/{id}/invoice', 'Manager\UsersController@new_invoice')->name('create_invoice');
             Route::match(['get', 'post'], 'multilink/{user_id}/create', 'Manager\UsersController@create_multilink')->name('create_multilink');
             Route::match(['get', 'post'], 'bots/{user_id}/create', 'Manager\UsersController@create_bot')->name('create_bot');
             Route::post('/delete-chat/{id}/{user_id}/{bot_id}', 'Manager\UsersController@delete_chat')->name('delete_chat');

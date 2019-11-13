@@ -514,13 +514,7 @@ class UsersController extends Controller
 
     public function invoice($id)
     {
-        $manager = Auth::id();
 
-        $user = User::where('id', $id)->with(['subscribe'])->first();
-        $plans = BillingPlan::whereIn('id', [4, 5, 6])->get();
-        $services_service = BillingService::findOrFail(1);
-        $services_bot = BillingService::findOrFail(2);
-        $services_bonus = BillingService::findOrFail(3);
 
 //        $arr = ['manager_id' => $manager, 'user_id' => $user->id];
 //        $client = new Client(['headers' => ['Content-Type' => 'application/json', 'Authorization' => 'Basic ' . config('app.billing_token')]]);
@@ -539,12 +533,31 @@ class UsersController extends Controller
 //        } else {
 //
 //        }
-        return view('manager.users.invoice', ['manager_id' => $manager,
-                                                    'user' => $user,
-                                                    'plans' => $plans,
-                                                    'services_service' => $services_service,
-                                                    'services_bot' => $services_bot,
-                                                    'services_bonus' => $services_bonus]);
+//        return view('manager.users.invoice', ['manager_id' => $manager,
+//                                                    'user' => $user,
+//                                                    'plans' => $plans,
+//                                                    'services_service' => $services_service,
+//                                                    'services_bot' => $services_bot,
+//                                                    'services_bonus' => $services_bonus]);
+    }
+
+    public function new_invoice($user_id)
+    {
+        $manager = Auth::id();
+        $user = User::findOrFail($user_id);
+        $old_invoice = BillingInvoice::where('user_id', $user_id)->where('paid', 1)->whereNotNull('ref_options')->orderByDesc('id')->first();
+//        dd($old_invoice);
+        $plans = BillingPlan::whereIn('id', [4, 5, 6])->get();
+        $services_service = BillingService::findOrFail(1);
+        $services_bot = BillingService::findOrFail(2);
+        $services_bonus = BillingService::findOrFail(3);
+
+        return view('manager.users.new_invoice', ['manager_id' => $manager,
+            'user' => $user,
+            'plans' => $plans,
+            'services_service' => $services_service,
+            'services_bot' => $services_bot,
+            'services_bonus' => $services_bonus]);
     }
 
     /*пометка на удаление ссылки и всех авточатов*/
