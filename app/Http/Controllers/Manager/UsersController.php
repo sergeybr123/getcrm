@@ -552,9 +552,15 @@ class UsersController extends Controller
         $services_bot = BillingService::findOrFail(2);
         $services_bonus = BillingService::findOrFail(3);
 
+        $subscribe = $user->subscribe;
+        $last_invoice = $user->subscribe->last_inv;
+//        dd($last_invoice);
+
         return view('manager.users.new_invoice', ['manager_id' => $manager,
             'user' => $user,
             'plans' => $plans,
+            'subscribe' => $subscribe ?? '',
+            'last_invoice' => $last_invoice ?? 0,
             'services_service' => $services_service,
             'services_bot' => $services_bot,
             'services_bonus' => $services_bonus]);
