@@ -154,26 +154,30 @@
         // Считаем ref
         ref = Math.floor(cost_pay * (day_to_end / all_period));
         //!Считаем сумму которую должны вернуть
-        console.log(ref);
-        console.log(plans);
+        // console.log(ref);
+        // console.log(plans);
 
         var sel_plan = $('input[name=plan_id]:checked').val();
         var period = $('#plan_quantity').val();
-        console.log(period + " | " + sel_plan + " | " + subscribe.plan_id);
+        var plan_legal = null;
+        // console.log(period + " | " + sel_plan + " | " + subscribe.plan_id);
 
         $.each(plans, function(key, value) {
             // console.log(value.id);
             if(sel_plan == value.id) {
-                console.log(value);
+                // console.log(value.price);
+                plan_legal = value;
             }
         });
 
 
         if(subscribe.active == 1 && (sel_plan == subscribe.plan_id)) {
-
-
-            console.log('check');
-
+            // console.log('check');
+            var amount = (parseInt(plan_legal.price) * parseInt(period)) - ref;
+            console.log(plan_legal.price);
+            console.log(period);
+            console.log(amount);
+            $('#amount').text(amount);
         }
     }
 
